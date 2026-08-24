@@ -1,7 +1,7 @@
 import createMDX from "@next/mdx";
 
 const withMDX = createMDX({
-  extension: /\\.mdx?$/,
+  extension: /\.mdx?$/,
 });
 
 export default withMDX({
