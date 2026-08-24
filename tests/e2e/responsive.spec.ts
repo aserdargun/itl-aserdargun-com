@@ -25,12 +25,32 @@ const VIEWPORTS = [
   { width: 390, height: 844 },
 ] as const;
 
+const DEMO_CONTROLS = [
+  "Machine",
+  "Problem",
+  "Feature set",
+  "Algorithm",
+  "Validation",
+] as const;
+
+const SAFETY_ZONE_LABELS = [
+  "OT Control Zone",
+  "Data Access Zone",
+  "Twin Zone",
+  "AI Experiment Zone",
+  "Validation Gate",
+  "Inference Zone",
+] as const;
+
 const expectNoDocumentOverflow = async (page: Page) => {
   const dimensions = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,
     scrollWidth: document.documentElement.scrollWidth,
   }));
-  expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
+  expect(
+    dimensions.scrollWidth,
+    `${new URL(page.url()).pathname} must not overflow the document`,
+  ).toBeLessThanOrEqual(dimensions.clientWidth);
 };
 
 const expectMinimumHeight = async (locator: Locator, minimum: number) => {
@@ -85,6 +105,118 @@ for (const viewport of VIEWPORTS) {
       expect(clippedDiagramLabels).toEqual([]);
     }
   });
+
+  test(`${viewport.width}x${viewport.height} preserves the required rail, demo, disclosure, and diagram contracts`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+
+    await page.goto("/manifesto/");
+    const runningIndex = page.getByRole("complementary", {
+      name: "Manifesto running index",
+    });
+    const principleNavigation = page.getByRole("navigation", {
+      name: "Manifesto principles",
+    });
+    await expect(runningIndex).toBeVisible();
+    await expect(principleNavigation).toHaveCount(1);
+    await expect(principleNavigation.getByRole("link")).toHaveCount(12);
+
+    const railBox = await runningIndex.boundingBox();
+    const manifestoHeadingBox = await page
+      .getByRole("heading", {
+        level: 1,
+        name: "Industrial Twin Lab Manifesto",
+      })
+      .boundingBox();
+    expect(railBox).not.toBeNull();
+    expect(manifestoHeadingBox).not.toBeNull();
+    if (viewport.width > 850) {
+      expect(railBox!.x + railBox!.width).toBeLessThanOrEqual(
+        manifestoHeadingBox!.x,
+      );
+    } else {
+      expect(railBox!.y + railBox!.height).toBeLessThanOrEqual(
+        manifestoHeadingBox!.y,
+      );
+    }
+
+    await page.goto("/experiment-fabric/demo/");
+    await expect(
+      page
+        .getByText("Conceptual demonstration — synthetic fixture results.")
+        .first(),
+    ).toBeVisible();
+    for (const label of DEMO_CONTROLS) {
+      await expectMinimumHeight(page.getByLabel(label), 44);
+    }
+
+    const algorithm = page.getByLabel("Algorithm");
+    const initialId = await page.getByTestId("experiment-id").innerText();
+    await algorithm.selectOption("physics-residual");
+    await expect(page.getByTestId("experiment-id")).not.toHaveText(initialId);
+    const changedId = await page.getByTestId("experiment-id").innerText();
+    await expect(page.getByRole("status")).toHaveText(
+      `Evidence updated: ${changedId}.`,
+    );
+    await page.reload();
+    await algorithm.selectOption("physics-residual");
+    await expect(page.getByTestId("experiment-id")).toHaveText(changedId);
+
+    const sectionTrigger = page.getByRole("button", {
+      name: "All sections 13",
+    });
+    await expect(sectionTrigger).toBeVisible();
+    await expectMinimumHeight(sectionTrigger, 44);
+    await sectionTrigger.click();
+    const allSections = page.getByRole("navigation", { name: "All sections" });
+    await expect(allSections).toBeVisible();
+    await expect(
+      allSections.getByRole("link", { name: /Experiment Fabric/u }),
+    ).toHaveAttribute("aria-current", "page");
+
+    await page.goto("/architecture/");
+    await expect(
+      page.getByLabel("Demonstration asset disclosure"),
+    ).toContainText("Fictional demonstration asset");
+    const safetyFigure = page.getByRole("figure", {
+      name: "Industrial Twin Lab safety boundary",
+    });
+    const zoneHeadings = safetyFigure.locator(".safety-boundary__zone h3");
+    await expect(zoneHeadings).toHaveText([...SAFETY_ZONE_LABELS]);
+    const geometry = await safetyFigure
+      .locator(".safety-boundary__zone section")
+      .evaluateAll((sections) =>
+        sections.map((section) => {
+          const box = section.getBoundingClientRect();
+          const heading = section.querySelector("h3");
+          return {
+            width: box.width,
+            height: box.height,
+            headingWidth: heading?.getBoundingClientRect().width ?? 0,
+            headingHeight: heading?.getBoundingClientRect().height ?? 0,
+            headingScrollWidth: heading?.scrollWidth ?? 0,
+            headingClientWidth: heading?.clientWidth ?? 0,
+            headingScrollHeight: heading?.scrollHeight ?? 0,
+            headingClientHeight: heading?.clientHeight ?? 0,
+          };
+        }),
+      );
+    expect(geometry).toHaveLength(SAFETY_ZONE_LABELS.length);
+    for (const zone of geometry) {
+      expect(zone.width).toBeGreaterThan(0);
+      expect(zone.height).toBeGreaterThan(0);
+      expect(zone.headingWidth).toBeGreaterThan(0);
+      expect(zone.headingHeight).toBeGreaterThan(0);
+      expect(zone.headingScrollWidth).toBeLessThanOrEqual(
+        zone.headingClientWidth + 1,
+      );
+      expect(zone.headingScrollHeight).toBeLessThanOrEqual(
+        zone.headingClientHeight + 1,
+      );
+    }
+    await expectNoDocumentOverflow(page);
+  });
 }
 
 test("mobile all-sections supports complete content, close, Escape focus return, navigation, and reachable main", async ({
@@ -118,6 +250,33 @@ test("mobile all-sections supports complete content, close, Escape focus return,
   await expect(
     page.getByRole("button", { name: "All sections 13" }),
   ).toHaveAttribute("aria-expanded", "false");
+});
+
+test("all-sections uses segment-boundary matching without sibling or prefix false positives", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.goto("/experiment-fabric/demo/");
+  await page.getByRole("button", { name: "All sections 13" }).click();
+  await expect(
+    page
+      .getByRole("navigation", { name: "All sections" })
+      .getByRole("link", { name: /Experiment Fabric/u }),
+  ).toHaveAttribute("aria-current", "page");
+
+  await page.goto("/experiment-fabrication/");
+  await page.getByRole("button", { name: "All sections 13" }).click();
+  await expect(
+    page
+      .getByRole("navigation", { name: "All sections" })
+      .getByRole("link", { name: /Experiment Fabric/u }),
+  ).not.toHaveAttribute("aria-current", "page");
+  await expect(
+    page
+      .getByRole("navigation", { name: "All sections" })
+      .locator('[aria-current="page"]'),
+  ).toHaveCount(0);
 });
 
 test("the demo has 44px controls, named internal scrolling, and deterministic mobile interaction", async ({

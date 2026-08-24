@@ -4,13 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { SITE_NAVIGATION } from "@/lib/data/navigation";
+import {
+  isNavigationItemCurrent,
+  normalizeNavigationPathname,
+} from "@/lib/navigation-active";
 
 const NAVIGATION_ID = "all-sections-navigation";
 
 export function MobileNavigation() {
   const pathname = usePathname();
-  const currentPathname =
-    !pathname || pathname === "/" ? "/" : pathname.replace(/\/+$/u, "");
+  const currentPathname = normalizeNavigationPathname(pathname);
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -63,7 +66,9 @@ export function MobileNavigation() {
             <li key={item.id}>
               <a
                 aria-current={
-                  currentPathname === item.href ? "page" : undefined
+                  isNavigationItemCurrent(currentPathname, item.href)
+                    ? "page"
+                    : undefined
                 }
                 href={item.href}
                 onClick={closeNavigation}

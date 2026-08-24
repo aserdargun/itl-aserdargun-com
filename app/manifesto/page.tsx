@@ -1,5 +1,6 @@
 import Manifesto from "@/content/manifesto.mdx";
 import { FlowDiagram } from "@/components/diagrams/flow-diagram";
+import { MANIFESTO_PRINCIPLES } from "@/lib/content/registry";
 import { publicationMetadata } from "@/lib/metadata";
 
 const KNOWLEDGE_SEQUENCE = [
@@ -33,6 +34,30 @@ function MachineKnowledgeSequence() {
 export default function ManifestoPage() {
   return (
     <article className="manifesto-publication">
+      <aside
+        aria-label="Manifesto running index"
+        className="manifesto-running-index"
+      >
+        <div className="manifesto-running-index__heading">
+          <p>Running index</p>
+          <p>{MANIFESTO_PRINCIPLES.length} principles</p>
+        </div>
+        <nav aria-label="Manifesto principles">
+          <ol>
+            {MANIFESTO_PRINCIPLES.map((principle) => {
+              const number = String(principle.number).padStart(2, "0");
+              return (
+                <li key={principle.number}>
+                  <a href={`#principle-${number}`}>
+                    <span aria-hidden="true">{number}</span>
+                    <span>{principle.title}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      </aside>
       <Manifesto components={{ pre: MachineKnowledgeSequence }} />
     </article>
   );
