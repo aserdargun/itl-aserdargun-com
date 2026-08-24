@@ -16,6 +16,7 @@ export default defineConfig({
     environment: "jsdom",
     exclude: [
       ...configDefaults.exclude,
+      "**/.worktrees/**",
       "tests/e2e/**",
       "tests/integration/**",
     ],
