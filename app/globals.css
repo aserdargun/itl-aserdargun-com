@@ -124,6 +124,8 @@ svg {
 }
 
 .skip-link {
+  --color-focus: var(--color-focus-on-light);
+
   position: fixed;
   z-index: 100;
   top: var(--space-3);
@@ -149,6 +151,8 @@ svg {
 }
 
 .publication-sheet {
+  --color-focus: var(--color-focus-on-light);
+
   min-height: 55vh;
   background: var(--color-paper);
   box-shadow: 0 24px 90px rgb(0 0 0 / 32%);

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import "@testing-library/jest-dom/vitest";
 
 import {
@@ -19,6 +21,11 @@ import { SiteHeader } from "@/components/publication/site-header";
 import { RESEARCH_DISCLAIMER } from "@/lib/content/registry";
 import type { ContentEntry } from "@/lib/content/types";
 import { SITE_NAVIGATION } from "@/lib/data/navigation";
+
+const GLOBAL_STYLES = readFileSync("app/globals.css", "utf8").replace(
+  '@import "tailwindcss";',
+  "",
+);
 
 afterEach(cleanup);
 
@@ -160,6 +167,42 @@ describe("SiteFooter", () => {
     });
     expect(within(routeIndex).getAllByRole("link")).toHaveLength(
       SITE_NAVIGATION.length + 1,
+    );
+  });
+});
+
+describe("focus contrast", () => {
+  it("restores the light-surface focus token on paper-backed elements", () => {
+    const { container } = render(
+      <>
+        <style>{GLOBAL_STYLES}</style>
+        <div className="surface-dark">
+          <a className="skip-link" href="#paper-content">
+            Skip to paper content
+          </a>
+          <main className="publication-sheet" id="paper-content">
+            <button type="button">Paper control</button>
+          </main>
+        </div>
+      </>,
+    );
+
+    const darkSurface = container.querySelector<HTMLElement>(".surface-dark");
+    const paper = container.querySelector<HTMLElement>(".publication-sheet");
+    const skipLink = screen.getByRole("link", {
+      name: "Skip to paper content",
+    });
+
+    expect(darkSurface).not.toBeNull();
+    expect(paper).not.toBeNull();
+    expect(
+      getComputedStyle(darkSurface!).getPropertyValue("--color-focus"),
+    ).toBe("var(--color-focus-on-dark)");
+    expect(getComputedStyle(paper!).getPropertyValue("--color-focus")).toBe(
+      "var(--color-focus-on-light)",
+    );
+    expect(getComputedStyle(skipLink).getPropertyValue("--color-focus")).toBe(
+      "var(--color-focus-on-light)",
     );
   });
 });
