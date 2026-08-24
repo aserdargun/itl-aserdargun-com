@@ -122,7 +122,7 @@ describe("Azure Static Web Apps contract", () => {
     }>;
   };
 
-  it("falls unknown documents back to the exported 404 without masking assets", () => {
+  it("falls unknown requests back to the exported 404 without masking successful assets", () => {
     expect(config.navigationFallback).toBeUndefined();
 
     const documentRoutes = [
@@ -137,34 +137,17 @@ describe("Azure Static Web Apps contract", () => {
     expect(config.routes).toContainEqual(
       expect.objectContaining({ route: "/_next/*" }),
     );
-    expect(config.routes.at(-1)).toMatchObject({
-      route: "/*",
-      statusCode: 403,
-    });
-    expect(config.responseOverrides?.["403"]).toEqual({
-      rewrite: "/404/",
-      statusCode: 404,
-    });
-    expect(config.responseOverrides?.["404"]).toEqual({
-      rewrite: "/asset-not-found.txt",
+    expect(config.routes).not.toContainEqual(
+      expect.objectContaining({ route: "/*" }),
+    );
+    expect(config.responseOverrides).toEqual({
+      "404": { rewrite: "/404.html" },
     });
 
     const documentFallbackIndex = config.routes.findIndex(
       ({ route }) => route === "/404.html",
     );
-    const assetFallbackIndex = config.routes.findIndex(
-      ({ route }) => route === "/asset-not-found.txt",
-    );
-    const finalCatchIndex = config.routes.findIndex(
-      ({ route }) => route === "/*",
-    );
-    const textCatchIndex = config.routes.findIndex(
-      ({ route }) => route === "/*.txt",
-    );
     expect(documentFallbackIndex).toBeGreaterThanOrEqual(0);
-    expect(documentFallbackIndex).toBeLessThan(finalCatchIndex);
-    expect(assetFallbackIndex).toBeGreaterThanOrEqual(0);
-    expect(assetFallbackIndex).toBeLessThan(textCatchIndex);
 
     for (const [route, contentType] of [
       ["/*.png", "image/png"],

@@ -15,7 +15,6 @@ const document404 = resolve(outputRoot, "404/index.html");
 const sourceConfig = resolve(repositoryRoot, "staticwebapp.config.json");
 const outputConfig = resolve(outputRoot, "staticwebapp.config.json");
 const staticAssetRoot = resolve(outputRoot, "_next/static");
-const assetNotFound = resolve(outputRoot, "asset-not-found.txt");
 
 if (!existsSync(document404)) {
   throw new Error("Static export is missing out/404/index.html.");
@@ -32,7 +31,6 @@ if (!readFileSync(root404).equals(readFileSync(document404))) {
 }
 
 mkdirSync(outputRoot, { recursive: true });
-writeFileSync(assetNotFound, "Static asset not found.\n");
 
 const contentTypeByExtension = {
   ".css": "text/css; charset=utf-8",
@@ -78,5 +76,5 @@ config.routes.splice(nextAssetCatchIndex, 0, ...generatedAssetRoutes);
 writeFileSync(outputConfig, `${JSON.stringify(config, null, 2)}\n`);
 
 console.log(
-  `Prepared static output: retained document 404, isolated asset errors, and preserved ${generatedAssetRoutes.length} hashed Next assets.`,
+  `Prepared static output: retained document 404 and preserved ${generatedAssetRoutes.length} hashed Next assets.`,
 );

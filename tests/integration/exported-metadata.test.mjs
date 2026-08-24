@@ -49,18 +49,18 @@ test("prepared output keeps a document-only custom 404 and the SWA config", () =
     readFileSync("out/404.html"),
     readFileSync("out/404/index.html"),
   );
-  assert.equal(
-    readFileSync("out/asset-not-found.txt", "utf8"),
-    "Static asset not found.\n",
-  );
+  assert.equal(existsSync("out/asset-not-found.txt"), false);
 
   const config = JSON.parse(
     readFileSync("out/staticwebapp.config.json", "utf8"),
   );
-  assert.deepEqual(config.responseOverrides["403"], {
-    rewrite: "/404/",
-    statusCode: 404,
+  assert.deepEqual(config.responseOverrides, {
+    404: { rewrite: "/404.html" },
   });
+  assert.equal(
+    config.routes.some(({ route }) => route === "/*"),
+    false,
+  );
   const nextAssetCatchIndex = config.routes.findIndex(
     ({ route }) => route === "/_next/*",
   );
