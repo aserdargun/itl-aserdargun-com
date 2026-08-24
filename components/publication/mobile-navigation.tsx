@@ -9,6 +9,8 @@ const NAVIGATION_ID = "all-sections-navigation";
 
 export function MobileNavigation() {
   const pathname = usePathname();
+  const currentPathname =
+    !pathname || pathname === "/" ? "/" : pathname.replace(/\/+$/u, "");
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -60,7 +62,9 @@ export function MobileNavigation() {
           {SITE_NAVIGATION.map((item, index) => (
             <li key={item.id}>
               <a
-                aria-current={pathname === item.href ? "page" : undefined}
+                aria-current={
+                  currentPathname === item.href ? "page" : undefined
+                }
                 href={item.href}
                 onClick={closeNavigation}
               >

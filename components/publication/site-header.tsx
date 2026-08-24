@@ -15,6 +15,8 @@ const CORE_NAVIGATION = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const currentPathname =
+    !pathname || pathname === "/" ? "/" : pathname.replace(/\/+$/u, "");
 
   return (
     <header className="site-header surface-dark">
@@ -29,7 +31,9 @@ export function SiteHeader() {
             {CORE_NAVIGATION.map((item) => (
               <li key={item.href}>
                 <a
-                  aria-current={pathname === item.href ? "page" : undefined}
+                  aria-current={
+                    currentPathname === item.href ? "page" : undefined
+                  }
                   href={item.href}
                 >
                   {item.label}
