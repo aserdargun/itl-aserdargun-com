@@ -382,46 +382,94 @@ describe("P-101 evidence primitives", () => {
       name: "Twin Capsule signals",
     });
     expect(within(signals).getAllByRole("columnheader")).toHaveLength(6);
-    expect(within(signals).getAllByRole("row")).toHaveLength(12);
-    expect(within(signals).getByText("suction-pressure")).toBeInTheDocument();
-    expect(within(signals).getAllByText("bar", { exact: true })).toHaveLength(
-      2,
-    );
+    const signalRows = within(signals).getAllByRole("row").slice(1);
+    expect(signalRows).toHaveLength(P101_TWIN.sensors.length);
+    for (const [index, sensor] of P101_TWIN.sensors.entries()) {
+      expect(
+        [...signalRows[index].querySelectorAll(":scope > th, :scope > td")].map(
+          (cell) => cell.textContent?.trim(),
+        ),
+      ).toEqual([
+        sensor.id,
+        sensor.name,
+        sensor.unit,
+        sensor.quantity,
+        sensor.location,
+        `${sensor.nominalValue.value} ${sensor.nominalValue.unit}`,
+      ]);
+    }
 
     const features = within(figure).getByRole("list", {
       name: "Twin Capsule features",
     });
-    expect(within(features).getAllByRole("listitem")).toHaveLength(9);
-    expect(within(features).getByText("pressure-ratio")).toBeInTheDocument();
+    const featureItems = within(features).getAllByRole("listitem");
+    expect(featureItems).toHaveLength(P101_TWIN.features.length);
+    for (const [index, feature] of P101_TWIN.features.entries()) {
+      expect(
+        [...featureItems[index].children].map((child) => child.textContent),
+      ).toEqual([
+        feature.id,
+        feature.name,
+        feature.description,
+        `${feature.featureSet}; sources: ${feature.sourceSignalIds.join(", ")}`,
+      ]);
+    }
 
     const failures = within(figure).getByRole("list", {
       name: "Twin Capsule failure modes",
     });
-    expect(within(failures).getAllByRole("listitem")).toHaveLength(6);
-    expect(
-      within(failures).getByText("bearing-degradation"),
-    ).toBeInTheDocument();
+    const failureItems = within(failures).getAllByRole("listitem");
+    expect(failureItems).toHaveLength(P101_TWIN.failureModes.length);
+    for (const [index, failure] of P101_TWIN.failureModes.entries()) {
+      expect(
+        [...failureItems[index].children].map((child) => child.textContent),
+      ).toEqual([
+        failure.id,
+        failure.name,
+        failure.description,
+        `Affected signals: ${failure.affectedSensorIds.join(", ")}`,
+      ]);
+    }
 
     const boundaries = within(figure).getByRole("region", {
       name: "Model availability, limitations, and uncertainty",
     });
-    expect(within(boundaries).getByText("Not implemented")).toBeInTheDocument();
-    expect(
-      within(boundaries).getByText("Not validated in Phase 1"),
-    ).toBeInTheDocument();
-    expect(
-      within(boundaries).getByText(
-        "No physics model is implemented or validated in Phase 1.",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      within(boundaries).getByRole("list", {
-        name: "Twin Capsule limitations",
-      }),
-    ).toHaveTextContent(
-      /not plant measurements or validated industrial evidence/u,
+    const boundaryEntries = [
+      ...boundaries.querySelectorAll(":scope > .technical-ledger > div"),
+    ];
+    expect(boundaryEntries).toHaveLength(
+      Object.keys(P101_TWIN.modelAvailability).length +
+        Object.keys(P101_TWIN.uncertainty).length,
     );
-    expect(within(boundaries).getByText("Unquantified")).toBeInTheDocument();
+    expect(
+      boundaryEntries.map((entry) => entry.querySelector("dt")?.textContent),
+    ).toEqual([
+      "Physics model implementation",
+      "Model validation",
+      "Availability statement",
+      "Uncertainty status",
+      "Uncertainty statement",
+    ]);
+    expect(
+      boundaryEntries.map((entry) => entry.querySelector("dd")?.textContent),
+    ).toEqual([
+      P101_TWIN.modelAvailability.implementationStatus,
+      P101_TWIN.modelAvailability.validationStatus,
+      P101_TWIN.modelAvailability.statement,
+      P101_TWIN.uncertainty.status,
+      P101_TWIN.uncertainty.statement,
+    ]);
+    const limitations = within(boundaries).getByRole("list", {
+      name: "Twin Capsule limitations",
+    });
+    expect(within(limitations).getAllByRole("listitem")).toHaveLength(
+      P101_TWIN.limitations.length,
+    );
+    expect(
+      within(limitations)
+        .getAllByRole("listitem")
+        .map((item) => item.textContent),
+    ).toEqual([...P101_TWIN.limitations]);
   });
 
   it("renders evidence as a named table with explicit synthetic origin", () => {
