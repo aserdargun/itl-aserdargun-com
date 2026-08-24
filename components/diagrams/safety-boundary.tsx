@@ -17,13 +17,48 @@ export function SafetyBoundary({ title, caption, zones }: SafetyBoundaryProps) {
   return (
     <figure className="diagram-figure safety-boundary" aria-label={title}>
       <h2 className="diagram-figure__title">{title}</h2>
+      <section className="diagram-legend" aria-label="Diagram notation">
+        <p className="diagram-legend__title">Diagram notation</p>
+        <ul>
+          <li>
+            <span
+              className="diagram-legend__symbol diagram-legend__symbol--flow"
+              aria-hidden="true"
+            />
+            <span>Solid line = directional flow</span>
+          </li>
+          <li>
+            <span
+              className="diagram-legend__symbol diagram-legend__symbol--isolation"
+              aria-hidden="true"
+            />
+            <span>Dashed boundary = isolated experiment zone</span>
+          </li>
+          <li>
+            <span
+              className="diagram-legend__symbol diagram-legend__symbol--stop"
+              aria-hidden="true"
+            />
+            <span>
+              Signal-orange stop marker = human authority / safety boundary
+            </span>
+          </li>
+        </ul>
+      </section>
       <ol className="safety-boundary__zones">
         {zones.map((zone, index) => (
           <li
             className="safety-boundary__zone"
             data-boundary={zone.boundary}
+            data-next-boundary={zones[index + 1]?.boundary}
             key={zone.id}
           >
+            {zone.boundary === "human" ? (
+              <span className="safety-boundary__human-stop" aria-hidden="true">
+                <span className="safety-boundary__human-connector" />
+                <span className="safety-boundary__human-stop-bar" />
+              </span>
+            ) : null}
             <section aria-label={zone.title}>
               <span className="diagram-index" aria-hidden="true">
                 {String(index + 1).padStart(2, "0")}

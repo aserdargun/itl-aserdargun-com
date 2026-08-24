@@ -203,6 +203,92 @@ describe("architecture structures", () => {
     );
   });
 
+  it("publishes a visible semantic legend for every diagram notation", () => {
+    render(
+      <SafetyBoundary
+        title="Safety notation"
+        zones={[
+          {
+            id: "experiment",
+            title: "AI Experiment",
+            description: "Isolated inquiry.",
+            boundary: "isolation",
+          },
+          {
+            id: "gate",
+            title: "Validation Gate",
+            description: "Human review.",
+            boundary: "human",
+          },
+        ]}
+      />,
+    );
+
+    const legend = screen.getByRole("region", { name: "Diagram notation" });
+    expect(legend).toBeVisible();
+    expect(
+      within(legend)
+        .getAllByRole("listitem")
+        .map((item) => item.textContent),
+    ).toEqual([
+      "Solid line = directional flow",
+      "Dashed boundary = isolated experiment zone",
+      "Signal-orange stop marker = human authority / safety boundary",
+    ]);
+    expect(legend.querySelectorAll('[aria-hidden="true"]')).toHaveLength(3);
+  });
+
+  it("ends the human-gate connector at a 12px perpendicular stop bar", () => {
+    const styles = readFileSync("app/globals.css", "utf8").replace(
+      '@import "tailwindcss";',
+      "",
+    );
+    render(
+      <>
+        <style>{styles}</style>
+        <SafetyBoundary
+          title="Human gate notation"
+          zones={[
+            {
+              id: "experiment",
+              title: "AI Experiment",
+              description: "Isolated inquiry.",
+              boundary: "isolation",
+            },
+            {
+              id: "gate",
+              title: "Validation Gate",
+              description: "Human review.",
+              boundary: "human",
+            },
+          ]}
+        />
+      </>,
+    );
+
+    const gate = screen.getByRole("region", { name: "Validation Gate" });
+    const humanZone = gate.closest("li");
+    const precedingZone = humanZone?.previousElementSibling;
+    const marker = humanZone?.querySelector<HTMLElement>(
+      ".safety-boundary__human-stop",
+    );
+    const connector = marker?.querySelector<HTMLElement>(
+      ".safety-boundary__human-connector",
+    );
+    const stopBar = marker?.querySelector<HTMLElement>(
+      ".safety-boundary__human-stop-bar",
+    );
+
+    expect(precedingZone).toHaveAttribute("data-next-boundary", "human");
+    expect(marker).toHaveAttribute("aria-hidden", "true");
+    expect(getComputedStyle(connector!).height).toBe("1px");
+    expect(getComputedStyle(stopBar!).width).toBe("2px");
+    expect(getComputedStyle(stopBar!).height).toBe("12px");
+    expect(styles).not.toContain(
+      '.safety-boundary__zone[data-boundary="human"]::before',
+    );
+  });
+
   it("renders every technology category and candidate as nested semantic lists", () => {
     render(
       <TechnologyMap
