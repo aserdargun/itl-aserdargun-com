@@ -51,6 +51,39 @@ describe("content registry", () => {
     );
   });
 
+  it("rejects extra entries and non-canonical id-to-href mappings", () => {
+    const extra = {
+      ...CONTENT_REGISTRY[0],
+      id: "unknown-publication",
+      href: "/unknown-publication",
+      order: CONTENT_REGISTRY.length + 1,
+    };
+    const mismatch = {
+      ...CONTENT_REGISTRY[1],
+      href: "/about",
+    };
+
+    const errors = validateContentEntries([
+      ...CONTENT_REGISTRY.slice(0, 1),
+      mismatch,
+      ...CONTENT_REGISTRY.slice(2),
+      extra,
+    ]);
+
+    expect(errors).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Unknown content id "unknown-publication"'),
+        expect.stringContaining('Unknown content href "/unknown-publication"'),
+        expect.stringContaining(
+          'architecture: canonical href is "/architecture", received "/about"',
+        ),
+        expect.stringContaining(
+          "Content entries must match canonical navigation order",
+        ),
+      ]),
+    );
+  });
+
   it("reports missing metadata and unknown related routes", () => {
     const entries = replaceEntry("architecture", (entry) => ({
       ...entry,
@@ -139,6 +172,43 @@ describe("content registry", () => {
     );
   });
 
+  it("reports duplicate glossary terms and technology categories", () => {
+    const entries = replaceEntry("glossary", (entry) => ({
+      ...entry,
+      validation: {
+        ...entry.validation,
+        glossaryTermIds: [
+          ...(entry.validation.glossaryTermIds ?? []),
+          GLOSSARY_TERMS[0].id,
+        ],
+      },
+    })).map((entry) =>
+      entry.id === "technology"
+        ? {
+            ...entry,
+            validation: {
+              ...entry.validation,
+              technologyCategoryIds: [
+                ...(entry.validation.technologyCategoryIds ?? []),
+                TECHNOLOGIES[0].id,
+              ],
+            },
+          }
+        : entry,
+    );
+
+    expect(validateContentEntries(entries)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(
+          `glossary: duplicate glossary term "${GLOSSARY_TERMS[0].id}"`,
+        ),
+        expect.stringContaining(
+          `technology: duplicate technology category "${TECHNOLOGIES[0].id}"`,
+        ),
+      ]),
+    );
+  });
+
   it("reports missing required synthetic and research disclaimers", () => {
     const entries = replaceEntry(
       "fault-lab",
@@ -166,22 +236,41 @@ describe("content registry", () => {
     );
   });
 
+  it("accumulates malformed disclosure metadata instead of throwing", () => {
+    const malformed = {
+      ...getContentEntry("fault-lab"),
+      validation: { disclosures: { synthetic: true } },
+    } as unknown as ContentEntry;
+
+    expect(() => validateContentEntries([malformed])).not.toThrow();
+    expect(validateContentEntries([malformed])).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("fault-lab: disclosures must be an array"),
+        expect.stringContaining(
+          "fault-lab: missing required synthetic disclaimer",
+        ),
+      ]),
+    );
+  });
+
   it("throws a useful error for an unknown slug", () => {
     expect(() => getContentEntry("not-a-publication")).toThrowError(
       'Unknown content slug "not-a-publication"',
     );
   });
 
-  it("returns a non-zero status and prints every validation error", () => {
+  it("returns a non-zero status and prints every validation error", async () => {
     const output: string[] = [];
     const invalidEntries = [
       ...CONTENT_REGISTRY,
       { ...CONTENT_REGISTRY[0], title: "" },
     ];
 
-    const exitCode = runContentValidation(invalidEntries, (line) =>
-      output.push(line),
-    );
+    const exitCode = await runContentValidation({
+      entries: invalidEntries,
+      publicationValidation: { publicationIds: [] },
+      writeLine: (line) => output.push(line),
+    });
 
     expect(exitCode).toBe(1);
     expect(output).toEqual(

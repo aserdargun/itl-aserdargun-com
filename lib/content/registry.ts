@@ -1,14 +1,14 @@
-import { GLOSSARY_TERMS } from "@/lib/data/glossary";
-import { SITE_NAVIGATION } from "@/lib/data/navigation";
-import { RESEARCH_QUESTIONS } from "@/lib/data/research";
-import { TECHNOLOGIES } from "@/lib/data/technologies";
+import { GLOSSARY_TERMS } from "../data/glossary.ts";
+import { SITE_NAVIGATION } from "../data/navigation.ts";
+import { RESEARCH_QUESTIONS } from "../data/research.ts";
+import { TECHNOLOGIES } from "../data/technologies.ts";
 
 import type {
   ContentDisclosure,
   ContentEntry,
   ContentMeta,
   ManifestoPrinciple,
-} from "./types";
+} from "./types.ts";
 
 export const SYNTHETIC_FIXTURE_DISCLAIMER =
   "Conceptual demonstration — synthetic fixture results.";
@@ -290,9 +290,16 @@ const expectedPrinciples = Array.from({ length: 12 }, (_, index) => index + 1);
 const expectedResearchIds = RESEARCH_QUESTIONS.map(({ id }) => id);
 const expectedGlossaryIds = GLOSSARY_TERMS.map(({ id }) => id);
 
-const duplicates = (values: readonly string[]): string[] => [
-  ...new Set(values.filter((value, index) => values.indexOf(value) !== index)),
-];
+const duplicates = (values: readonly unknown[]): string[] => {
+  const strings = values.filter(
+    (value): value is string => typeof value === "string",
+  );
+  return [
+    ...new Set(
+      strings.filter((value, index) => strings.indexOf(value) !== index),
+    ),
+  ];
+};
 
 const sameSequence = <T>(left: readonly T[], right: readonly T[]): boolean =>
   left.length === right.length &&
@@ -302,11 +309,21 @@ export const validateContentEntries = (
   entries: readonly ContentEntry[],
 ): string[] => {
   const errors: string[] = [];
-  const routeSet = new Set(
-    entries
-      .map(({ href }) => href)
-      .filter((href): href is string => typeof href === "string"),
+  const canonicalById = new Map(SITE_NAVIGATION.map((item) => [item.id, item]));
+  const canonicalByHref = new Map(
+    SITE_NAVIGATION.map((item) => [item.href, item]),
   );
+  const routeSet = new Set(SITE_NAVIGATION.map(({ href }) => href));
+  const actualIdentitySequence = entries.map(({ id, href }) => `${id}:${href}`);
+  const expectedIdentitySequence = SITE_NAVIGATION.map(
+    ({ id, href }) => `${id}:${href}`,
+  );
+
+  if (!sameSequence(actualIdentitySequence, expectedIdentitySequence)) {
+    errors.push(
+      "Content entries must match canonical navigation order and coverage exactly.",
+    );
+  }
 
   for (const id of duplicates(entries.map(({ id }) => id))) {
     errors.push(`Duplicate content id "${id}".`);
@@ -321,13 +338,36 @@ export const validateContentEntries = (
       typeof entry.id === "string" && entry.id.trim()
         ? entry.id
         : "Content entry";
-    const validation = entry.validation ?? { disclosures: [] };
+    const validation =
+      typeof entry.validation === "object" &&
+      entry.validation !== null &&
+      !Array.isArray(entry.validation)
+        ? entry.validation
+        : undefined;
 
     if (typeof entry.id !== "string" || !entry.id.trim()) {
       errors.push("Content entry id is required.");
     }
     if (typeof entry.href !== "string" || !entry.href.trim()) {
       errors.push(`${label}: href is required.`);
+    }
+    const canonicalForId = canonicalById.get(entry.id);
+    const canonicalForHref = canonicalByHref.get(entry.href);
+    if (typeof entry.id === "string" && !canonicalForId) {
+      errors.push(`Unknown content id "${entry.id}".`);
+    }
+    if (typeof entry.href === "string" && !canonicalForHref) {
+      errors.push(`Unknown content href "${entry.href}".`);
+    }
+    if (canonicalForId && entry.href !== canonicalForId.href) {
+      errors.push(
+        `${label}: canonical href is "${canonicalForId.href}", received "${entry.href}".`,
+      );
+    }
+    if (canonicalForHref && entry.id !== canonicalForHref.id) {
+      errors.push(
+        `${label}: href "${entry.href}" belongs to content id "${canonicalForHref.id}".`,
+      );
     }
     if (typeof entry.title !== "string" || !entry.title.trim()) {
       errors.push(`${label}: title is required.`);
@@ -356,9 +396,27 @@ export const validateContentEntries = (
       }
     }
 
+    if (!validation) {
+      errors.push(`${label}: validation metadata is required.`);
+    }
+    const disclosures = Array.isArray(validation?.disclosures)
+      ? validation.disclosures.filter(
+          (value): value is ContentDisclosure =>
+            value === "research" || value === "synthetic",
+        )
+      : [];
+    if (!Array.isArray(validation?.disclosures)) {
+      errors.push(`${label}: disclosures must be an array.`);
+    }
+
     if (
       entry.id === "manifesto" &&
-      !sameSequence(validation.principleNumbers ?? [], expectedPrinciples)
+      !sameSequence(
+        Array.isArray(validation?.principleNumbers)
+          ? validation.principleNumbers
+          : [],
+        expectedPrinciples,
+      )
     ) {
       errors.push(
         `${entry.id}: principle numbers must be 01 through 12 in sequence.`,
@@ -366,7 +424,12 @@ export const validateContentEntries = (
     }
 
     if (entry.id === "research") {
-      const actualIds = validation.researchQuestionIds ?? [];
+      const actualIds = Array.isArray(validation?.researchQuestionIds)
+        ? validation.researchQuestionIds
+        : [];
+      if (!Array.isArray(validation?.researchQuestionIds)) {
+        errors.push(`${entry.id}: researchQuestionIds must be an array.`);
+      }
       for (const id of actualIds) {
         if (!/^RQ-00[1-9]$/.test(id) && id !== "RQ-010") {
           errors.push(
@@ -384,7 +447,12 @@ export const validateContentEntries = (
     }
 
     if (entry.id === "glossary") {
-      const actualIds = validation.glossaryTermIds ?? [];
+      const actualIds = Array.isArray(validation?.glossaryTermIds)
+        ? validation.glossaryTermIds
+        : [];
+      if (!Array.isArray(validation?.glossaryTermIds)) {
+        errors.push(`${entry.id}: glossaryTermIds must be an array.`);
+      }
       for (const id of expectedGlossaryIds) {
         if (!actualIds.includes(id))
           errors.push(`${entry.id}: missing glossary term "${id}".`);
@@ -393,10 +461,18 @@ export const validateContentEntries = (
         if (!expectedGlossaryIds.includes(id))
           errors.push(`${entry.id}: unknown glossary term "${id}".`);
       }
+      for (const id of duplicates(actualIds)) {
+        errors.push(`${entry.id}: duplicate glossary term "${id}".`);
+      }
     }
 
     if (entry.id === "technology") {
-      const actualIds = validation.technologyCategoryIds ?? [];
+      const actualIds = Array.isArray(validation?.technologyCategoryIds)
+        ? validation.technologyCategoryIds
+        : [];
+      if (!Array.isArray(validation?.technologyCategoryIds)) {
+        errors.push(`${entry.id}: technologyCategoryIds must be an array.`);
+      }
       for (const { id } of TECHNOLOGIES) {
         if (!actualIds.includes(id)) {
           errors.push(`${entry.id}: missing technology category "${id}".`);
@@ -407,10 +483,13 @@ export const validateContentEntries = (
           errors.push(`${entry.id}: unknown technology category "${id}".`);
         }
       }
+      for (const id of duplicates(actualIds)) {
+        errors.push(`${entry.id}: duplicate technology category "${id}".`);
+      }
     }
 
     for (const disclosure of disclosuresFor(entry.id)) {
-      if (!validation.disclosures.includes(disclosure)) {
+      if (!disclosures.includes(disclosure)) {
         errors.push(`${entry.id}: missing required ${disclosure} disclaimer.`);
       }
     }
@@ -427,8 +506,15 @@ export const validateContentEntries = (
   }
 
   for (const navigationItem of SITE_NAVIGATION) {
-    if (!entries.some(({ href }) => href === navigationItem.href)) {
-      errors.push(`Missing publication route "${navigationItem.href}".`);
+    if (
+      !entries.some(
+        ({ id, href }) =>
+          id === navigationItem.id && href === navigationItem.href,
+      )
+    ) {
+      errors.push(
+        `Missing canonical publication "${navigationItem.id}" at "${navigationItem.href}".`,
+      );
     }
   }
 
