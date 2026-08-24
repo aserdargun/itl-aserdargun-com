@@ -18,11 +18,30 @@ const PUBLIC_ROUTES = [
   "/experiment-fabric/demo/",
 ] as const;
 
+const PUBLIC_ROUTE_H1S: Record<(typeof PUBLIC_ROUTES)[number], string> = {
+  "/": "Industrial Twin Lab",
+  "/manifesto/": "Industrial Twin Lab Manifesto",
+  "/architecture/": "Industrial AI Safety Architecture",
+  "/twin-capsule/": "Twin Capsule",
+  "/experiment-fabric/": "Experiment Fabric",
+  "/feature-factory/": "Feature Factory",
+  "/algorithm-arena/": "Algorithm Arena",
+  "/fault-lab/": "Synthetic Fault Laboratory",
+  "/ai-scientist/": "AI Scientist",
+  "/fleet-intelligence/": "Fleet Intelligence",
+  "/research/": "Open Research Questions",
+  "/technology/": "Technology Atlas",
+  "/glossary/": "Glossary",
+  "/about/": "About Industrial Twin Lab",
+  "/experiment-fabric/demo/": "Experiment Fabric",
+};
+
 const VIEWPORTS = [
   { width: 1440, height: 1000 },
   { width: 1024, height: 768 },
   { width: 768, height: 1024 },
   { width: 390, height: 844 },
+  { width: 320, height: 720 },
 ] as const;
 
 const DEMO_CONTROLS = [
@@ -68,6 +87,36 @@ for (const viewport of VIEWPORTS) {
     for (const route of PUBLIC_ROUTES) {
       await page.goto(route);
       await expect(page.locator("main")).toBeVisible();
+      if (viewport.width === 320) {
+        await expect(page.locator("main h1")).toHaveText(
+          PUBLIC_ROUTE_H1S[route],
+        );
+        await expect(page.locator("main h1")).toHaveCount(1);
+        expect(
+          await page
+            .locator("body")
+            .evaluate((body) => getComputedStyle(body).minWidth),
+          `${route} must not impose a document minimum wider than the viewport`,
+        ).toBe("0px");
+
+        if (route === "/") {
+          const stageGeometry = await page
+            .locator(".operating-thesis__stage")
+            .first()
+            .evaluate((stage) => {
+              const title = stage
+                .querySelector("strong")!
+                .getBoundingClientRect();
+              const role = stage
+                .querySelector(":scope > span:last-child")!
+                .getBoundingClientRect();
+              return { titleBottom: title.bottom, roleTop: role.top };
+            });
+          expect(stageGeometry.titleBottom).toBeLessThanOrEqual(
+            stageGeometry.roleTop,
+          );
+        }
+      }
       await expectNoDocumentOverflow(page);
 
       const primary = page.getByRole("navigation", { name: "Primary" });
@@ -168,9 +217,23 @@ for (const viewport of VIEWPORTS) {
     });
     await expect(sectionTrigger).toBeVisible();
     await expectMinimumHeight(sectionTrigger, 44);
+    if (viewport.width === 320) {
+      await page.evaluate(() => {
+        document.documentElement.style.scrollbarGutter = "stable";
+      });
+    }
     await sectionTrigger.click();
     const allSections = page.getByRole("navigation", { name: "All sections" });
     await expect(allSections).toBeVisible();
+    if (viewport.width === 320) {
+      const [panelBox, documentWidth] = await Promise.all([
+        allSections.boundingBox(),
+        page.evaluate(() => document.documentElement.scrollWidth),
+      ]);
+      expect(panelBox).not.toBeNull();
+      expect(panelBox!.x).toBeGreaterThanOrEqual(0);
+      expect(panelBox!.x + panelBox!.width).toBeLessThanOrEqual(documentWidth);
+    }
     await expect(
       allSections.getByRole("link", { name: /Experiment Fabric/u }),
     ).toHaveAttribute("aria-current", "page");

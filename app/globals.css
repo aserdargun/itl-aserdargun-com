@@ -62,7 +62,7 @@ html {
 }
 
 body {
-  min-width: 320px;
+  min-width: 0;
   margin: 0;
   overflow-wrap: break-word;
   background: var(--color-shell);
@@ -1217,9 +1217,14 @@ svg {
     min-width: 0;
   }
 
+  .section-disclosure {
+    position: static;
+  }
+
   .section-disclosure__panel {
-    right: calc(-1 * var(--space-4));
-    width: min(420px, 100vw);
+    right: 0;
+    left: 0;
+    width: auto;
   }
 
   .section-disclosure__list {
@@ -1878,6 +1883,18 @@ svg {
   .operating-thesis__stage > span:last-child {
     font-family: var(--font-body);
     font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .operating-thesis li {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .operating-thesis__stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
   }
 }
 
