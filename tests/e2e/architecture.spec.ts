@@ -252,19 +252,25 @@ test("Twin Capsule publishes the canonical P-101 record without invented values"
   const boundaries = capsule.getByRole("region", {
     name: "Model availability, limitations, and uncertainty",
   });
-  await expect(boundaries.locator(".technical-ledger > div")).toHaveCount(
-    Object.keys(P101_TWIN.modelAvailability).length +
-      Object.keys(P101_TWIN.uncertainty).length,
+  const boundaryEntries = boundaries.locator(
+    ":scope > dl.technical-ledger > div",
   );
-  await expect(boundaries).toContainText(
-    P101_TWIN.modelAvailability.implementationStatus,
-  );
-  await expect(boundaries).toContainText(
-    P101_TWIN.modelAvailability.validationStatus,
-  );
-  await expect(boundaries).toContainText(P101_TWIN.modelAvailability.statement);
-  await expect(boundaries).toContainText(P101_TWIN.uncertainty.status);
-  await expect(boundaries).toContainText(P101_TWIN.uncertainty.statement);
+  const expectedBoundaryEntries = [
+    [
+      "Physics model implementation",
+      P101_TWIN.modelAvailability.implementationStatus,
+    ],
+    ["Model validation", P101_TWIN.modelAvailability.validationStatus],
+    ["Availability statement", P101_TWIN.modelAvailability.statement],
+    ["Uncertainty status", P101_TWIN.uncertainty.status],
+    ["Uncertainty statement", P101_TWIN.uncertainty.statement],
+  ] as const;
+  await expect(boundaryEntries).toHaveCount(expectedBoundaryEntries.length);
+  for (const [index, [label, value]] of expectedBoundaryEntries.entries()) {
+    const entry = boundaryEntries.nth(index);
+    await expect(entry.locator(":scope > dt")).toHaveText(label);
+    await expect(entry.locator(":scope > dd")).toHaveText(value);
+  }
   const limitations = boundaries.getByRole("list", {
     name: "Twin Capsule limitations",
   });
