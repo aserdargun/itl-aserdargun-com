@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { MobileNavigation } from "@/components/publication/mobile-navigation";
@@ -18,10 +19,10 @@ export function SiteHeader() {
   return (
     <header className="site-header surface-dark">
       <div className="site-header__inner">
-        <a aria-label="Industrial Twin Lab" className="site-brand" href="/">
+        <Link aria-label="Industrial Twin Lab" className="site-brand" href="/">
           <span>Industrial Twin Lab</span>
           <span aria-hidden="true"> / ITL</span>
-        </a>
+        </Link>
 
         <nav aria-label="Primary" className="primary-navigation">
           <ul>

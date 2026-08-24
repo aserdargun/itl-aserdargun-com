@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { PublicationLink } from "@/components/publication/publication-link";
 import { ResearchDisclaimer } from "@/components/publication/research-disclaimer";
 import { SITE_NAVIGATION } from "@/lib/data/navigation";
@@ -21,10 +23,10 @@ export function SiteFooter() {
           <p>Publication index</p>
           <ol>
             <li>
-              <a href="/">
+              <Link href="/">
                 <span aria-hidden="true">00</span>
                 <span>Index</span>
-              </a>
+              </Link>
             </li>
             {SITE_NAVIGATION.map((item, index) => (
               <li key={item.id}>
