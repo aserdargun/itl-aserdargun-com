@@ -25,7 +25,7 @@ For vibration, a waveform can yield RMS, peak, kurtosis, crest factor, FFT, spec
 {P101_TWIN.features.map((feature) => (
 
   <section key={feature.id} id={feature.id}>
-    <h2>{feature.name}</h2>
+    <h3>{feature.name}</h3>
     <p>{feature.description}</p>
     <p><strong>Group:</strong> {feature.featureSet}. <strong>Sources:</strong> {feature.sourceSignalIds.join(", ")}.</p>
   </section>

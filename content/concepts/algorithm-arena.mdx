@@ -2,6 +2,7 @@ import {
   CONTENT_META,
   SYNTHETIC_FIXTURE_DISCLAIMER,
 } from "../../lib/content/registry.ts";
+import { METHOD_FAMILIES } from "../../lib/data/methods.ts";
 
 export const contentMeta = CONTENT_META["algorithm-arena"];
 
@@ -9,13 +10,34 @@ export const contentMeta = CONTENT_META["algorithm-arena"];
 
 The Algorithm Arena compares candidates against the same dataset, feature definition, operating regimes, validation strategy, and operational constraint. No family is best in the abstract; suitability depends on the failure mechanism, evidence available, computational budget, need for explanation, and cost of error.
 
-| Family         | Candidates                                                        | Useful questions                                                                     |
-| -------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Statistical    | PCA, SPC, Regression                                              | Is a transparent baseline sufficient, stable, and easy to maintain?                  |
-| Classical ML   | Random Forest, XGBoost, LightGBM, Isolation Forest, One-Class SVM | Do engineered features separate the target under unseen regimes?                     |
-| Deep Learning  | Autoencoder, LSTM, TCN, Transformer                               | Does representation capacity earn its data, compute, and explanation cost?           |
-| Physics Hybrid | Residual Model, Gray-box Model, Physics-Informed Model            | Can physical structure improve extrapolation and failure interpretation?             |
-| Optimization   | Bayesian Optimization, MPC, Reinforcement Learning                | Is the problem genuinely optimization, and is any action authority safely separated? |
+<div
+  aria-label="Problem-dependent method family comparison, scroll horizontally to inspect all columns"
+  className="diagram-table-region methods-table-region"
+  role="region"
+  tabIndex="0"
+>
+  <table
+    aria-label="Problem-dependent method family comparison"
+    className="diagram-table methods-family-table"
+  >
+    <thead>
+      <tr>
+        <th scope="col">Family</th>
+        <th scope="col">Candidates</th>
+        <th scope="col">Useful questions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {METHOD_FAMILIES.map((family) => (
+        <tr key={family.id}>
+          <th scope="row">{family.name}</th>
+          <td>{family.candidates.join(", ")}</td>
+          <td>{family.evidenceQuestion}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
 For P-101 bearing degradation, Isolation Forest, XGBoost, Autoencoder, and Physics Residual candidates can be evaluated using time split, walk-forward, or leave-one-regime-out validation. The comparison reports detection rate, false alarms, lead time, inference cost, sensor count, robustness, and explainability. A higher detection rate does not win automatically: the operational constraint of at most one false alert per month may disqualify it.
 

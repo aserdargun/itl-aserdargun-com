@@ -3,6 +3,8 @@ import {
   SYNTHETIC_EVIDENCE_WARNING,
   SYNTHETIC_FIXTURE_DISCLAIMER,
 } from "../../lib/content/registry.ts";
+import { SENSOR_AND_COMMUNICATION_FAULTS } from "../../lib/data/methods.ts";
+import { P101_TWIN } from "../../lib/data/p101.ts";
 
 export const contentMeta = CONTENT_META["fault-lab"];
 
@@ -15,7 +17,7 @@ Normal Twin → Fault Injection → Synthetic Operating Scenario
 → AI Model → Detection Capability
 ```
 
-Candidate scenarios include bearing friction increased by 5%, 10%, or 20%; impeller degradation; suction restriction; cavitation; seal leakage; motor-efficiency degradation; sensor bias; sensor drift; sensor dropout; and communication loss. Each scenario requires a mechanism, magnitude, affected signals, operating regime, duration, seed or deterministic configuration, twin version, and expected limitations.
+Candidate scenarios are limited to the canonical P-101 failure modes—{P101_TWIN.failureModes.map((failure) => failure.name).join(", ")}—plus {SENSOR_AND_COMMUNICATION_FAULTS.map((fault) => fault.name).join(", ")}. Bearing-degradation injection may test explicitly declared friction increases of 5%, 10%, or 20%; these are assumptions, not observed events. Each scenario requires a mechanism, magnitude, affected signals, operating regime, duration, seed or deterministic configuration, twin version, and expected limitations.
 
 ## Simulation validity comes first
 
