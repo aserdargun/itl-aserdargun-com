@@ -10,6 +10,13 @@ import {
 import { afterEach, describe, expect, it } from "vitest";
 
 import { ExperimentDemo } from "@/components/experiment/experiment-demo";
+import {
+  DEMO_ALGORITHM_OPTIONS,
+  DEMO_FEATURE_SET_OPTIONS,
+  DEMO_MACHINE_OPTIONS,
+  DEMO_PROBLEM_OPTIONS,
+  DEMO_VALIDATION_OPTIONS,
+} from "@/lib/experiments/demo";
 
 afterEach(cleanup);
 
@@ -23,31 +30,79 @@ const DEFAULT_METRICS = [
   ["Explainability", "78 /100"],
 ] as const;
 
+const EXPECTED_MACHINE_OPTIONS = [{ value: "P-101", label: "P-101" }];
+const EXPECTED_PROBLEM_OPTIONS = [
+  { value: "bearing-degradation", label: "Bearing degradation" },
+];
+const EXPECTED_FEATURE_SET_OPTIONS = [
+  { value: "process", label: "Process" },
+  { value: "vibration", label: "Vibration" },
+  { value: "physics", label: "Physics" },
+  { value: "combined", label: "Combined" },
+];
+const EXPECTED_ALGORITHM_OPTIONS = [
+  { value: "isolation-forest", label: "Isolation Forest" },
+  { value: "xgboost", label: "XGBoost" },
+  { value: "autoencoder", label: "Autoencoder" },
+  { value: "physics-residual", label: "Physics Residual" },
+];
+const EXPECTED_VALIDATION_OPTIONS = [
+  { value: "time-split", label: "Time Split" },
+  { value: "walk-forward", label: "Walk Forward" },
+  { value: "leave-one-regime-out", label: "Leave-One-Regime-Out" },
+];
+
+const selectOptions = (label: string) =>
+  within(screen.getByLabelText(label))
+    .getAllByRole<HTMLOptionElement>("option")
+    .map((option) => ({ value: option.value, label: option.textContent }));
+
 describe("ExperimentDemo", () => {
-  it("starts from canonical options and publishes all seven literal fixture metrics", () => {
+  it("renders every canonical option in exact order with no extras and selects the exact defaults", () => {
     render(<ExperimentDemo />);
 
-    expect(screen.getByLabelText("Machine")).toHaveValue("P-101");
-    expect(screen.getByLabelText("Problem")).toHaveValue("bearing-degradation");
-    expect(screen.getByLabelText("Feature set")).toHaveValue("combined");
-    expect(screen.getByLabelText("Algorithm")).toHaveValue("xgboost");
-    expect(screen.getByLabelText("Validation")).toHaveValue("walk-forward");
+    const contracts = [
+      ["Machine", "P-101", DEMO_MACHINE_OPTIONS, EXPECTED_MACHINE_OPTIONS],
+      [
+        "Problem",
+        "bearing-degradation",
+        DEMO_PROBLEM_OPTIONS,
+        EXPECTED_PROBLEM_OPTIONS,
+      ],
+      [
+        "Feature set",
+        "combined",
+        DEMO_FEATURE_SET_OPTIONS,
+        EXPECTED_FEATURE_SET_OPTIONS,
+      ],
+      [
+        "Algorithm",
+        "xgboost",
+        DEMO_ALGORITHM_OPTIONS,
+        EXPECTED_ALGORITHM_OPTIONS,
+      ],
+      [
+        "Validation",
+        "walk-forward",
+        DEMO_VALIDATION_OPTIONS,
+        EXPECTED_VALIDATION_OPTIONS,
+      ],
+    ] as const;
 
-    expect(
-      within(screen.getByLabelText("Machine")).getAllByRole("option"),
-    ).toHaveLength(1);
-    expect(
-      within(screen.getByLabelText("Problem")).getAllByRole("option"),
-    ).toHaveLength(1);
-    expect(
-      within(screen.getByLabelText("Feature set")).getAllByRole("option"),
-    ).toHaveLength(4);
-    expect(
-      within(screen.getByLabelText("Algorithm")).getAllByRole("option"),
-    ).toHaveLength(4);
-    expect(
-      within(screen.getByLabelText("Validation")).getAllByRole("option"),
-    ).toHaveLength(3);
+    for (const [
+      label,
+      defaultValue,
+      exportedOptions,
+      expectedOptions,
+    ] of contracts) {
+      expect(exportedOptions).toEqual(expectedOptions);
+      expect(selectOptions(label)).toEqual(expectedOptions);
+      expect(screen.getByLabelText(label)).toHaveValue(defaultValue);
+    }
+  });
+
+  it("publishes all seven literal fixture metrics", () => {
+    render(<ExperimentDemo />);
 
     const table = screen.getByRole("table", {
       name: "Synthetic fixture metrics",

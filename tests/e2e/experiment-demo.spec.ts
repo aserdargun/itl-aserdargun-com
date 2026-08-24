@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 const EXPECTED_METRICS = [
@@ -10,6 +10,66 @@ const EXPECTED_METRICS = [
   ["Robustness", "80 /100"],
   ["Explainability", "78 /100"],
 ] as const;
+
+const DEFAULT_EXPERIMENT_RECORD = [
+  ["Model", "MODEL-XGB-0.1.0"],
+  ["Model status", "experimental"],
+  ["Dataset", "DATASET-P101-SYN-0.1.0"],
+  ["Feature set", "combined"],
+  ["Validation", "walk-forward"],
+  ["Twin version", "TWIN-P101-0.1.0"],
+  ["Asset version", "ASSET-P101-0.1.0"],
+  ["Dataset version", "DATASET-P101-SYN-0.1.0"],
+  ["Simulator version", "SIM-P101-0.1.0"],
+  ["Feature pipeline", "FEATURES-P101-0.1.0"],
+  ["Provenance model", "MODEL-XGB-0.1.0"],
+  ["Code version", "ITL-PHASE-1-0.1.0"],
+  ["Configured asset", "P-101"],
+  ["Problem", "bearing-degradation"],
+  ["Configured feature set", "combined"],
+  ["Algorithm", "xgboost"],
+  ["Configured validation", "walk-forward"],
+  ["Random seed", "101"],
+  ["Timestamp label", "Synthetic fixture"],
+] as const;
+
+const DEFAULT_PROVENANCE_QUALIFICATION = [
+  [
+    "Uncertainty",
+    "Illustrative uncertainty only; no confidence value is derived from an operating machine.",
+  ],
+  ["Explainability", "XGBoost compared under Walk Forward."],
+  ["Dataset source", "Industrial Twin Lab synthetic experiment fixture"],
+  [
+    "Dataset disclosure",
+    "This dataset is a deterministic synthetic fixture for conceptual comparison only; it is not plant data.",
+  ],
+  [
+    "Experiment source",
+    "Industrial Twin Lab deterministic experiment fixture lookup",
+  ],
+  [
+    "Experiment disclosure",
+    "Conceptual demonstration — synthetic fixture results. No model is trained or executed and no real plant data is used.",
+  ],
+  ["Author agent", "Industrial Twin Lab synthetic fixture agent"],
+] as const;
+
+const expectExactLedger = async (
+  ledger: Locator,
+  expectedRows: readonly (readonly [string, string])[],
+) => {
+  const rows = ledger.locator(":scope > div");
+  await expect(rows).toHaveCount(expectedRows.length);
+
+  for (const [index, [label, value]] of expectedRows.entries()) {
+    const row = rows.nth(index);
+    await expect(row.locator(":scope > dt")).toHaveCount(1);
+    await expect(row.locator(":scope > dd")).toHaveCount(1);
+    await expect(row.locator(":scope > dt")).toHaveText(label);
+    await expect(row.locator(":scope > dd")).toHaveText(value);
+  }
+};
 
 test("Experiment Fabric publishes the complete P-101 evidence contract", async ({
   page,
@@ -83,6 +143,24 @@ test("the conceptual experiment recomputes a complete synthetic evidence ledger"
       metricTable.getByRole("row", { name: `${label} ${value}` }),
     ).toBeVisible();
   }
+
+  const evidenceFigure = page.getByRole("figure", {
+    name: "Complete experiment evidence",
+  });
+  await expectExactLedger(
+    evidenceFigure
+      .getByRole("region", { name: "Experiment record" })
+      .locator("dl.technical-ledger"),
+    DEFAULT_EXPERIMENT_RECORD,
+  );
+  await expectExactLedger(
+    evidenceFigure
+      .getByRole("region", {
+        name: "Uncertainty, explainability, and provenance",
+      })
+      .locator("dl.technical-ledger"),
+    DEFAULT_PROVENANCE_QUALIFICATION,
+  );
 
   const initialId = await page.getByTestId("experiment-id").textContent();
   await page.getByLabel("Algorithm").selectOption("physics-residual");

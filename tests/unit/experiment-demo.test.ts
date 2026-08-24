@@ -27,15 +27,27 @@ const VALIDATIONS: readonly ValidationStrategy[] = [
   "walk-forward",
   "leave-one-regime-out",
 ];
-const REQUIRED_REPRODUCIBILITY_TEXT_FIELDS = [
+const MODEL_VERSIONS: Readonly<Record<AlgorithmName, string>> = {
+  "isolation-forest": "MODEL-IF-0.1.0",
+  xgboost: "MODEL-XGB-0.1.0",
+  autoencoder: "MODEL-AE-0.1.0",
+  "physics-residual": "MODEL-PR-0.1.0",
+};
+const EXACT_PROVENANCE_KEYS = [
   "assetVersion",
-  "twinVersion",
+  "authorAgent",
+  "codeVersion",
   "datasetVersion",
+  "experimentConfiguration",
   "featurePipelineVersion",
   "modelVersion",
-  "codeVersion",
+  "randomSeed",
+  "simulatorVersion",
+  "source",
+  "statement",
+  "synthetic",
   "timestampLabel",
-  "authorAgent",
+  "twinVersion",
 ] as const;
 
 describe("experiment demo", () => {
@@ -99,7 +111,9 @@ describe("experiment demo", () => {
     );
   });
 
-  it("records complete reproducibility metadata for every synthetic fixture", () => {
+  it("records the exact complete provenance object for all 48 valid configurations", () => {
+    let configurationCount = 0;
+
     for (const featureSet of FEATURE_SETS) {
       for (const algorithm of ALGORITHMS) {
         for (const validation of VALIDATIONS) {
@@ -110,20 +124,43 @@ describe("experiment demo", () => {
             algorithm,
             validation,
           };
-          const provenance = buildExperimentResult(config).provenance;
+          const result = buildExperimentResult(config);
+          const expectedProvenance = {
+            assetVersion: "ASSET-P101-0.1.0",
+            twinVersion: "TWIN-P101-0.1.0",
+            datasetVersion: "DATASET-P101-SYN-0.1.0",
+            simulatorVersion: "SIM-P101-0.1.0",
+            featurePipelineVersion: "FEATURES-P101-0.1.0",
+            modelVersion: MODEL_VERSIONS[algorithm],
+            codeVersion: "ITL-PHASE-1-0.1.0",
+            experimentConfiguration: config,
+            randomSeed: 101,
+            timestampLabel: "Synthetic fixture",
+            authorAgent: "Industrial Twin Lab synthetic fixture agent",
+            source:
+              "Industrial Twin Lab deterministic experiment fixture lookup",
+            statement:
+              "Conceptual demonstration — synthetic fixture results. No model is trained or executed and no real plant data is used.",
+            synthetic: true,
+          };
 
-          expect(provenance.experimentConfiguration).toEqual(config);
-          expect(provenance.authorAgent).toBe(
-            "Industrial Twin Lab synthetic fixture agent",
-          );
-          for (const field of REQUIRED_REPRODUCIBILITY_TEXT_FIELDS) {
-            expect(provenance[field]).toEqual(expect.any(String));
-            expect(provenance[field].trim()).not.toBe("");
+          for (const provenance of [
+            result.provenance,
+            result.evidence.provenance,
+          ]) {
+            expect(Object.keys(provenance)).toHaveLength(
+              EXACT_PROVENANCE_KEYS.length,
+            );
+            expect(Object.keys(provenance).sort()).toEqual([
+              ...EXACT_PROVENANCE_KEYS,
+            ]);
+            expect(provenance).toEqual(expectedProvenance);
           }
-          expect(provenance.randomSeed).toBeTypeOf("number");
-          expect(provenance.randomSeed).toBeGreaterThanOrEqual(0);
+          configurationCount += 1;
         }
       }
     }
+
+    expect(configurationCount).toBe(48);
   });
 });
