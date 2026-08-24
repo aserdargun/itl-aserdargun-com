@@ -1,4 +1,33 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
+
+import { MANIFESTO_PRINCIPLES } from "../../lib/content/registry";
+
+const EXPECTED_MASTHEAD_LABELS = [
+  "Industrial Twin Lab / ITL",
+  "Index",
+  "Manifesto",
+  "Architecture",
+  "Research",
+  "About",
+  "All sections 13",
+] as const;
+
+const expectDomOrder = async (locators: readonly Locator[]) => {
+  for (let index = 0; index < locators.length - 1; index += 1) {
+    const followingElement = await locators[index + 1].elementHandle();
+    expect(followingElement).not.toBeNull();
+    expect(
+      await locators[index].evaluate(
+        (element, following) =>
+          Boolean(
+            element.compareDocumentPosition(following as Node) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+          ),
+        followingElement,
+      ),
+    ).toBe(true);
+  }
+};
 
 const OPERATING_STAGES = [
   "Physical asset — Reality",
@@ -25,26 +54,52 @@ test("homepage establishes the operating thesis in the approved reading order", 
   await page.goto("/");
 
   await expect(page).toHaveTitle(/Industrial Twin Lab/u);
-  await expect(
-    page.getByRole("heading", { level: 1, name: "Industrial Twin Lab" }),
-  ).toBeVisible();
-  await expect(
-    page.getByText(
-      "Build machine intelligence in the twin before trusting it in the machine.",
-      { exact: true },
-    ),
-  ).toBeVisible();
-  await expect(
-    page.getByText(
-      "An isolated experimentation environment for digital twins, industrial AI, simulation, and evidence-driven machine intelligence.",
-      { exact: true },
-    ),
-  ).toBeVisible();
-
-  const thesisFigure = page.getByRole("figure", {
+  const hero = page.locator(".home-hero");
+  const title = hero.getByRole("heading", {
+    level: 1,
+    name: "Industrial Twin Lab",
+  });
+  const thesis = hero.getByText(
+    "Build machine intelligence in the twin before trusting it in the machine.",
+    { exact: true },
+  );
+  const deck = hero.getByText(
+    "An isolated experimentation environment for digital twins, industrial AI, simulation, and evidence-driven machine intelligence.",
+    { exact: true },
+  );
+  const thesisFigure = hero.getByRole("figure", {
     name: "The operating thesis",
   });
+
+  await expect(title).toBeVisible();
+  await expect(thesis).toBeVisible();
+  await expect(deck).toBeVisible();
   await expect(thesisFigure).toBeVisible();
+  await expectDomOrder([title, thesis, deck, thesisFigure]);
+
+  const masthead = page.getByRole("banner");
+  await expect(
+    masthead.getByRole("navigation", { name: "Primary" }),
+  ).toBeVisible();
+  await expect(
+    masthead.getByRole("button", { name: "All sections 13" }),
+  ).toBeVisible();
+  const mastheadLabels = await masthead
+    .locator(
+      'a[aria-label="Industrial Twin Lab"], nav[aria-label="Primary"] a, button[aria-label="All sections 13"]',
+    )
+    .evaluateAll((elements) =>
+      elements.map((element) =>
+        (element instanceof HTMLButtonElement
+          ? element.getAttribute("aria-label")
+          : element.textContent
+        )
+          ?.replace(/\s+/gu, " ")
+          .trim(),
+      ),
+    );
+  expect(mastheadLabels).toEqual(EXPECTED_MASTHEAD_LABELS);
+
   await expect(thesisFigure.getByRole("listitem")).toContainText(
     OPERATING_STAGES,
   );
@@ -106,10 +161,35 @@ test("manifesto publishes all twelve principles and the evidence-to-decision seq
   ).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
 
-  for (let number = 1; number <= 12; number += 1) {
+  for (const principle of MANIFESTO_PRINCIPLES) {
+    const number = String(principle.number).padStart(2, "0");
+    const section = page.locator(`#principle-${number}`);
+
+    await expect(section).toBeVisible();
     await expect(
-      page.locator(`#principle-${String(number).padStart(2, "0")}`),
+      section.getByRole("heading", {
+        level: 2,
+        name: `Principle ${number} — ${principle.title}`,
+        exact: true,
+      }),
     ).toBeVisible();
+    await expect(
+      section.getByText(principle.statement, { exact: true }),
+    ).toBeVisible();
+
+    if (principle.evidence) {
+      const evidenceList = section.getByRole("list");
+      await expect(evidenceList).toBeVisible();
+      await expect(evidenceList.locator(":scope > li")).toHaveText([
+        ...principle.evidence,
+      ]);
+    }
+
+    if (principle.note) {
+      await expect(
+        section.getByText(principle.note, { exact: true }),
+      ).toBeVisible();
+    }
   }
   await expect(
     page.getByRole("heading", {
