@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Next.js and static export
+.next/
+out/
+
+# Test and coverage output
+coverage/
+playwright-report/
+test-results/
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Local development and design sessions
+.superpowers/
+.codex/tmp/
+
+# Editor and operating system files
+.DS_Store
+*.swp
+
