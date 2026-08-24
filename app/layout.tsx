@@ -19,7 +19,37 @@ export const metadata: Metadata = {
     template: "%s | Industrial Twin Lab",
   },
   description:
-    "A research publication for isolated digital-twin experiments and evidence-driven industrial machine intelligence.",
+    "An English research publication examining isolated digital-twin experiments, evidence, uncertainty, and human-governed industrial machine intelligence.",
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: "/favicon.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "Industrial Twin Lab",
+    title: "Industrial Twin Lab",
+    description:
+      "An English research publication examining isolated digital-twin experiments, evidence, uncertainty, and human-governed industrial machine intelligence.",
+    images: [
+      {
+        url: "/opengraph.png",
+        width: 1200,
+        height: 630,
+        alt: "Industrial Twin Lab research monograph cover",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Industrial Twin Lab",
+    description:
+      "An English research publication examining isolated digital-twin experiments, evidence, uncertainty, and human-governed industrial machine intelligence.",
+    images: ["/opengraph.png"],
+  },
 };
 
 export default function RootLayout({
