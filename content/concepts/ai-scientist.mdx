@@ -2,6 +2,7 @@ import {
   CONTENT_META,
   SYNTHETIC_FIXTURE_DISCLAIMER,
 } from "../../lib/content/registry.ts";
+import { AI_SCIENTIST_CATALOGUE } from "../../lib/data/intelligence.ts";
 
 export const contentMeta = CONTENT_META["ai-scientist"];
 
@@ -10,28 +11,39 @@ export const contentMeta = CONTENT_META["ai-scientist"];
 The AI Scientist is a reasoning and experimentation layer operating on digital representations. It is **not an autonomous machine controller** and it remains outside the control loop.
 
 ```text
-Observe → Retrieve Knowledge → Generate Hypotheses → Design Experiments
-→ Run Twin Experiments → Compare Evidence → Explain Findings → Recommend Next Action
+hypothesis-to-evidence-flow-figure
 ```
 
-An engineer may ask: “Pump P-101 has required progressively more power for the same flow during the last three months. Investigate.” The AI Scientist can make the ambiguity explicit:
+An engineer may ask: “{AI_SCIENTIST_CATALOGUE.investigation}” The AI Scientist can make the ambiguity explicit:
 
-1. **Hypothesis 01 — Impeller degradation**
-2. **Hypothesis 02 — Suction restriction**
-3. **Hypothesis 03 — Sensor calibration drift**
-4. **Hypothesis 04 — Increasing mechanical losses**
+<ol aria-label="Canonical P-101 hypotheses" className="intelligence-hypotheses">
+  {AI_SCIENTIST_CATALOGUE.hypotheses.map((hypothesis) => (
+    <li key={hypothesis.id}>
+      <span>{hypothesis.catalogueLabel}</span>{" "}
+      <strong>— {hypothesis.statement}</strong>
+    </li>
+  ))}
+</ol>
 
 It then retrieves the Twin Capsule, checks data quality, identifies discriminating signals, defines experiments, calls engineering computations, and compares outcomes. The final surface is an evidence matrix rather than a confident chat response.
 
-| Hypothesis           | Physics | Historical |     ML | Similar assets | Confidence |
-| -------------------- | ------: | ---------: | -----: | -------------: | ---------: |
-| Impeller degradation |  Strong |     Strong | Strong |         Medium |       0.82 |
-| Suction restriction  |  Medium |       Weak | Medium |           Weak |       0.31 |
-| Sensor drift         |    Weak |     Medium |   Weak |           Weak |       0.19 |
+```text
+hypothesis-evidence-matrix-figure
+```
+
+The source matrix uses **Sensor drift** as the evidence-row label. Sensor drift is the supplied evidence-row wording for Hypothesis 03 — Sensor calibration drift.
+
+Hypothesis 04 — Increasing mechanical losses: unevaluated — no evidence row or confidence was supplied.
 
 > The LLM does not replace engineering computation.
 
-A language model may orchestrate retrieval, tools, experiment definitions, and explanations. Solvers, signal-processing pipelines, validation code, and versioned evidence perform the engineering work. Every hypothesis and tool result retains provenance; uncertainty and contradictory evidence remain visible. The AI Scientist may recommend a measurement check or inspection, but an accountable engineer chooses the action.
+A language model may structure hypotheses, retrieve records, define experiment requests, and explain evidence. It cannot alter machinery, cannot validate its own result, and does not replace simulation, physics, statistics, or engineering review. Solvers, signal-processing pipelines, validation code, and versioned evidence perform the engineering work.
+
+## Scientific record and authority
+
+Every hypothesis and tool result retains provenance. Limitations and uncertainty remain visible, and reproducibility requires the exact asset, twin, dataset, feature, model, code, and experiment versions. The safety boundary prevents any recommendation or Evidence Package from becoming a control instruction. Explicit human decision authority decides whether to reject, repeat, constrain, inspect, or stop the work.
+
+The AI Scientist may recommend a measurement check or inspection. It cannot validate itself, certify safety, change a setpoint, start P-101, bypass an interlock, or replace accountable engineering review.
 
 ## Digital Triplet as a research direction
 
@@ -41,4 +53,6 @@ Physical Machine + Digital Twin + AI Scientist = Digital Triplet
 
 The physical machine is reality. The digital twin is a computational representation of relevant behavior. The AI Scientist is a reasoning and experimentation layer over that representation. “Digital Triplet” is a research direction, not a marketing claim, and its value depends on verifiable computation, valid models, and an enforceable safety boundary.
 
-> {SYNTHETIC_FIXTURE_DISCLAIMER} The matrix above is illustrative; its confidence values are not measurements or validated conclusions about a physical pump.
+> <span>{SYNTHETIC_FIXTURE_DISCLAIMER}</span>
+>
+> The investigation, matrix, and confidence values are illustrative fixtures, not measurements or validated conclusions about a physical pump.
