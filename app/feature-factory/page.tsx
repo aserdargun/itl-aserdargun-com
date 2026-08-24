@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { isValidElement, type ComponentProps, type ReactNode } from "react";
 
 import { FlowDiagram } from "@/components/diagrams/flow-diagram";
@@ -6,13 +5,15 @@ import { PublicationLink } from "@/components/publication/publication-link";
 import FeatureFactoryContent from "@/content/concepts/feature-factory.mdx";
 import { CONTENT_META } from "@/lib/content/registry";
 import { P101_TWIN } from "@/lib/data/p101";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["feature-factory"];
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 const temperatureSignalIds = new Set(
   P101_TWIN.sensors

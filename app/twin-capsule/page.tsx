@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Children, type HTMLAttributes } from "react";
 
 import { AssetHierarchy } from "@/components/diagrams/asset-hierarchy";
@@ -7,13 +6,15 @@ import { PublicationLink } from "@/components/publication/publication-link";
 import TwinCapsuleContent from "@/content/concepts/twin-capsule.mdx";
 import { CONTENT_META } from "@/lib/content/registry";
 import { P101_TWIN } from "@/lib/data/p101";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["twin-capsule"];
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 function P101AssetHierarchy() {
   return (

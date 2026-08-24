@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
-
 import { ExperimentDemo } from "@/components/experiment/experiment-demo";
 import { CONTENT_META } from "@/lib/content/registry";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["experiment-fabric"];
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: "/experiment-fabric/demo",
   title: "Concept Demonstrator — Experiment Fabric",
   description:
     "Inspect deterministic synthetic P-101 experiment fixtures and their complete evidence provenance.",
-};
+});
 
 export default function ExperimentFabricDemoPage() {
   return (

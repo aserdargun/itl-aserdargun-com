@@ -9,6 +9,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 
 import { SiteFooter } from "@/components/publication/site-footer";
 import { SiteHeader } from "@/components/publication/site-header";
+import { SITE_DESCRIPTION, SOCIAL_IMAGE } from "@/lib/metadata";
 
 import "./globals.css";
 
@@ -18,37 +19,23 @@ export const metadata: Metadata = {
     default: "Industrial Twin Lab",
     template: "%s | Industrial Twin Lab",
   },
-  description:
-    "An English research publication examining isolated digital-twin experiments, evidence, uncertainty, and human-governed industrial machine intelligence.",
-  alternates: {
-    canonical: "/",
-  },
+  description: SITE_DESCRIPTION,
   icons: {
     icon: "/favicon.svg",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "/",
     siteName: "Industrial Twin Lab",
     title: "Industrial Twin Lab",
-    description:
-      "An English research publication examining isolated digital-twin experiments, evidence, uncertainty, and human-governed industrial machine intelligence.",
-    images: [
-      {
-        url: "/opengraph.png",
-        width: 1200,
-        height: 630,
-        alt: "Industrial Twin Lab research monograph cover",
-      },
-    ],
+    description: SITE_DESCRIPTION,
+    images: [SOCIAL_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "Industrial Twin Lab",
-    description:
-      "An English research publication examining isolated digital-twin experiments, evidence, uncertainty, and human-governed industrial machine intelligence.",
-    images: ["/opengraph.png"],
+    description: SITE_DESCRIPTION,
+    images: [SOCIAL_IMAGE.url],
   },
 };
 

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { isValidElement, type ComponentProps, type ReactNode } from "react";
 
 import {
@@ -11,13 +10,15 @@ import { PublicationLink } from "@/components/publication/publication-link";
 import AiScientistContent from "@/content/concepts/ai-scientist.mdx";
 import { CONTENT_META } from "@/lib/content/registry";
 import { AI_SCIENTIST_CATALOGUE } from "@/lib/data/intelligence";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["ai-scientist"];
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 const evidenceColumns: readonly EvidenceMatrixColumn[] = [
   { id: "physics", label: "Physics" },

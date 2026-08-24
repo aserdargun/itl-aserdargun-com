@@ -1,17 +1,18 @@
-import type { Metadata } from "next";
 import { Children, type ComponentProps, type ReactNode } from "react";
 
 import { TechnologyMap } from "@/components/diagrams/technology-map";
 import { ResearchDisclaimer } from "@/components/publication/research-disclaimer";
 import TechnologyContent from "@/content/technology.mdx";
 import { CONTENT_META, RESEARCH_DISCLAIMER } from "@/lib/content/registry";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META.technology;
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 const textFromChildren = (children: ReactNode) =>
   Children.toArray(children).map(String).join("").trim();

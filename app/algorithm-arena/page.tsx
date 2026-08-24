@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import type { ComponentProps } from "react";
 
 import { EvidenceMatrix } from "@/components/diagrams/evidence-matrix";
@@ -11,14 +10,16 @@ import {
   buildExperimentResult,
   DEFAULT_DEMO_CONFIG,
 } from "@/lib/experiments/demo";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["algorithm-arena"];
 const p101Evidence = buildExperimentResult(DEFAULT_DEMO_CONFIG).evidence;
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 function PublicationHeading(props: ComponentProps<"h1">) {
   return (

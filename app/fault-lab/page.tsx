@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import type { ComponentProps } from "react";
 
 import { FlowDiagram } from "@/components/diagrams/flow-diagram";
@@ -7,13 +6,15 @@ import FaultLabContent from "@/content/concepts/fault-lab.mdx";
 import { CONTENT_META } from "@/lib/content/registry";
 import { SENSOR_AND_COMMUNICATION_FAULTS } from "@/lib/data/methods";
 import { P101_TWIN } from "@/lib/data/p101";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["fault-lab"];
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 function PublicationHeading(props: ComponentProps<"h1">) {
   return (

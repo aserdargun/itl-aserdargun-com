@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
-
 import Manifesto from "@/content/manifesto.mdx";
 import { FlowDiagram } from "@/components/diagrams/flow-diagram";
+import { publicationMetadata } from "@/lib/metadata";
 
 const KNOWLEDGE_SEQUENCE = [
   "Machine",
@@ -14,11 +13,12 @@ const KNOWLEDGE_SEQUENCE = [
   "Decision",
 ] as const;
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: "/manifesto",
   title: "Manifesto",
   description:
     "Twelve principles for isolated, evidence-led industrial machine intelligence.",
-};
+});
 
 function MachineKnowledgeSequence() {
   return (

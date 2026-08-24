@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { isValidElement, type ComponentProps, type ReactNode } from "react";
 
 import { FlowDiagram } from "@/components/diagrams/flow-diagram";
@@ -7,13 +6,15 @@ import { PublicationLink } from "@/components/publication/publication-link";
 import FleetIntelligenceContent from "@/content/concepts/fleet-intelligence.mdx";
 import { CONTENT_META } from "@/lib/content/registry";
 import { FLEET_INTELLIGENCE_CATALOGUE } from "@/lib/data/intelligence";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["fleet-intelligence"];
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 const textFromNode = (node: ReactNode): string => {
   if (typeof node === "string" || typeof node === "number") {

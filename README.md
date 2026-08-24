@@ -73,7 +73,7 @@ To inspect the already-built static export locally, run `npm run start:static`; 
 
 ## Azure target
 
-The intended static-hosting target is Azure Static Web Apps at `https://itl.aserdargun.com`. The exported `out/` directory is the deployable artifact. `staticwebapp.config.json` defines trailing-slash behavior, document-only 404 fallback, security headers, and cache policy; the eventual deployment workflow must place that file at the deployed output root. Azure resources, deployment, custom-domain binding, DNS, TLS, and production verification are outside this local Task 13 change.
+The intended static-hosting target is Azure Static Web Apps at `https://itl.aserdargun.com`. The prepared `out/` directory is the deployable artifact. `npm run build` verifies that the exported 404 documents match, writes the distinct plain-text asset-error body, and copies `staticwebapp.config.json` to the output root. The configuration defines trailing-slash behavior, exact publication routes, a true document-only 404, security headers, and cache and MIME policies. Azure resources, deployment, custom-domain binding, DNS, TLS, and production verification are outside this local Task 13 change.
 
 ## Research and industrial-control disclaimer
 

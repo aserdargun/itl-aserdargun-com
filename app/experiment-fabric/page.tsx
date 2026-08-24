@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import type { TableHTMLAttributes } from "react";
 
 import { EvidencePackage } from "@/components/diagrams/evidence-package";
@@ -10,14 +9,16 @@ import {
   buildExperimentResult,
   DEFAULT_DEMO_CONFIG,
 } from "@/lib/experiments/demo";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META["experiment-fabric"];
 const p101Result = buildExperimentResult(DEFAULT_DEMO_CONFIG);
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 const experimentStages = [
   ["asset", "Asset", "Versioned machine identity and twin context."],

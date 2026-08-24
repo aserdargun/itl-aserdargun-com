@@ -5,6 +5,7 @@ import { metadata } from "@/app/layout";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { CONTENT_REGISTRY, RESEARCH_DISCLAIMER } from "@/lib/content/registry";
+import { publicationMetadata } from "@/lib/metadata";
 
 const CANONICAL_ORIGIN = "https://itl.aserdargun.com";
 const canonicalUrl = (path: string) =>
@@ -34,12 +35,11 @@ describe("publication metadata", () => {
 
   it("defines truthful global canonical, icon, Open Graph, and Twitter fields", () => {
     expect(metadata.metadataBase?.toString()).toBe(`${CANONICAL_ORIGIN}/`);
-    expect(metadata.alternates).toEqual({ canonical: "/" });
+    expect(metadata.alternates).toBeUndefined();
     expect(metadata.icons).toEqual({ icon: "/favicon.svg" });
     expect(metadata.openGraph).toMatchObject({
       type: "website",
       locale: "en_US",
-      url: "/",
       siteName: "Industrial Twin Lab",
       title: "Industrial Twin Lab",
       images: [
@@ -73,6 +73,22 @@ describe("publication metadata", () => {
     }
   });
 
+  it("builds exact trailing-slash canonical and social URLs per route", () => {
+    const routeMetadata = publicationMetadata({
+      pathname: "/experiment-fabric/demo",
+      title: "Concept Demonstrator — Experiment Fabric",
+      description: "A deterministic synthetic fixture publication.",
+    });
+
+    expect(routeMetadata.alternates).toEqual({
+      canonical: "/experiment-fabric/demo/",
+    });
+    expect(routeMetadata.openGraph).toMatchObject({
+      url: "/experiment-fabric/demo/",
+      title: "Concept Demonstrator — Experiment Fabric",
+    });
+  });
+
   it("ships an SVG favicon and an exact 1200 by 630 PNG social image", () => {
     const favicon = readFileSync("public/favicon.svg", "utf8");
     expect(favicon).toContain("<svg");
@@ -92,22 +108,78 @@ describe("Azure Static Web Apps contract", () => {
   const config = JSON.parse(
     readFileSync("staticwebapp.config.json", "utf8"),
   ) as {
-    navigationFallback: { rewrite: string; exclude: string[] };
+    navigationFallback?: { rewrite: string; exclude: string[] };
     globalHeaders: Record<string, string>;
+    responseOverrides?: Record<
+      string,
+      { rewrite: string; statusCode?: number }
+    >;
     routes: Array<{
       route: string;
       headers?: Record<string, string>;
+      rewrite?: string;
+      statusCode?: number;
     }>;
   };
 
   it("falls unknown documents back to the exported 404 without masking assets", () => {
-    expect(config.navigationFallback.rewrite).toBe("/404.html");
-    expect(config.navigationFallback.exclude).toEqual(
-      expect.arrayContaining([
-        "/_next/*",
-        "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico,webp,avif,woff,woff2,txt,xml,webmanifest,map,pdf,wasm}",
-      ]),
+    expect(config.navigationFallback).toBeUndefined();
+
+    const documentRoutes = [
+      "/index.html",
+      ...CONTENT_REGISTRY.map(({ href }) => `${href}/index.html`),
+      "/experiment-fabric/demo/index.html",
+    ];
+    for (const route of documentRoutes) {
+      expect(config.routes).toContainEqual(expect.objectContaining({ route }));
+    }
+
+    expect(config.routes).toContainEqual(
+      expect.objectContaining({ route: "/_next/*" }),
     );
+    expect(config.routes.at(-1)).toMatchObject({
+      route: "/*",
+      statusCode: 403,
+    });
+    expect(config.responseOverrides?.["403"]).toEqual({
+      rewrite: "/404.html",
+      statusCode: 404,
+    });
+    expect(config.responseOverrides?.["404"]).toEqual({
+      rewrite: "/asset-not-found.txt",
+    });
+
+    const documentFallbackIndex = config.routes.findIndex(
+      ({ route }) => route === "/404.html",
+    );
+    const assetFallbackIndex = config.routes.findIndex(
+      ({ route }) => route === "/asset-not-found.txt",
+    );
+    const finalCatchIndex = config.routes.findIndex(
+      ({ route }) => route === "/*",
+    );
+    const textCatchIndex = config.routes.findIndex(
+      ({ route }) => route === "/*.txt",
+    );
+    expect(documentFallbackIndex).toBeGreaterThanOrEqual(0);
+    expect(documentFallbackIndex).toBeLessThan(finalCatchIndex);
+    expect(assetFallbackIndex).toBeGreaterThanOrEqual(0);
+    expect(assetFallbackIndex).toBeLessThan(textCatchIndex);
+
+    for (const [route, contentType] of [
+      ["/*.png", "image/png"],
+      ["/*.css", "text/css; charset=utf-8"],
+      ["/_next/*", "application/octet-stream"],
+    ]) {
+      const assetCatch = config.routes.find(
+        (candidate) => candidate.route === route,
+      );
+      expect(assetCatch).toMatchObject({
+        route,
+        headers: expect.objectContaining({ "Content-Type": contentType }),
+      });
+      expect(assetCatch?.statusCode).toBeUndefined();
+    }
   });
 
   it("sets narrow self-hosted security headers", () => {
@@ -126,13 +198,19 @@ describe("Azure Static Web Apps contract", () => {
   });
 
   it("keeps HTML revalidated and hashed Next assets immutable", () => {
-    const staticRoute = config.routes.find(
-      ({ route }) => route === "/_next/static/*",
+    const documentRoute = config.routes.find(
+      ({ route }) => route === "/about/index.html",
     );
-    const documentRoute = config.routes.find(({ route }) => route === "/*");
-    expect(staticRoute?.headers?.["Cache-Control"]).toBe(
-      "public, max-age=31536000, immutable",
+    const outputPreparation = readFileSync(
+      "scripts/prepare-static-output.mjs",
+      "utf8",
     );
+    const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
+      scripts: Record<string, string>;
+    };
+
+    expect(outputPreparation).toContain("public, max-age=31536000, immutable");
+    expect(pkg.scripts.build).toContain("scripts/prepare-static-output.mjs");
     expect(documentRoute?.headers?.["Cache-Control"]).toBe(
       "public, max-age=0, must-revalidate",
     );

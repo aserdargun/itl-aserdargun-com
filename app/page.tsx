@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-
 import { EvidencePackage } from "@/components/diagrams/evidence-package";
 import { TwinCapsuleDiagram } from "@/components/diagrams/twin-capsule-diagram";
 import { HomeHero } from "@/components/publication/home-hero";
@@ -12,12 +10,14 @@ import {
   buildExperimentResult,
   DEFAULT_DEMO_CONFIG,
 } from "@/lib/experiments/demo";
+import { publicationMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: "/",
   title: "Industrial Twin Lab",
   description:
     "Build machine intelligence in the twin before trusting it in the machine.",
-};
+});
 
 const DEMONSTRATION_RESULT = buildExperimentResult(DEFAULT_DEMO_CONFIG);
 

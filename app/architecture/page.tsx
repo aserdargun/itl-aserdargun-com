@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
-
 import { ArchitectureAtlas } from "@/components/diagrams/architecture-atlas";
 import ArchitectureContent from "@/content/concepts/architecture.mdx";
 import { CONTENT_META } from "@/lib/content/registry";
+import { publicationMetadata } from "@/lib/metadata";
 
 const contentMeta = CONTENT_META.architecture;
 
-export const metadata: Metadata = {
+export const metadata = publicationMetadata({
+  pathname: contentMeta.href,
   title: contentMeta.title,
   description: contentMeta.description,
-};
+});
 
 export default function ArchitecturePage() {
   return (

@@ -2,30 +2,212 @@
   "trailingSlash": "always",
   "routes": [
     {
-      "route": "/_next/static/*",
+      "route": "/index.html",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Cache-Control": "public, max-age=0, must-revalidate"
       }
     },
     {
-      "route": "/*.{png,jpg,jpeg,gif,svg,ico,webp,avif,woff,woff2,txt,xml,webmanifest,map,pdf,wasm}",
+      "route": "/manifesto/index.html",
       "headers": {
-        "Cache-Control": "public, max-age=3600, must-revalidate"
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/architecture/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/twin-capsule/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/experiment-fabric/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/experiment-fabric/demo/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/feature-factory/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/algorithm-arena/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/fault-lab/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/ai-scientist/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/fleet-intelligence/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/research/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/technology/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/glossary/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/about/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/404.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "Content-Type": "text/html; charset=utf-8"
+      }
+    },
+    {
+      "route": "/asset-not-found.txt",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "Content-Type": "text/plain; charset=utf-8"
+      }
+    },
+    {
+      "route": "/robots.txt",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/sitemap.xml",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "route": "/opengraph.png",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "image/png"
+      }
+    },
+    {
+      "route": "/favicon.svg",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "image/svg+xml"
+      }
+    },
+    {
+      "route": "/_next/*",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "application/octet-stream"
+      }
+    },
+    {
+      "route": "/*.css",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "text/css; charset=utf-8"
+      }
+    },
+    {
+      "route": "/*.js",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "application/javascript; charset=utf-8"
+      }
+    },
+    {
+      "route": "/*.png",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "image/png"
+      }
+    },
+    {
+      "route": "/*.svg",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "image/svg+xml"
+      }
+    },
+    {
+      "route": "/*.txt",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "text/plain; charset=utf-8"
+      }
+    },
+    {
+      "route": "/*.xml",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "application/xml; charset=utf-8"
+      }
+    },
+    {
+      "route": "/*.{json,jpg,jpeg,gif,ico,webp,avif,woff,woff2,webmanifest,map,pdf,wasm}",
+      "headers": {
+        "Cache-Control": "public, max-age=3600, must-revalidate",
+        "Content-Type": "application/octet-stream"
       }
     },
     {
       "route": "/*",
+      "statusCode": 403,
       "headers": {
         "Cache-Control": "public, max-age=0, must-revalidate"
       }
     }
   ],
-  "navigationFallback": {
-    "rewrite": "/404.html",
-    "exclude": [
-      "/_next/*",
-      "/*.{css,js,json,png,jpg,jpeg,gif,svg,ico,webp,avif,woff,woff2,txt,xml,webmanifest,map,pdf,wasm}"
-    ]
+  "responseOverrides": {
+    "403": {
+      "rewrite": "/404.html",
+      "statusCode": 404
+    },
+    "404": {
+      "rewrite": "/asset-not-found.txt"
+    }
+  },
+  "mimeTypes": {
+    ".css": "text/css; charset=utf-8",
+    ".js": "application/javascript; charset=utf-8",
+    ".png": "image/png"
   },
   "globalHeaders": {
     "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'",

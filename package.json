@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "content:validate": "node --import=tsx scripts/validate-content.ts",
     "test:unit": "vitest run",
-    "build": "next build",
+    "test:metadata-export": "node --test tests/integration/exported-metadata.test.mjs",
+    "build": "next build && node scripts/prepare-static-output.mjs && npm run test:metadata-export",
     "start:static": "serve out --listen 4173 --no-clipboard",
     "test:e2e": "playwright test",
     "validate:codex": "npm run format:check && npm run lint && npm run typecheck && npm run content:validate && npm run test:unit && npm run build && npm run test:e2e"
