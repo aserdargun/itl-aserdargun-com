@@ -1,5 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   projects: [
@@ -9,11 +11,13 @@ export default defineConfig({
     },
   ],
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: externalBaseURL ?? "http://127.0.0.1:4173",
   },
-  webServer: {
-    command: "npm run start:static",
-    url: "http://127.0.0.1:4173",
-    reuseExistingServer: false,
-  },
+  webServer: externalBaseURL
+    ? undefined
+    : {
+        command: "npm run start:static",
+        url: "http://127.0.0.1:4173",
+        reuseExistingServer: false,
+      },
 });
