@@ -3,6 +3,7 @@ import type {
   Dataset,
   EvidencePackage,
   ExperimentDemoConfig,
+  ExperimentProvenance,
   ExperimentResult,
   FeatureSet,
   MetricId,
@@ -177,20 +178,22 @@ const createFixture = (config: ExperimentDemoConfig): ExperimentResult => {
     config.validation.replaceAll("-", "").toUpperCase(),
   ].join("-");
   const metrics = createMetrics(config);
-  const provenance = {
+  const provenance: ExperimentProvenance = {
     assetVersion: "ASSET-P101-0.1.0",
     twinVersion: "TWIN-P101-0.1.0",
     datasetVersion: "DATASET-P101-SYN-0.1.0",
     featurePipelineVersion: "FEATURES-P101-0.1.0",
     modelVersion: MODEL_VERSIONS[config.algorithm],
     codeVersion: "ITL-PHASE-1-0.1.0",
+    experimentConfiguration: config,
     randomSeed: 101,
     timestampLabel: "Synthetic fixture",
+    authorAgent: "Industrial Twin Lab synthetic fixture agent",
     source: "Industrial Twin Lab deterministic experiment fixture lookup",
     statement:
       "Conceptual demonstration — synthetic fixture results. No model is trained or executed and no real plant data is used.",
     synthetic: true,
-  } as const;
+  };
   const evidence: EvidencePackage = {
     experimentId,
     model: {

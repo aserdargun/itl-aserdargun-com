@@ -146,7 +146,7 @@ export interface EvidencePackage {
   readonly uncertainty: string;
   readonly explainability: string;
   readonly evidence: readonly Evidence[];
-  readonly provenance: Provenance;
+  readonly provenance: ExperimentProvenance;
 }
 
 export interface ExperimentDemoConfig {
@@ -157,12 +157,25 @@ export interface ExperimentDemoConfig {
   readonly validation: ValidationStrategy;
 }
 
+export interface ExperimentProvenance extends Provenance {
+  readonly assetVersion: string;
+  readonly twinVersion: string;
+  readonly datasetVersion: string;
+  readonly featurePipelineVersion: string;
+  readonly modelVersion: string;
+  readonly codeVersion: string;
+  readonly experimentConfiguration: ExperimentDemoConfig;
+  readonly randomSeed: number;
+  readonly timestampLabel: string;
+  readonly authorAgent: string;
+}
+
 export interface ExperimentResult {
   readonly experiment: Experiment;
   readonly experimentId: string;
   readonly metrics: readonly MetricResult[];
   readonly evidence: EvidencePackage;
-  readonly provenance: Provenance;
+  readonly provenance: ExperimentProvenance;
   readonly disclosure: "Conceptual demonstration — synthetic fixture results.";
 }
 

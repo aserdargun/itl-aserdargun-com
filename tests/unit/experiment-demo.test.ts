@@ -27,6 +27,16 @@ const VALIDATIONS: readonly ValidationStrategy[] = [
   "walk-forward",
   "leave-one-regime-out",
 ];
+const REQUIRED_REPRODUCIBILITY_TEXT_FIELDS = [
+  "assetVersion",
+  "twinVersion",
+  "datasetVersion",
+  "featurePipelineVersion",
+  "modelVersion",
+  "codeVersion",
+  "timestampLabel",
+  "authorAgent",
+] as const;
 
 describe("experiment demo", () => {
   it("returns stable synthetic evidence for the same configuration", () => {
@@ -87,5 +97,33 @@ describe("experiment demo", () => {
     expect(buildExperimentResult(invalidConfig)).toEqual(
       buildExperimentResult(DEFAULT_DEMO_CONFIG),
     );
+  });
+
+  it("records complete reproducibility metadata for every synthetic fixture", () => {
+    for (const featureSet of FEATURE_SETS) {
+      for (const algorithm of ALGORITHMS) {
+        for (const validation of VALIDATIONS) {
+          const config: ExperimentDemoConfig = {
+            assetId: "P-101",
+            problem: "bearing-degradation",
+            featureSet,
+            algorithm,
+            validation,
+          };
+          const provenance = buildExperimentResult(config).provenance;
+
+          expect(provenance.experimentConfiguration).toEqual(config);
+          expect(provenance.authorAgent).toBe(
+            "Industrial Twin Lab synthetic fixture agent",
+          );
+          for (const field of REQUIRED_REPRODUCIBILITY_TEXT_FIELDS) {
+            expect(provenance[field]).toEqual(expect.any(String));
+            expect(provenance[field].trim()).not.toBe("");
+          }
+          expect(provenance.randomSeed).toBeTypeOf("number");
+          expect(provenance.randomSeed).toBeGreaterThanOrEqual(0);
+        }
+      }
+    }
   });
 });
