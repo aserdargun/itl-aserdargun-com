@@ -108,6 +108,7 @@ describe("Azure Static Web Apps contract", () => {
   const config = JSON.parse(
     readFileSync("staticwebapp.config.json", "utf8"),
   ) as {
+    trailingSlash?: "always" | "never" | "auto";
     navigationFallback?: { rewrite: string; exclude: string[] };
     globalHeaders: Record<string, string>;
     responseOverrides?: Record<
@@ -123,6 +124,7 @@ describe("Azure Static Web Apps contract", () => {
   };
 
   it("falls unknown requests back to the exported 404 without masking successful assets", () => {
+    expect(config.trailingSlash).toBe("auto");
     expect(config.navigationFallback).toBeUndefined();
 
     const documentRoutes = [
