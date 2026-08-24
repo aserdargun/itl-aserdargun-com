@@ -24,10 +24,21 @@ For vibration, a waveform can yield RMS, peak, kurtosis, crest factor, FFT, spec
 
 {P101_TWIN.features.map((feature) => (
 
-  <section key={feature.id} id={feature.id}>
-    <h3>{feature.name}</h3>
-    <p>{feature.description}</p>
-    <p><strong>Group:</strong> {feature.featureSet}. <strong>Sources:</strong> {feature.sourceSignalIds.join(", ")}.</p>
+  <section aria-labelledby={`${feature.id}-title`} key={feature.id} id={feature.id}>
+    <h3 id={`${feature.id}-title`}>{feature.name}</h3>
+    <p className="feature-lineage__description">{feature.description}</p>
+    <dl className="feature-lineage__details technical-ledger">
+      <div><dt>Feature ID</dt><dd>{feature.id}</dd></div>
+      <div><dt>Feature group</dt><dd>{feature.featureSet}</dd></div>
+      <div><dt>Source signals</dt><dd>{feature.sourceSignalIds.join(", ")}</dd></div>
+      <div><dt>Unit</dt><dd>{feature.unit}</dd></div>
+      <div><dt>Formula / transformation</dt><dd>{feature.transformation}</dd></div>
+      <div><dt>Window</dt><dd>{feature.window}</dd></div>
+      <div><dt>Applicable regime</dt><dd>{feature.applicableRegime}</dd></div>
+      <div><dt>Provenance</dt><dd>{feature.provenance}</dd></div>
+      <div><dt>Leakage assessment</dt><dd>{feature.leakageAssessment}</dd></div>
+      <div><dt>Validation status</dt><dd>{feature.validationStatus}</dd></div>
+    </dl>
   </section>
 ))}
 

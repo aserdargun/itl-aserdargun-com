@@ -47,6 +47,13 @@ export interface Feature {
   readonly featureSet: FeatureSet | "temporal";
   readonly sourceSignalIds: readonly string[];
   readonly description: string;
+  readonly unit: string;
+  readonly transformation: string;
+  readonly window: string;
+  readonly applicableRegime: string;
+  readonly provenance: string;
+  readonly leakageAssessment: string;
+  readonly validationStatus: "Not validated in Phase 1";
 }
 
 export interface FailureMode {

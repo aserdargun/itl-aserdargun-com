@@ -21,6 +21,111 @@ const SENSOR_AND_COMMUNICATION_FAULTS = [
   "communication loss",
 ] as const;
 
+const EXPECTED_FEATURE_LINEAGE = [
+  {
+    id: "pressure-ratio",
+    name: "Pressure Ratio",
+    description: "Discharge pressure relative to suction pressure.",
+    featureGroup: "process",
+    sourceSignals: "suction-pressure, discharge-pressure",
+    unit: "dimensionless ratio",
+    transformation: "discharge pressure ÷ suction pressure",
+    window: "Aligned sample; no rolling window.",
+  },
+  {
+    id: "flow-per-speed",
+    name: "Flow / Speed",
+    description: "Flow normalized by rotational speed.",
+    featureGroup: "process",
+    sourceSignals: "flow, speed",
+    unit: "m³/h per rpm",
+    transformation: "flow ÷ speed",
+    window: "Aligned sample; no rolling window.",
+  },
+  {
+    id: "power-per-flow",
+    name: "Power / Flow",
+    description: "Electrical power normalized by flow.",
+    featureGroup: "process",
+    sourceSignals: "motor-power, flow",
+    unit: "kW per (m³/h)",
+    transformation: "motor power ÷ flow",
+    window: "Aligned sample; no rolling window.",
+  },
+  {
+    id: "bearing-de-delta-ambient",
+    name: "DE temperature delta ambient",
+    description: "Drive-end bearing temperature above ambient.",
+    featureGroup: "physics",
+    sourceSignals: "bearing-de-temperature, ambient-temperature",
+    unit: "°C",
+    transformation: "bearing DE temperature − ambient temperature",
+    window: "Aligned sample; no rolling window.",
+  },
+  {
+    id: "bearing-nde-delta-ambient",
+    name: "NDE temperature delta ambient",
+    description: "Non-drive-end bearing temperature above ambient.",
+    featureGroup: "physics",
+    sourceSignals: "bearing-nde-temperature, ambient-temperature",
+    unit: "°C",
+    transformation: "bearing NDE temperature − ambient temperature",
+    window: "Aligned sample; no rolling window.",
+  },
+  {
+    id: "vibration-rms",
+    name: "Vibration RMS",
+    description: "RMS vibration from bearing-housing measurements.",
+    featureGroup: "vibration",
+    sourceSignals: "axial-vibration, radial-vibration",
+    unit: "mm/s RMS",
+    transformation: "root mean square of axial and radial vibration samples",
+    window:
+      "Declared vibration analysis window; duration not specified in Phase 1.",
+  },
+  {
+    id: "vibration-kurtosis",
+    name: "Vibration Kurtosis",
+    description: "Distribution-tail indicator for vibration change.",
+    featureGroup: "vibration",
+    sourceSignals: "axial-vibration, radial-vibration",
+    unit: "dimensionless",
+    transformation: "kurtosis of axial and radial vibration samples",
+    window:
+      "Declared vibration analysis window; duration not specified in Phase 1.",
+  },
+  {
+    id: "twin-residual",
+    name: "Twin Residual",
+    description: "Measured value minus digital-twin prediction.",
+    featureGroup: "physics",
+    sourceSignals: "motor-power, flow, speed",
+    unit: "kW",
+    transformation:
+      "motor power − digital-twin motor-power prediction conditioned on flow and speed",
+    window: "Aligned sample; no rolling window.",
+  },
+  {
+    id: "rolling-mean-30m",
+    name: "Rolling Mean 30m",
+    description: "Thirty-minute rolling temperature mean.",
+    featureGroup: "temporal",
+    sourceSignals: "bearing-de-temperature",
+    unit: "°C",
+    transformation:
+      "mean of bearing DE temperature over the trailing 30 minutes",
+    window: "Trailing 30 minutes.",
+  },
+] as const;
+
+const FEATURE_APPLICABLE_REGIME =
+  "Within the declared fictional P-101 operating envelope only.";
+const FEATURE_PROVENANCE =
+  "Industrial Twin Lab fictional engineering fixture; no plant-derived feature values.";
+const FEATURE_LEAKAGE_ASSESSMENT =
+  "Past or contemporaneous source values only; future values, maintenance labels, and held-out outcomes are prohibited.";
+const FEATURE_VALIDATION_STATUS = "Not validated in Phase 1";
+
 test("Feature Factory preserves canonical feature lineage and the residual boundary", async ({
   page,
 }) => {
@@ -41,17 +146,38 @@ test("Feature Factory preserves canonical feature lineage and the residual bound
   const lineageHeadings = page.locator(
     ".feature-factory-publication > section:not(.concept-publication__direction) > h3",
   );
-  await expect(lineageHeadings).toHaveCount(P101_TWIN.features.length);
+  await expect(lineageHeadings).toHaveCount(EXPECTED_FEATURE_LINEAGE.length);
   await expect(lineageHeadings).toHaveText(
-    P101_TWIN.features.map((feature) => feature.name),
+    EXPECTED_FEATURE_LINEAGE.map((feature) => feature.name),
   );
-  for (const feature of P101_TWIN.features) {
+  for (const feature of EXPECTED_FEATURE_LINEAGE) {
+    const record = page.locator(`section#${feature.id}`);
+    await expect(record.getByRole("heading", { level: 3 })).toHaveText(
+      feature.name,
+    );
     await expect(
-      page.getByText(feature.name, { exact: true }).first(),
+      record.getByText(feature.description, { exact: true }),
     ).toBeVisible();
-    await expect(
-      page.getByText(feature.description, { exact: true }),
-    ).toBeVisible();
+
+    const expectedRows = [
+      ["Feature ID", feature.id],
+      ["Feature group", feature.featureGroup],
+      ["Source signals", feature.sourceSignals],
+      ["Unit", feature.unit],
+      ["Formula / transformation", feature.transformation],
+      ["Window", feature.window],
+      ["Applicable regime", FEATURE_APPLICABLE_REGIME],
+      ["Provenance", FEATURE_PROVENANCE],
+      ["Leakage assessment", FEATURE_LEAKAGE_ASSESSMENT],
+      ["Validation status", FEATURE_VALIDATION_STATUS],
+    ] as const;
+    const rows = record.locator("dl.feature-lineage__details > div");
+    await expect(rows).toHaveCount(expectedRows.length);
+    for (const [index, [label, value]] of expectedRows.entries()) {
+      const row = rows.nth(index);
+      await expect(row.locator(":scope > dt")).toHaveText(label);
+      await expect(row.locator(":scope > dd")).toHaveText(value);
+    }
   }
 
   const equation = page.getByRole("figure", {

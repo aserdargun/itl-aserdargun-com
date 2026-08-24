@@ -9,6 +9,14 @@ const P101_SAFETY_CONSTRAINTS = [
   "Human engineering review is required before any physical-machine decision.",
 ] as const;
 
+const P101_FEATURE_APPLICABLE_REGIME =
+  "Within the declared fictional P-101 operating envelope only.";
+const P101_FEATURE_PROVENANCE =
+  "Industrial Twin Lab fictional engineering fixture; no plant-derived feature values.";
+const P101_FEATURE_LEAKAGE_ASSESSMENT =
+  "Past or contemporaneous source values only; future values, maintenance labels, and held-out outcomes are prohibited.";
+const P101_FEATURE_VALIDATION_STATUS = "Not validated in Phase 1" as const;
+
 export const P101_TWIN: TwinCapsule = {
   id: "TWIN-P101",
   version: "TWIN-P101-0.1.0",
@@ -131,6 +139,13 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "process",
       sourceSignalIds: ["suction-pressure", "discharge-pressure"],
       description: "Discharge pressure relative to suction pressure.",
+      unit: "dimensionless ratio",
+      transformation: "discharge pressure ÷ suction pressure",
+      window: "Aligned sample; no rolling window.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "flow-per-speed",
@@ -138,6 +153,13 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "process",
       sourceSignalIds: ["flow", "speed"],
       description: "Flow normalized by rotational speed.",
+      unit: "m³/h per rpm",
+      transformation: "flow ÷ speed",
+      window: "Aligned sample; no rolling window.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "power-per-flow",
@@ -145,6 +167,13 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "process",
       sourceSignalIds: ["motor-power", "flow"],
       description: "Electrical power normalized by flow.",
+      unit: "kW per (m³/h)",
+      transformation: "motor power ÷ flow",
+      window: "Aligned sample; no rolling window.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "bearing-de-delta-ambient",
@@ -152,6 +181,13 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "physics",
       sourceSignalIds: ["bearing-de-temperature", "ambient-temperature"],
       description: "Drive-end bearing temperature above ambient.",
+      unit: "°C",
+      transformation: "bearing DE temperature − ambient temperature",
+      window: "Aligned sample; no rolling window.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "bearing-nde-delta-ambient",
@@ -159,6 +195,13 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "physics",
       sourceSignalIds: ["bearing-nde-temperature", "ambient-temperature"],
       description: "Non-drive-end bearing temperature above ambient.",
+      unit: "°C",
+      transformation: "bearing NDE temperature − ambient temperature",
+      window: "Aligned sample; no rolling window.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "vibration-rms",
@@ -166,6 +209,14 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "vibration",
       sourceSignalIds: ["axial-vibration", "radial-vibration"],
       description: "RMS vibration from bearing-housing measurements.",
+      unit: "mm/s RMS",
+      transformation: "root mean square of axial and radial vibration samples",
+      window:
+        "Declared vibration analysis window; duration not specified in Phase 1.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "vibration-kurtosis",
@@ -173,6 +224,14 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "vibration",
       sourceSignalIds: ["axial-vibration", "radial-vibration"],
       description: "Distribution-tail indicator for vibration change.",
+      unit: "dimensionless",
+      transformation: "kurtosis of axial and radial vibration samples",
+      window:
+        "Declared vibration analysis window; duration not specified in Phase 1.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "twin-residual",
@@ -180,6 +239,14 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "physics",
       sourceSignalIds: ["motor-power", "flow", "speed"],
       description: "Measured value minus digital-twin prediction.",
+      unit: "kW",
+      transformation:
+        "motor power − digital-twin motor-power prediction conditioned on flow and speed",
+      window: "Aligned sample; no rolling window.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
     {
       id: "rolling-mean-30m",
@@ -187,6 +254,14 @@ export const P101_TWIN: TwinCapsule = {
       featureSet: "temporal",
       sourceSignalIds: ["bearing-de-temperature"],
       description: "Thirty-minute rolling temperature mean.",
+      unit: "°C",
+      transformation:
+        "mean of bearing DE temperature over the trailing 30 minutes",
+      window: "Trailing 30 minutes.",
+      applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
+      provenance: P101_FEATURE_PROVENANCE,
+      leakageAssessment: P101_FEATURE_LEAKAGE_ASSESSMENT,
+      validationStatus: P101_FEATURE_VALIDATION_STATUS,
     },
   ],
   failureModes: [

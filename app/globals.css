@@ -2384,9 +2384,13 @@ svg {
 
 .feature-factory-publication
   > section:not(.concept-publication__direction)
-  > p
-  + p {
-  margin-top: var(--space-3);
+  > .feature-lineage__details {
+  grid-column: 2;
+  margin-top: var(--space-4);
+}
+
+.feature-lineage__details dd {
+  overflow-wrap: anywhere;
 }
 
 .methods-fault-catalogue > section {
@@ -2487,6 +2491,12 @@ svg {
     > section:not(.concept-publication__direction)
     > h3 {
     grid-row: auto;
+  }
+
+  .feature-factory-publication
+    > section:not(.concept-publication__direction)
+    > .feature-lineage__details {
+    grid-column: 1;
   }
 
   .methods-fault-catalogue > section:last-of-type ul {
