@@ -17,9 +17,9 @@ test-results/
 
 # Local development and design sessions
 .superpowers/
+.worktrees/
 .codex/tmp/
 
 # Editor and operating system files
 .DS_Store
 *.swp
-
