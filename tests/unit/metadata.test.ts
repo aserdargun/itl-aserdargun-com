@@ -142,7 +142,7 @@ describe("Azure Static Web Apps contract", () => {
       statusCode: 403,
     });
     expect(config.responseOverrides?.["403"]).toEqual({
-      rewrite: "/404.html",
+      rewrite: "/404/",
       statusCode: 404,
     });
     expect(config.responseOverrides?.["404"]).toEqual({

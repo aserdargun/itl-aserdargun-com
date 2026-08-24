@@ -197,7 +197,7 @@
   ],
   "responseOverrides": {
     "403": {
-      "rewrite": "/404.html",
+      "rewrite": "/404/",
       "statusCode": 404
     },
     "404": {

@@ -57,6 +57,10 @@ test("prepared output keeps a document-only custom 404 and the SWA config", () =
   const config = JSON.parse(
     readFileSync("out/staticwebapp.config.json", "utf8"),
   );
+  assert.deepEqual(config.responseOverrides["403"], {
+    rewrite: "/404/",
+    statusCode: 404,
+  });
   const nextAssetCatchIndex = config.routes.findIndex(
     ({ route }) => route === "/_next/*",
   );
