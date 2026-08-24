@@ -2435,6 +2435,12 @@ svg {
   white-space: pre-wrap;
 }
 
+.intelligence-publication .diagram-sequence-region {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
 .intelligence-hypotheses {
   width: var(--measure-long);
   max-width: 100%;
@@ -2516,6 +2522,37 @@ svg {
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+@media (max-width: 850px) {
+  .intelligence-publication
+    .diagram-sequence-region
+    > :is(.diagram-flow__list, .knowledge-flywheel__cycle) {
+    grid-template-columns: 1fr !important;
+  }
+
+  .intelligence-publication
+    .diagram-sequence-region
+    .diagram-flow__step:not(:last-child) {
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .intelligence-publication
+    .diagram-sequence-region
+    :is(
+      .diagram-flow__step:not(:last-child),
+      .knowledge-flywheel__cycle li:not(:last-child)
+    )::after {
+    top: auto;
+    right: 50%;
+    bottom: -7px;
+    border-top: 6px solid var(--color-ink);
+    border-right: 5px solid transparent;
+    border-bottom: 0;
+    border-left: 5px solid transparent;
+    transform: translateX(50%);
+  }
 }
 
 .intelligence-protocol__ledger dd {

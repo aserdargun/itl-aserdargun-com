@@ -63,6 +63,7 @@ function FleetFigure({ children, ...preProps }: ComponentProps<"pre">) {
     return (
       <FlowDiagram
         caption="Evidence may be organized across these nested scopes, but every move outward requires a new generalization claim and every move inward requires local validation."
+        continuous
         steps={FLEET_INTELLIGENCE_CATALOGUE.hierarchy}
         title="Fleet intelligence asset hierarchy"
       />
@@ -77,6 +78,7 @@ function FleetFigure({ children, ...preProps }: ComponentProps<"pre">) {
     return (
       <KnowledgeFlywheel
         caption="The ordered cycle preserves successful and failed replication evidence. Human owners decide whether the next asset-local experiment is warranted."
+        continuous
         steps={FLEET_INTELLIGENCE_CATALOGUE.knowledgeFlywheel}
         title="Knowledge Flywheel"
       />

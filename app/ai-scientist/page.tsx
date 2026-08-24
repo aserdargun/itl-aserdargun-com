@@ -77,6 +77,7 @@ function IntelligenceFigure({ children, ...preProps }: ComponentProps<"pre">) {
     return (
       <FlowDiagram
         caption="The AI Scientist may structure and request this isolated experiment path; it cannot send a command to P-101 or approve its own evidence."
+        continuous
         steps={AI_SCIENTIST_CATALOGUE.experimentFlow}
         title="P-101 hypothesis-to-evidence experiment flow"
       />

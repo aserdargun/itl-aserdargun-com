@@ -20,12 +20,12 @@ const EXPERIMENT_FLOW = [
 ] as const;
 
 const FLEET_HIERARCHY = [
-  "Component",
-  "Machine",
-  "System",
-  "Plant",
-  "Fleet",
-  "Enterprise",
+  "Component Twin",
+  "Machine Twin",
+  "System Twin",
+  "Plant Twin",
+  "Fleet Twin",
+  "Enterprise Intelligence",
 ] as const;
 
 const KNOWLEDGE_FLYWHEEL = [
@@ -53,6 +53,74 @@ const expectDomOrder = async (locators: readonly Locator[]) => {
         following,
       ),
     ).toBe(true);
+  }
+};
+
+const SEQUENCE_FIGURES = {
+  "/ai-scientist/": ["P-101 hypothesis-to-evidence experiment flow"],
+  "/fleet-intelligence/": [
+    "Fleet intelligence asset hierarchy",
+    "Knowledge Flywheel",
+  ],
+} as const;
+
+const expectSingleRow = async (items: Locator) => {
+  const tops = await items.evaluateAll((elements) =>
+    elements.map((element) => Math.round(element.getBoundingClientRect().top)),
+  );
+  expect(new Set(tops).size).toBe(1);
+};
+
+const expectSingleColumn = async (items: Locator) => {
+  const boxes = await items.evaluateAll((elements) =>
+    elements.map((element) => {
+      const rect = element.getBoundingClientRect();
+      return { left: Math.round(rect.left), top: Math.round(rect.top) };
+    }),
+  );
+  expect(new Set(boxes.map(({ left }) => left)).size).toBe(1);
+  expect(boxes.map(({ top }) => top)).toEqual(
+    [...boxes].map(({ top }) => top).sort((a, b) => a - b),
+  );
+  expect(new Set(boxes.map(({ top }) => top)).size).toBe(boxes.length);
+};
+
+const expectArrowDirection = async (
+  items: Locator,
+  direction: "horizontal" | "vertical",
+) => {
+  const arrows = await items.evaluateAll((elements) =>
+    elements.slice(0, -1).map((element) => {
+      const style = getComputedStyle(element, "::after");
+      return {
+        borderBottomWidth: style.borderBottomWidth,
+        borderLeftWidth: style.borderLeftWidth,
+        borderRightWidth: style.borderRightWidth,
+        borderTopWidth: style.borderTopWidth,
+        bottom: style.bottom,
+        right: style.right,
+      };
+    }),
+  );
+
+  for (const arrow of arrows) {
+    if (direction === "horizontal") {
+      expect(arrow).toMatchObject({
+        borderBottomWidth: "5px",
+        borderLeftWidth: "6px",
+        borderRightWidth: "0px",
+        borderTopWidth: "5px",
+        right: "-6px",
+      });
+    } else {
+      expect(arrow).toMatchObject({
+        borderBottomWidth: "0px",
+        borderLeftWidth: "5px",
+        borderRightWidth: "5px",
+        borderTopWidth: "6px",
+        bottom: "-7px",
+      });
+    }
   }
 };
 
@@ -282,6 +350,47 @@ for (const path of ["/ai-scientist/", "/fleet-intelligence/"] as const) {
           (element) => element.scrollWidth > element.clientWidth,
         ),
       ).toBe(true);
+    }
+  });
+}
+
+for (const path of ["/ai-scientist/", "/fleet-intelligence/"] as const) {
+  test(`${path} preserves continuous Task 11 sequences at intermediate widths`, async ({
+    page,
+  }) => {
+    for (const width of [1265, 850, 800, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(path);
+
+      for (const title of SEQUENCE_FIGURES[path]) {
+        const figure = page.getByRole("figure", { name: title });
+        const region = figure.getByRole("region", {
+          name: `${title} ordered sequence`,
+        });
+        await expect(region).toBeVisible();
+
+        const items = region.getByRole("listitem");
+        if (width > 850) {
+          await expectSingleRow(items);
+          await expectArrowDirection(items, "horizontal");
+        } else {
+          await expectSingleColumn(items);
+          await expectArrowDirection(items, "vertical");
+          expect(
+            await region.evaluate(
+              (element) => element.scrollWidth <= element.clientWidth,
+            ),
+          ).toBe(true);
+        }
+      }
+
+      const dimensions = await page.evaluate(() => ({
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+      }));
+      expect(dimensions.scrollWidth).toBeLessThanOrEqual(
+        dimensions.clientWidth,
+      );
     }
   });
 }

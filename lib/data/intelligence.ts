@@ -82,7 +82,14 @@ export const AI_SCIENTIST_CATALOGUE = {
 };
 
 export const FLEET_INTELLIGENCE_CATALOGUE = {
-  hierarchy: ["Component", "Machine", "System", "Plant", "Fleet", "Enterprise"],
+  hierarchy: [
+    "Component Twin",
+    "Machine Twin",
+    "System Twin",
+    "Plant Twin",
+    "Fleet Twin",
+    "Enterprise Intelligence",
+  ],
   protocol: {
     trainLabel: "Train",
     trainAssets: "Pump P01–P49",
