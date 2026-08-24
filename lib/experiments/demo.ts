@@ -19,23 +19,55 @@ export const DEFAULT_DEMO_CONFIG: ExperimentDemoConfig = {
   validation: "walk-forward",
 };
 
-const FEATURE_SETS: readonly FeatureSet[] = [
-  "process",
-  "vibration",
-  "physics",
-  "combined",
-];
-const ALGORITHMS: readonly AlgorithmName[] = [
-  "isolation-forest",
-  "xgboost",
-  "autoencoder",
-  "physics-residual",
-];
-const VALIDATIONS: readonly ValidationStrategy[] = [
-  "time-split",
-  "walk-forward",
-  "leave-one-regime-out",
-];
+export const DEMO_MACHINE_OPTIONS = [
+  { value: "P-101", label: "P-101" },
+] as const satisfies readonly {
+  readonly value: ExperimentDemoConfig["assetId"];
+  readonly label: string;
+}[];
+export const DEMO_PROBLEM_OPTIONS = [
+  { value: "bearing-degradation", label: "Bearing degradation" },
+] as const satisfies readonly {
+  readonly value: ExperimentDemoConfig["problem"];
+  readonly label: string;
+}[];
+
+export const DEMO_FEATURE_SET_OPTIONS = [
+  { value: "process", label: "Process" },
+  { value: "vibration", label: "Vibration" },
+  { value: "physics", label: "Physics" },
+  { value: "combined", label: "Combined" },
+] as const satisfies readonly {
+  readonly value: FeatureSet;
+  readonly label: string;
+}[];
+export const DEMO_ALGORITHM_OPTIONS = [
+  { value: "isolation-forest", label: "Isolation Forest" },
+  { value: "xgboost", label: "XGBoost" },
+  { value: "autoencoder", label: "Autoencoder" },
+  { value: "physics-residual", label: "Physics Residual" },
+] as const satisfies readonly {
+  readonly value: AlgorithmName;
+  readonly label: string;
+}[];
+export const DEMO_VALIDATION_OPTIONS = [
+  { value: "time-split", label: "Time Split" },
+  { value: "walk-forward", label: "Walk Forward" },
+  { value: "leave-one-regime-out", label: "Leave-One-Regime-Out" },
+] as const satisfies readonly {
+  readonly value: ValidationStrategy;
+  readonly label: string;
+}[];
+
+const FEATURE_SETS: readonly FeatureSet[] = DEMO_FEATURE_SET_OPTIONS.map(
+  ({ value }) => value,
+);
+const ALGORITHMS: readonly AlgorithmName[] = DEMO_ALGORITHM_OPTIONS.map(
+  ({ value }) => value,
+);
+const VALIDATIONS: readonly ValidationStrategy[] = DEMO_VALIDATION_OPTIONS.map(
+  ({ value }) => value,
+);
 
 const ALGORITHM_LABELS: Readonly<Record<AlgorithmName, string>> = {
   "isolation-forest": "Isolation Forest",
@@ -182,6 +214,7 @@ const createFixture = (config: ExperimentDemoConfig): ExperimentResult => {
     assetVersion: "ASSET-P101-0.1.0",
     twinVersion: "TWIN-P101-0.1.0",
     datasetVersion: "DATASET-P101-SYN-0.1.0",
+    simulatorVersion: "SIM-P101-0.1.0",
     featurePipelineVersion: "FEATURES-P101-0.1.0",
     modelVersion: MODEL_VERSIONS[config.algorithm],
     codeVersion: "ITL-PHASE-1-0.1.0",

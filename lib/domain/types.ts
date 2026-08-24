@@ -60,6 +60,7 @@ export interface Provenance {
   readonly assetVersion: string;
   readonly twinVersion: string;
   readonly datasetVersion?: string;
+  readonly simulatorVersion?: string;
   readonly featurePipelineVersion?: string;
   readonly modelVersion?: string;
   readonly codeVersion?: string;
@@ -175,6 +176,7 @@ export interface ExperimentProvenance extends Provenance {
   readonly assetVersion: string;
   readonly twinVersion: string;
   readonly datasetVersion: string;
+  readonly simulatorVersion: string;
   readonly featurePipelineVersion: string;
   readonly modelVersion: string;
   readonly codeVersion: string;

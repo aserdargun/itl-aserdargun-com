@@ -1244,6 +1244,344 @@ svg {
   }
 }
 
+/* Experiment Fabric publication and deterministic demonstrator */
+
+.experiment-fabric-publication > .experiment-anatomy,
+.experiment-fabric-publication > .evidence-package {
+  width: calc(100% + (2 * var(--gutter-section)));
+  margin: var(--space-10) calc(-1 * var(--gutter-section));
+}
+
+.experiment-fabric__configuration-table {
+  margin-block: var(--space-8);
+}
+
+.experiment-fabric__configuration-table .diagram-table {
+  min-width: 52rem;
+}
+
+.experiment-demo-page {
+  min-width: 0;
+  background: var(--color-paper);
+}
+
+.experiment-demo-page__intro {
+  padding: var(--space-12) var(--gutter-section) var(--space-8);
+  border-bottom: var(--border-hairline) solid var(--color-rule-strong);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.3fr);
+  align-items: end;
+  gap: var(--space-12);
+  background: var(--color-paper-raised);
+}
+
+.experiment-demo-page__intro > div > p:first-child,
+.experiment-demo-page__intro > div > p:last-child {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experiment-demo-page__intro h1 {
+  margin: var(--space-4) 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 5vw, 5.5rem);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.94;
+}
+
+.experiment-demo-page__disclosure {
+  padding-left: var(--space-4);
+  margin: 0;
+  border-left: 2px solid var(--color-signal-ink);
+  color: var(--color-ink);
+  font-size: 0.8125rem;
+}
+
+.experiment-demo {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(17.5rem, 0.28fr) minmax(0, 0.72fr);
+  align-items: stretch;
+}
+
+.experiment-demo__configuration,
+.experiment-demo__evidence {
+  min-width: 0;
+}
+
+.experiment-demo__configuration {
+  padding: var(--space-8) var(--space-6) var(--space-12) var(--gutter-section);
+  border-right: var(--border-hairline) solid var(--color-rule-strong);
+  background: var(--color-paper-raised);
+}
+
+.experiment-demo__rail-heading {
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
+  border-bottom: var(--border-hairline) solid var(--color-rule-strong);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.experiment-demo__rail-heading p {
+  margin: 0;
+}
+
+.experiment-demo__rail-heading p:last-child {
+  color: var(--color-ink-muted);
+}
+
+.experiment-control + .experiment-control {
+  margin-top: var(--space-4);
+}
+
+.experiment-control label {
+  margin-bottom: var(--space-2);
+  display: block;
+  color: var(--color-ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experiment-control select {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 var(--space-10) 0 var(--space-3);
+  border: var(--border-hairline) solid var(--color-rule-strong);
+  background: var(--color-paper-raised);
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.experiment-control select:hover {
+  border-color: var(--color-signal-ink);
+}
+
+.experiment-demo__rail-note {
+  padding-top: var(--space-4);
+  margin: var(--space-8) 0 0;
+  border-top: var(--border-hairline) solid var(--color-rule);
+  color: var(--color-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.experiment-demo__evidence {
+  padding: var(--space-8) var(--gutter-section) var(--space-12) var(--space-8);
+  background: var(--color-paper);
+}
+
+.experiment-result__header {
+  padding-bottom: var(--space-4);
+  border-bottom: var(--border-hairline) solid var(--color-rule-strong);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.experiment-result__header p,
+.experiment-result__header h2 {
+  margin: 0;
+}
+
+.experiment-result__header > div > p,
+.experiment-result__status span {
+  color: var(--color-ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experiment-result__header h2 {
+  margin-top: var(--space-2);
+  overflow-wrap: anywhere;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.experiment-result__status {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.experiment-result__status span {
+  margin-right: var(--space-3);
+}
+
+.experiment-result__disclosure {
+  padding-left: var(--space-4);
+  margin: var(--space-5) 0;
+  border-left: 2px solid var(--color-signal-ink);
+  color: var(--color-signal-ink);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.experiment-metrics__region {
+  max-width: 100%;
+  overflow-x: auto;
+  border-block: var(--border-hairline) solid var(--color-rule-strong);
+}
+
+.experiment-metrics {
+  width: 100%;
+  min-width: 38rem;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.experiment-metrics :where(th, td) {
+  padding: var(--space-3) var(--space-4);
+  border-right: var(--border-hairline) solid var(--color-rule);
+  border-bottom: var(--border-hairline) solid var(--color-rule);
+  text-align: left;
+}
+
+.experiment-metrics :where(th, td):last-child {
+  border-right: 0;
+}
+
+.experiment-metrics thead th {
+  background: var(--color-paper-technical);
+  color: var(--color-ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.experiment-result__summary {
+  margin: var(--space-6) 0 var(--space-8);
+  border-block: var(--border-hairline) solid var(--color-rule-strong);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.experiment-result__summary > div {
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-hairline) solid var(--color-rule);
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.42fr) minmax(0, 0.58fr);
+  gap: var(--space-3);
+}
+
+.experiment-result__summary > div:nth-child(odd) {
+  border-right: var(--border-hairline) solid var(--color-rule);
+}
+
+.experiment-result__summary dt,
+.experiment-result__summary dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.experiment-result__summary dt {
+  color: var(--color-ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.experiment-result__summary dd {
+  overflow-wrap: anywhere;
+}
+
+.experiment-demo__evidence > .evidence-package {
+  padding-inline: 0;
+  border-bottom: 0;
+  background: transparent;
+}
+
+@media (max-width: 1100px) {
+  .experiment-demo {
+    grid-template-columns: minmax(15.5rem, 0.32fr) minmax(0, 0.68fr);
+  }
+
+  .experiment-demo__configuration {
+    padding-left: var(--gutter-section);
+  }
+
+  .experiment-demo__evidence {
+    padding-right: var(--gutter-section);
+  }
+
+  .experiment-result__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .experiment-result__summary > div:nth-child(odd) {
+    border-right: 0;
+  }
+}
+
+@media (max-width: 850px) {
+  .experiment-demo-page__intro {
+    padding-block: var(--space-10) var(--space-8);
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .experiment-demo-page__intro h1 {
+    margin-block: var(--space-4) var(--space-3);
+  }
+
+  .experiment-demo-page__disclosure {
+    max-width: 38ch;
+  }
+
+  .experiment-demo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .experiment-demo__configuration {
+    padding: var(--space-8) var(--gutter-section);
+    border-right: 0;
+    border-bottom: var(--border-hairline) solid var(--color-rule-strong);
+  }
+
+  .experiment-demo__evidence {
+    padding: var(--space-8) var(--gutter-section) var(--space-12);
+  }
+
+  .experiment-result__header {
+    align-items: start;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .experiment-result__summary > div {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}
+
 @media (max-width: 480px) {
   .section-disclosure__trigger {
     padding-inline: var(--space-2);

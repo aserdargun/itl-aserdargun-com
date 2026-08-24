@@ -62,6 +62,10 @@ export function EvidencePackage({
             <dd>{provenance.datasetVersion}</dd>
           </div>
           <div>
+            <dt>Simulator version</dt>
+            <dd>{provenance.simulatorVersion}</dd>
+          </div>
+          <div>
             <dt>Feature pipeline</dt>
             <dd>{provenance.featurePipelineVersion}</dd>
           </div>
