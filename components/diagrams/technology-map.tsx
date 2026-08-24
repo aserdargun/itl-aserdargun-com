@@ -17,7 +17,7 @@ export function TechnologyMap({
       <ul className="technology-map__categories">
         {technologies.map((technology) => (
           <li key={technology.id}>
-            <section aria-label={technology.name}>
+            <section aria-label={technology.name} id={technology.id}>
               <h3>{technology.name}</h3>
               <p>{technology.description}</p>
               <ul>

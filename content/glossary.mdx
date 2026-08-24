@@ -1,5 +1,6 @@
 import { CONTENT_META } from "../lib/content/registry.ts";
 import { GLOSSARY_TERMS } from "../lib/data/glossary.ts";
+import { SITE_NAVIGATION } from "../lib/data/navigation.ts";
 
 export const contentMeta = CONTENT_META.glossary;
 
@@ -9,13 +10,16 @@ The glossary fixes a shared vocabulary for the publication. Definitions are deli
 
 {[...GLOSSARY_TERMS].sort((left, right) => left.term.localeCompare(right.term)).map((item) => (
 
-  <section key={item.id} id={item.id}>
+  <section className="glossary-entry" key={item.id} id={item.id}>
     <h2>{item.term}</h2>
     <p>{item.definition}</p>
     <p>
-      Related: {item.relatedHrefs.map((href, index) => (
-        <span key={href}>{index > 0 ? ", " : ""}<a href={href}>{href.slice(1)}</a></span>
-      ))}
+      Related: {item.relatedHrefs.map((href, index) => {
+        const navigationItem = SITE_NAVIGATION.find((item) => item.href === href);
+        return (
+          <span key={href}>{index > 0 ? ", " : ""}<a href={href}>{navigationItem?.label ?? href}</a></span>
+        );
+      })}
     </p>
   </section>
 ))}

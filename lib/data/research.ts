@@ -1,5 +1,13 @@
 import type { ResearchQuestion } from "@/lib/domain/types";
 
+export interface ResearchMaturityLevel {
+  readonly id: string;
+  readonly title: string;
+  readonly capability: string;
+  readonly evidenceThreshold: string;
+  readonly description: string;
+}
+
 export const RESEARCH_QUESTIONS: readonly ResearchQuestion[] = [
   {
     id: "RQ-001",
@@ -60,4 +68,50 @@ export const RESEARCH_QUESTIONS: readonly ResearchQuestion[] = [
       "What evidence should be required before an industrial AI model is allowed into production?",
     status: "conceptual",
   },
+];
+
+const maturityLevel = (
+  level: number,
+  name: string,
+  capability: string,
+  evidenceThreshold: string,
+): ResearchMaturityLevel => ({
+  id: `level-${level}`,
+  title: `Level ${level} — ${name}`,
+  capability,
+  evidenceThreshold,
+  description: `${capability}. ${evidenceThreshold}`,
+});
+
+export const RESEARCH_MATURITY_LEVELS: readonly ResearchMaturityLevel[] = [
+  maturityLevel(
+    0,
+    "Connected Asset",
+    "Machine → Data",
+    "Data access is known; no inference claim is made.",
+  ),
+  maturityLevel(
+    1,
+    "Observable Asset",
+    "Machine → Data → Monitoring",
+    "Signals and quality limits are visible and traceable.",
+  ),
+  maturityLevel(
+    2,
+    "Digital Twin",
+    "Machine ↔ Digital Representation",
+    "The representation is verified and validated for a stated use.",
+  ),
+  maturityLevel(
+    3,
+    "Twin Lab",
+    "Twin → Simulation → Experiments",
+    "Experiments are isolated, reproducible, and limitation-aware.",
+  ),
+  maturityLevel(
+    4,
+    "Machine Intelligence",
+    "Twin + Experiment Fabric + AI Scientist + Fleet Learning",
+    "Recommendations survive independent validation and explicit engineering review.",
+  ),
 ];

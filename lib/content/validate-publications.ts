@@ -3,11 +3,14 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { evaluate } from "@mdx-js/mdx";
+import type { MDXComponents } from "mdx/types";
 import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as jsxRuntime from "react/jsx-runtime";
 
 import { ArchitectureAtlas } from "../../components/diagrams/architecture-atlas.tsx";
+import { MaturityModel } from "../../components/diagrams/maturity-model.tsx";
+import { TechnologyMap } from "../../components/diagrams/technology-map.tsx";
 import { GLOSSARY_TERMS } from "../data/glossary.ts";
 import { RESEARCH_QUESTIONS } from "../data/research.ts";
 import { TECHNOLOGIES } from "../data/technologies.ts";
@@ -47,7 +50,7 @@ export interface PublicationValidationOptions {
 type EvaluatedPublication = Readonly<{
   contentMeta?: unknown;
   default?: ComponentType<{
-    readonly components?: Readonly<Record<string, ComponentType>>;
+    readonly components?: MDXComponents;
   }>;
 }>;
 
@@ -331,7 +334,7 @@ export const validatePublicationModules = async (
     try {
       const rendered = renderToStaticMarkup(
         createElement(publication.default, {
-          components: { ArchitectureAtlas },
+          components: { ArchitectureAtlas, MaturityModel, TechnologyMap },
         }),
       );
       validateRenderedContract(id, rendered, errors);
