@@ -78,6 +78,10 @@ const expectedWorkflow = {
           run: "npm ci",
         },
         {
+          name: "Install Playwright Chromium",
+          run: "npx playwright install --with-deps chromium",
+        },
+        {
           name: "Validate and build the release",
           run: "npm run validate:codex",
         },
