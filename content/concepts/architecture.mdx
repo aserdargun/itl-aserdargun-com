@@ -1,4 +1,5 @@
 import { CONTENT_META } from "../../lib/content/registry.ts";
+import { ARCHITECTURE_CATALOGUE } from "../../lib/data/architecture.ts";
 
 export const contentMeta = CONTENT_META.architecture;
 
@@ -6,21 +7,44 @@ export const contentMeta = CONTENT_META.architecture;
 
 Industrial Twin Lab separates observation, experimentation, validation, and operational authority. Information may move from a physical asset into a controlled digital environment; an experimental result does not travel back as a control command. The full reasoning path is longer than a dashboard pipeline:
 
-```text
-Physical Asset → Digital Twin → Isolated Experiment Lab → AI Scientist
-→ Evidence → Human Decision → Validated Deployment
-```
+<p className="architecture-source-flow">
+  {ARCHITECTURE_CATALOGUE.flow.join(" → ")}
+</p>
+
+<ArchitectureAtlas />
 
 ## Zoned boundary
 
-| Zone            | Representative elements                                                              | Permitted role                                              |
-| --------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
-| OT Control      | PLC, DCS, SCADA                                                                      | Deterministic plant control under existing authority.       |
-| Data Access     | Gateway, Historian, OPC UA, MQTT                                                     | Controlled, read-oriented acquisition and quality context.  |
-| Twin            | Twin Runtime, Simulation Runtime                                                     | Represent behavior within a declared fidelity and envelope. |
-| AI Experiment   | Local Models, Feature Engineering, Model Training, Experiment Tracking, AI Scientist | Generate and test hypotheses without control authority.     |
-| Validation Gate | Engineering Review, Approval, Signed Model                                           | Decide whether evidence is fit for a stated inference use.  |
-| Inference       | Approved Local Model                                                                 | Run only the reviewed version within its approved boundary. |
+<div
+  aria-label="Architecture zone catalogue, scroll horizontally to inspect all columns"
+  className="diagram-table-region architecture-catalogue-region"
+  role="region"
+  tabIndex="0"
+>
+  <table
+    aria-label="Architecture zone catalogue"
+    className="diagram-table architecture-catalogue"
+  >
+    <thead>
+      <tr>
+        <th scope="col">Zone</th>
+        <th scope="col">Boundary role</th>
+        <th scope="col">Representative elements</th>
+        <th scope="col">Permitted role</th>
+      </tr>
+    </thead>
+    <tbody>
+      {ARCHITECTURE_CATALOGUE.zones.map((zone) => (
+        <tr key={zone.id}>
+          <th scope="row">{zone.title}</th>
+          <td>{zone.boundaryRole}</td>
+          <td>{zone.representativeElements.join(", ")}</td>
+          <td>{zone.permittedRole}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
 The separation is both logical and architectural. Access credentials, networks, software lifecycles, data paths, and approval records should make it difficult to confuse a research experiment with a production control change. Cloud resources may extend the lab, but must not become an undeclared dependency for critical local data, knowledge, experiments, or inference.
 

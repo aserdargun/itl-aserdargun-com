@@ -15,6 +15,7 @@ import { MaturityModel } from "@/components/diagrams/maturity-model";
 import { SafetyBoundary } from "@/components/diagrams/safety-boundary";
 import { TechnologyMap } from "@/components/diagrams/technology-map";
 import { TwinCapsuleDiagram } from "@/components/diagrams/twin-capsule-diagram";
+import { ARCHITECTURE_CATALOGUE } from "@/lib/data/architecture";
 import { P101_TWIN } from "@/lib/data/p101";
 import { TECHNOLOGIES } from "@/lib/data/technologies";
 import {
@@ -113,6 +114,39 @@ describe("sequence diagrams", () => {
 });
 
 describe("architecture structures", () => {
+  it("renders both canonical architecture primitives from one catalogue", () => {
+    render(
+      <>
+        <FlowDiagram
+          title="Canonical architecture flow"
+          steps={ARCHITECTURE_CATALOGUE.flow}
+        />
+        <SafetyBoundary
+          title="Canonical architecture zones"
+          zones={ARCHITECTURE_CATALOGUE.zones}
+        />
+      </>,
+    );
+
+    const flow = screen.getByRole("figure", {
+      name: "Canonical architecture flow",
+    });
+    expect(
+      within(flow)
+        .getAllByRole("listitem")
+        .map((item) => item.textContent?.replace(/^\d{2}/u, "")),
+    ).toEqual([...ARCHITECTURE_CATALOGUE.flow]);
+
+    const zones = screen.getByRole("figure", {
+      name: "Canonical architecture zones",
+    });
+    expect(
+      within(zones)
+        .getAllByRole("heading", { level: 3 })
+        .map((heading) => heading.textContent),
+    ).toEqual(ARCHITECTURE_CATALOGUE.zones.map((zone) => zone.title));
+  });
+
   it("renders an asset hierarchy as nested lists in source order", () => {
     render(
       <AssetHierarchy
@@ -331,13 +365,63 @@ describe("P-101 evidence primitives", () => {
     expect(within(figure).getByText("114 bar")).toBeInTheDocument();
     expect(within(figure).getAllByText("TWIN-P101-0.1.0")).toHaveLength(2);
     expect(
-      within(figure).getByText(P101_TWIN.provenance.statement),
-    ).toBeInTheDocument();
+      within(figure).getAllByText(P101_TWIN.provenance.statement),
+    ).toHaveLength(2);
     expect(
       within(figure).getByText(
         "Human engineering review is required before any physical-machine decision.",
       ),
     ).toBeInTheDocument();
+  });
+
+  it("renders complete named P-101 records and explicit unavailable model boundaries", () => {
+    render(<TwinCapsuleDiagram title="P-101 Twin Capsule" twin={P101_TWIN} />);
+
+    const figure = screen.getByRole("figure", { name: "P-101 Twin Capsule" });
+    const signals = within(figure).getByRole("table", {
+      name: "Twin Capsule signals",
+    });
+    expect(within(signals).getAllByRole("columnheader")).toHaveLength(6);
+    expect(within(signals).getAllByRole("row")).toHaveLength(12);
+    expect(within(signals).getByText("suction-pressure")).toBeInTheDocument();
+    expect(within(signals).getAllByText("bar", { exact: true })).toHaveLength(
+      2,
+    );
+
+    const features = within(figure).getByRole("list", {
+      name: "Twin Capsule features",
+    });
+    expect(within(features).getAllByRole("listitem")).toHaveLength(9);
+    expect(within(features).getByText("pressure-ratio")).toBeInTheDocument();
+
+    const failures = within(figure).getByRole("list", {
+      name: "Twin Capsule failure modes",
+    });
+    expect(within(failures).getAllByRole("listitem")).toHaveLength(6);
+    expect(
+      within(failures).getByText("bearing-degradation"),
+    ).toBeInTheDocument();
+
+    const boundaries = within(figure).getByRole("region", {
+      name: "Model availability, limitations, and uncertainty",
+    });
+    expect(within(boundaries).getByText("Not implemented")).toBeInTheDocument();
+    expect(
+      within(boundaries).getByText("Not validated in Phase 1"),
+    ).toBeInTheDocument();
+    expect(
+      within(boundaries).getByText(
+        "No physics model is implemented or validated in Phase 1.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(boundaries).getByRole("list", {
+        name: "Twin Capsule limitations",
+      }),
+    ).toHaveTextContent(
+      /not plant measurements or validated industrial evidence/u,
+    );
+    expect(within(boundaries).getByText("Unquantified")).toBeInTheDocument();
   });
 
   it("renders evidence as a named table with explicit synthetic origin", () => {

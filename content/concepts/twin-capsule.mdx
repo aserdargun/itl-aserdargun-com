@@ -16,6 +16,8 @@ Enterprise → Fleet → Plant → System → Machine → Component
 
 Each machine can own a **Twin Capsule**: a bounded, versioned record of identity, engineering metadata, sensor map, operating envelope, physics model, failure library, historical data, maintenance history, feature catalogue, experiment history, model registry, safety constraints, uncertainty, provenance, and documentation. The capsule is not the twin runtime itself. It is the traceable contract that tells a runtime, experiment, and reviewer exactly which representation was used.
 
+The Phase 1 P-101 fixture populates only the typed records rendered below. Historical data, maintenance history, experiment history, model registry, and documentation remain conceptual categories; no record is claimed where none exists. Physics-model availability, limitations, and uncertainty are explicit in the capsule ledger.
+
 ## P-101 anatomy
 
 P-101 is a fictional centrifugal boiler feed water pump driven by an electric motor. Its capsule is `{P101_TWIN.version}` and its asset hierarchy is `{P101_TWIN.asset.hierarchy.join(" → ")}`. The fixture defines eleven signals and six failure modes; those same identifiers are reused throughout this publication.

@@ -69,9 +69,10 @@ export function TwinCapsuleDiagram({
         aria-labelledby={`${twin.id}-features`}
       >
         <h3 id={`${twin.id}-features`}>Features</h3>
-        <ul className="diagram-ledger-list">
+        <ul aria-label="Twin Capsule features" className="diagram-ledger-list">
           {twin.features.map((feature) => (
             <li key={feature.id}>
+              <span className="diagram-record-id">{feature.id}</span>
               <strong>{feature.name}</strong>
               <span>{feature.description}</span>
               <span>
@@ -94,10 +95,12 @@ export function TwinCapsuleDiagram({
           aria-label="Twin Capsule signals, scroll horizontally to inspect all columns"
           tabIndex={0}
         >
-          <table className="diagram-table">
+          <table aria-label="Twin Capsule signals" className="diagram-table">
             <thead>
               <tr>
+                <th scope="col">Signal ID</th>
                 <th scope="col">Signal</th>
+                <th scope="col">Unit</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Location</th>
                 <th scope="col">Nominal fixture value</th>
@@ -106,7 +109,9 @@ export function TwinCapsuleDiagram({
             <tbody>
               {twin.sensors.map((sensor) => (
                 <tr key={sensor.id}>
-                  <th scope="row">{sensor.name}</th>
+                  <th scope="row">{sensor.id}</th>
+                  <td>{sensor.name}</td>
+                  <td>{sensor.unit}</td>
                   <td>{sensor.quantity}</td>
                   <td>{sensor.location}</td>
                   <td>{formatQuantity(sensor.nominalValue)}</td>
@@ -137,9 +142,13 @@ export function TwinCapsuleDiagram({
         aria-labelledby={`${twin.id}-failure-modes`}
       >
         <h3 id={`${twin.id}-failure-modes`}>Failure modes</h3>
-        <ul className="diagram-ledger-list">
+        <ul
+          aria-label="Twin Capsule failure modes"
+          className="diagram-ledger-list"
+        >
           {twin.failureModes.map((failureMode) => (
             <li key={failureMode.id}>
+              <span className="diagram-record-id">{failureMode.id}</span>
               <strong>{failureMode.name}</strong>
               <span>{failureMode.description}</span>
               <span>
@@ -151,11 +160,46 @@ export function TwinCapsuleDiagram({
       </section>
 
       <section
+        aria-label="Model availability, limitations, and uncertainty"
+        className="twin-capsule__section twin-capsule__boundaries"
+      >
+        <h3>Model and uncertainty boundary</h3>
+        <dl className="technical-ledger">
+          <div>
+            <dt>Physics model implementation</dt>
+            <dd>{twin.modelAvailability.implementationStatus}</dd>
+          </div>
+          <div>
+            <dt>Model validation</dt>
+            <dd>{twin.modelAvailability.validationStatus}</dd>
+          </div>
+          <div>
+            <dt>Availability statement</dt>
+            <dd>{twin.modelAvailability.statement}</dd>
+          </div>
+          <div>
+            <dt>Uncertainty status</dt>
+            <dd>{twin.uncertainty.status}</dd>
+          </div>
+          <div>
+            <dt>Uncertainty statement</dt>
+            <dd>{twin.uncertainty.statement}</dd>
+          </div>
+        </dl>
+        <p className="twin-capsule__subheading">Limitations</p>
+        <ul aria-label="Twin Capsule limitations">
+          {twin.limitations.map((limitation) => (
+            <li key={limitation}>{limitation}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section
         className="twin-capsule__section twin-capsule__safety"
         aria-labelledby={`${twin.id}-safety`}
       >
         <h3 id={`${twin.id}-safety`}>Safety constraints</h3>
-        <ul>
+        <ul aria-label="Twin Capsule safety constraints">
           {twin.safetyConstraints.map((constraint) => (
             <li key={constraint}>{constraint}</li>
           ))}

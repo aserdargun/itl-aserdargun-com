@@ -70,6 +70,17 @@ export interface Provenance {
   readonly synthetic: boolean;
 }
 
+export interface TwinModelAvailability {
+  readonly implementationStatus: "Not implemented";
+  readonly validationStatus: "Not validated in Phase 1";
+  readonly statement: string;
+}
+
+export interface TwinUncertaintyBoundary {
+  readonly status: "Unquantified";
+  readonly statement: string;
+}
+
 export interface TwinCapsule {
   readonly id: string;
   readonly version: string;
@@ -79,6 +90,9 @@ export interface TwinCapsule {
   readonly failureModes: readonly FailureMode[];
   readonly operatingEnvelope: Readonly<Record<string, Quantity>>;
   readonly safetyConstraints: readonly string[];
+  readonly modelAvailability: TwinModelAvailability;
+  readonly limitations: readonly string[];
+  readonly uncertainty: TwinUncertaintyBoundary;
   readonly provenance: Provenance;
 }
 

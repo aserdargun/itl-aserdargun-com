@@ -7,6 +7,7 @@ import { createElement, type ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import * as jsxRuntime from "react/jsx-runtime";
 
+import { ArchitectureAtlas } from "../../components/diagrams/architecture-atlas.tsx";
 import { GLOSSARY_TERMS } from "../data/glossary.ts";
 import { RESEARCH_QUESTIONS } from "../data/research.ts";
 import { TECHNOLOGIES } from "../data/technologies.ts";
@@ -45,7 +46,9 @@ export interface PublicationValidationOptions {
 
 type EvaluatedPublication = Readonly<{
   contentMeta?: unknown;
-  default?: ComponentType;
+  default?: ComponentType<{
+    readonly components?: Readonly<Record<string, ComponentType>>;
+  }>;
 }>;
 
 const syntheticPublications = new Set<PublicationId>([
@@ -326,7 +329,11 @@ export const validatePublicationModules = async (
     }
 
     try {
-      const rendered = renderToStaticMarkup(createElement(publication.default));
+      const rendered = renderToStaticMarkup(
+        createElement(publication.default, {
+          components: { ArchitectureAtlas },
+        }),
+      );
       validateRenderedContract(id, rendered, errors);
     } catch (error) {
       errors.push(

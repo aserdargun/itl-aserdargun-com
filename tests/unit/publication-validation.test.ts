@@ -30,6 +30,28 @@ describe("publication module validation", () => {
     );
   });
 
+  it("keeps architecture publication and visual on one canonical catalogue", async () => {
+    const [publication, page, atlas] = await Promise.all([
+      readPublication("content/concepts/architecture.mdx"),
+      readPublication("app/architecture/page.tsx"),
+      readPublication("components/diagrams/architecture-atlas.tsx"),
+    ]);
+
+    expect(publication).toContain(
+      'import { ARCHITECTURE_CATALOGUE } from "../../lib/data/architecture.ts";',
+    );
+    expect(publication).toContain("ARCHITECTURE_CATALOGUE.flow");
+    expect(publication).toContain("ARCHITECTURE_CATALOGUE.zones.map");
+    expect(publication).toContain('aria-label="Architecture zone catalogue"');
+    expect(atlas).toContain("zones={ARCHITECTURE_CATALOGUE.zones}");
+    expect(atlas).toContain("steps={ARCHITECTURE_CATALOGUE.flow}");
+    expect(page).not.toContain("Children");
+    expect(page).not.toMatch(/const\s+(?:architecture)?zones\s*=\s*\[/iu);
+    expect(atlas).not.toMatch(/zones=\{\[/u);
+    expect(publication).not.toContain("<td>OT Control Zone</td>");
+    expect(atlas).not.toContain('title: "OT Control Zone"');
+  });
+
   it("reports a missing expected publication file", async () => {
     const errors = await validatePublicationModules(
       overrides({ manifesto: null }),

@@ -1,5 +1,14 @@
 import type { TwinCapsule } from "@/lib/domain/types";
 
+const P101_PROVENANCE_STATEMENT =
+  "P-101 values and relationships are synthetic teaching fixtures, not plant measurements or validated industrial evidence.";
+
+const P101_SAFETY_CONSTRAINTS = [
+  "Read-only conceptual fixture; no operational technology connection exists.",
+  "No result authorizes automatic control or setpoint changes.",
+  "Human engineering review is required before any physical-machine decision.",
+] as const;
+
 export const P101_TWIN: TwinCapsule = {
   id: "TWIN-P101",
   version: "TWIN-P101-0.1.0",
@@ -236,17 +245,27 @@ export const P101_TWIN: TwinCapsule = {
     ambientTemperatureMinimum: { value: 5, unit: "°C" },
     ambientTemperatureMaximum: { value: 45, unit: "°C" },
   },
-  safetyConstraints: [
-    "Read-only conceptual fixture; no operational technology connection exists.",
-    "No result authorizes automatic control or setpoint changes.",
-    "Human engineering review is required before any physical-machine decision.",
+  safetyConstraints: P101_SAFETY_CONSTRAINTS,
+  modelAvailability: {
+    implementationStatus: "Not implemented",
+    validationStatus: "Not validated in Phase 1",
+    statement: "No physics model is implemented or validated in Phase 1.",
+  },
+  limitations: [
+    P101_PROVENANCE_STATEMENT,
+    P101_SAFETY_CONSTRAINTS[0],
+    P101_SAFETY_CONSTRAINTS[1],
   ],
+  uncertainty: {
+    status: "Unquantified",
+    statement:
+      "Uncertainty is unquantified because P-101 has no plant measurements or validated industrial evidence.",
+  },
   provenance: {
     assetVersion: "ASSET-P101-0.1.0",
     twinVersion: "TWIN-P101-0.1.0",
     source: "Industrial Twin Lab fictional engineering fixture",
-    statement:
-      "P-101 values and relationships are synthetic teaching fixtures, not plant measurements or validated industrial evidence.",
+    statement: P101_PROVENANCE_STATEMENT,
     synthetic: true,
   },
 };

@@ -1,15 +1,14 @@
 import { expect, test, type Locator } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
+import { ARCHITECTURE_CATALOGUE } from "../../lib/data/architecture";
 import { P101_TWIN } from "../../lib/data/p101";
 
-const ARCHITECTURE_ZONES = [
-  "OT Control Zone",
-  "Data Access Zone",
-  "Twin Zone",
-  "AI Experiment Zone",
-  "Validation Gate",
-  "Inference Zone",
-] as const;
+const ARCHITECTURE_ZONES = ARCHITECTURE_CATALOGUE.zones.map(
+  (zone) => zone.title,
+);
+const ARCHITECTURE_FLOW = ARCHITECTURE_CATALOGUE.flow;
+const ARCHITECTURE_ZONE_RECORDS = ARCHITECTURE_CATALOGUE.zones;
 
 const HIERARCHY_LEVELS = [
   "Enterprise",
@@ -49,7 +48,6 @@ test("architecture separates experimentation from operational authority", async 
     }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
-
   const boundary = page.getByRole("figure", {
     name: "Industrial Twin Lab safety boundary",
   });
@@ -61,6 +59,11 @@ test("architecture separates experimentation from operational authority", async 
   await expect(boundary.getByRole("heading", { level: 3 })).toHaveCount(6);
   await expectDomOrder(zoneHeadings);
   for (const heading of zoneHeadings) await expect(heading).toBeVisible();
+  for (const zone of ARCHITECTURE_ZONE_RECORDS) {
+    await expect(
+      boundary.getByRole("region", { name: zone.title }),
+    ).toContainText(zone.description);
+  }
 
   const legend = boundary.getByRole("region", { name: "Diagram notation" });
   await expect(legend).toContainText("Solid line = directional flow");
@@ -78,15 +81,24 @@ test("architecture separates experimentation from operational authority", async 
   const flow = page.getByRole("figure", {
     name: "Real-world to digital-world evidence flow",
   });
-  await expect(flow.getByRole("listitem")).toContainText([
-    "Physical Asset",
-    "Digital Twin",
-    "Isolated Experiment Lab",
-    "AI Scientist",
-    "Evidence",
-    "Human Decision",
-    "Validated Deployment",
-  ]);
+  await expect(flow.getByRole("listitem")).toHaveCount(7);
+  await expect(flow.getByRole("listitem")).toContainText(ARCHITECTURE_FLOW);
+  await expect(page.locator(".architecture-source-flow")).toHaveText(
+    ARCHITECTURE_FLOW.join(" → "),
+  );
+
+  const zoneCatalogue = page.getByRole("table", {
+    name: "Architecture zone catalogue",
+  });
+  await expect(zoneCatalogue.locator("tbody tr")).toHaveCount(6);
+  for (const zone of ARCHITECTURE_ZONE_RECORDS) {
+    const row = zoneCatalogue.getByRole("row", {
+      name: new RegExp(`^${zone.title}`, "u"),
+    });
+    await expect(row).toContainText(zone.boundaryRole);
+    await expect(row).toContainText(zone.representativeElements.join(", "));
+    await expect(row).toContainText(zone.permittedRole);
+  }
   await expect(page.getByText("P-101", { exact: true }).first()).toBeVisible();
   await expect(
     page.getByText(/fictional demonstration asset/u).first(),
@@ -109,6 +121,10 @@ test("architecture separates experimentation from operational authority", async 
   await expect(
     page.getByRole("main").getByRole("link", { name: "AI Scientist" }),
   ).toHaveAttribute("href", "/ai-scientist");
+
+  expect(
+    (await new AxeBuilder({ page }).include("main").analyze()).violations,
+  ).toEqual([]);
 });
 
 test("Twin Capsule publishes the canonical P-101 record without invented values", async ({
@@ -120,6 +136,12 @@ test("Twin Capsule publishes the canonical P-101 record without invented values"
     page.getByRole("heading", { level: 1, name: "Twin Capsule", exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  await expect(
+    page.getByText(
+      "The Phase 1 P-101 fixture populates only the typed records rendered below.",
+      { exact: false },
+    ),
+  ).toBeVisible();
 
   const hierarchy = page.getByRole("figure", {
     name: "P-101 asset hierarchy",
@@ -145,36 +167,98 @@ test("Twin Capsule publishes the canonical P-101 record without invented values"
     await expect(capsule).toContainText(display);
   }
 
+  const signals = capsule.getByRole("table", { name: "Twin Capsule signals" });
+  await expect(signals.getByRole("columnheader")).toHaveText([
+    "Signal ID",
+    "Signal",
+    "Unit",
+    "Quantity",
+    "Location",
+    "Nominal fixture value",
+  ]);
+  await expect(signals.locator("tbody tr")).toHaveCount(11);
   for (const sensor of P101_TWIN.sensors) {
-    const row = capsule.getByRole("row", {
-      name: new RegExp(sensor.name, "iu"),
+    const row = signals.getByRole("row", {
+      name: new RegExp(`^${sensor.id}`, "iu"),
     });
-    await expect(row).toContainText(sensor.quantity);
-    await expect(row).toContainText(sensor.location);
-    await expect(row).toContainText(
+    await expect(row.locator("th, td")).toHaveText([
+      sensor.id,
+      sensor.name,
+      sensor.unit,
+      sensor.quantity,
+      sensor.location,
       `${sensor.nominalValue.value} ${sensor.nominalValue.unit}`,
-    );
+    ]);
   }
 
+  const features = capsule.getByRole("list", {
+    name: "Twin Capsule features",
+  });
+  await expect(features.locator(":scope > li")).toHaveCount(9);
   for (const feature of P101_TWIN.features) {
-    const item = capsule.getByText(feature.name, { exact: true }).locator("..");
+    const item = features.getByRole("listitem").filter({
+      hasText: feature.id,
+    });
+    await expect(item).toContainText(feature.id);
     await expect(item).toContainText(feature.description);
     await expect(item).toContainText(feature.featureSet);
     await expect(item).toContainText(feature.sourceSignalIds.join(", "));
   }
 
+  const failures = capsule.getByRole("list", {
+    name: "Twin Capsule failure modes",
+  });
+  await expect(failures.locator(":scope > li")).toHaveCount(6);
   for (const failure of P101_TWIN.failureModes) {
-    const item = capsule.getByText(failure.name, { exact: true }).locator("..");
+    const item = failures.getByRole("listitem").filter({
+      hasText: failure.id,
+    });
+    await expect(item).toContainText(failure.id);
     await expect(item).toContainText(failure.description);
     await expect(item).toContainText(failure.affectedSensorIds.join(", "));
   }
 
+  const identity = capsule.getByRole("region", { name: "Asset identity" });
+  await expect(identity.locator(".technical-ledger > div")).toHaveCount(10);
+  const envelope = capsule.getByRole("region", {
+    name: "Operating envelope",
+  });
+  await expect(envelope.locator(".technical-ledger > div")).toHaveCount(6);
   for (const value of Object.values(P101_TWIN.operatingEnvelope)) {
     await expect(capsule).toContainText(`${value.value} ${value.unit}`);
   }
+
+  const safety = capsule.getByRole("region", { name: "Safety constraints" });
+  await expect(safety.getByRole("listitem")).toHaveCount(3);
   for (const constraint of P101_TWIN.safetyConstraints) {
     await expect(capsule).toContainText(constraint);
   }
+
+  const boundaries = capsule.getByRole("region", {
+    name: "Model availability, limitations, and uncertainty",
+  });
+  await expect(boundaries.locator(".technical-ledger > div")).toHaveCount(5);
+  await expect(boundaries).toContainText(
+    P101_TWIN.modelAvailability.implementationStatus,
+  );
+  await expect(boundaries).toContainText(
+    P101_TWIN.modelAvailability.validationStatus,
+  );
+  await expect(boundaries).toContainText(P101_TWIN.modelAvailability.statement);
+  await expect(boundaries).toContainText(P101_TWIN.uncertainty.status);
+  await expect(boundaries).toContainText(P101_TWIN.uncertainty.statement);
+  const limitations = boundaries.getByRole("list", {
+    name: "Twin Capsule limitations",
+  });
+  await expect(limitations.locator(":scope > li")).toHaveCount(3);
+  await expect(limitations.getByRole("listitem")).toHaveText([
+    ...P101_TWIN.limitations,
+  ]);
+
+  const provenance = capsule.getByRole("region", {
+    name: "Provenance and disclosure",
+  });
+  await expect(provenance.locator(".technical-ledger > div")).toHaveCount(4);
   await expect(capsule).toContainText(P101_TWIN.provenance.assetVersion);
   await expect(capsule).toContainText(P101_TWIN.provenance.twinVersion);
   await expect(capsule).toContainText(P101_TWIN.provenance.source);
@@ -193,6 +277,10 @@ test("Twin Capsule publishes the canonical P-101 record without invented values"
   await expect(
     page.getByRole("main").getByRole("link", { name: "Glossary" }),
   ).toHaveAttribute("href", "/glossary");
+
+  expect(
+    (await new AxeBuilder({ page }).include("main").analyze()).violations,
+  ).toEqual([]);
 });
 
 for (const route of ["/architecture/", "/twin-capsule/"] as const) {
