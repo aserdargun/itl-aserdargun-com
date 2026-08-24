@@ -1,0 +1,42 @@
+import {
+  CONTENT_META,
+  SYNTHETIC_FIXTURE_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META["fleet-intelligence"];
+export const contentValidation =
+  getContentEntry("fleet-intelligence").validation;
+
+# Fleet Intelligence
+
+Fleet Intelligence asks whether knowledge survives beyond the machine on which it was learned. The hierarchy expands carefully:
+
+```text
+Component Twin → Machine Twin → System Twin → Plant Twin
+→ Fleet Twin → Enterprise Intelligence
+```
+
+Cross-asset validation, transfer learning, fleet benchmarking, model and feature portability, failure-signature reuse, operating-regime clustering, leave-one-asset-out validation, federated learning, and organizational learning are candidate methods—not assumptions of equivalence.
+
+```text
+Train: Pump P01 → P49
+Test:  Pump P50
+```
+
+> Did the AI learn pump degradation, or did it memorize individual machines?
+
+Answering requires comparable asset metadata, sensor semantics, units, maintenance labels, operating envelopes, twin fidelity, and provenance. P-101 evidence can form a hypothesis for another centrifugal pump, but it cannot be copied as validation. Differences in duty, driver, instrumentation, hydraulic design, environment, and maintenance practice may dominate the learned signature.
+
+Leave-one-asset-out validation exposes portability more honestly than randomly mixing samples from every machine. Federated learning may reduce raw-data centralization, but it does not remove semantic mismatch, label quality, security, privacy, or governance concerns. A portable feature is often more valuable than a portable model when its physical meaning can be reviewed locally.
+
+## Knowledge Flywheel
+
+```text
+Machine Data → Twin → Experiment → Evidence → Knowledge
+→ Fleet Learning → Better Experiments → Better Machine Knowledge ↺
+```
+
+The flywheel advances through traceable evidence, including failed replications. Organizational memory records where a hypothesis worked, where it failed, and what changed. Human owners decide whether fleet findings warrant a local experiment, and each asset retains its own validation gate and operational authority.
+
+> {SYNTHETIC_FIXTURE_DISCLAIMER} P-101 and the P01–P50 fleet notation are conceptual fixtures, not an actual fleet dataset.

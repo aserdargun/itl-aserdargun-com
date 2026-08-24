@@ -1,0 +1,46 @@
+import {
+  CONTENT_META,
+  SYNTHETIC_FIXTURE_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+import { P101_TWIN } from "@/lib/data/p101";
+
+export const contentMeta = CONTENT_META["feature-factory"];
+export const contentValidation = getContentEntry("feature-factory").validation;
+
+# Feature Factory
+
+Raw signals acquire meaning through units, locations, operating context, time windows, and physical relationships. The Feature Factory records those transformations so sensors and engineered features can compete as carefully as algorithms.
+
+```text
+bearing_temperature
+├── rolling_mean_5m      ├── delta_load
+├── rolling_mean_30m     ├── z_score
+├── gradient             ├── rate_of_change
+├── delta_ambient        └── twin_residual
+```
+
+For vibration, a waveform can yield RMS, peak, kurtosis, crest factor, FFT, spectral energy, envelope spectrum, order components, and bearing frequencies. For process equipment, measurements combine with engineering relationships to produce pressure ratio, efficiency, heat rate, normalized power, ΔP, ΔT, flow per speed, power per flow, measured minus expected, and measured minus twin prediction.
+
+## P-101 feature lineage
+
+{P101_TWIN.features.map((feature) => (
+
+  <section key={feature.id} id={feature.id}>
+    <h2>{feature.name}</h2>
+    <p>{feature.description}</p>
+    <p><strong>Group:</strong> {feature.featureSet}. <strong>Sources:</strong> {feature.sourceSignalIds.join(", ")}.</p>
+  </section>
+))}
+
+## Residual Intelligence
+
+```text
+Residual = Physical Measurement - Digital Twin Prediction
+```
+
+A residual asks whether P-101 behaves as the current twin expects under the same flow, speed, pressure, and ambient conditions. That deviation may carry more diagnostic information than a raw value because ordinary regime changes are represented explicitly. It is not automatically an anomaly: residual usefulness depends on twin validity, sensor quality, alignment, calibration, and the uncertainty of both measurement and prediction.
+
+Feature competition must therefore record source signals, transformations, windows, units, missing-data behavior, software version, and leakage controls. A candidate that gains accuracy by using unavailable future data, a maintenance label, or a regime proxy has failed even if its metric improves. A smaller feature set may be preferred when it preserves detection performance with fewer sensors, lower inference cost, and clearer physical interpretation.
+
+> {SYNTHETIC_FIXTURE_DISCLAIMER} P-101 feature definitions are illustrative and require validation before any physical-machine use.

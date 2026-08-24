@@ -1,0 +1,36 @@
+import {
+  CONTENT_META,
+  RESEARCH_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+import { RESEARCH_QUESTIONS } from "@/lib/data/research";
+
+export const contentMeta = CONTENT_META.research;
+export const contentValidation = getContentEntry("research").validation;
+
+# Open Research Questions
+
+Industrial Twin Lab publishes uncertainty instead of hiding it behind a product narrative. The initial catalogue is deliberately bounded to ten questions. Each question can accumulate hypotheses, experiments, negative results, replications, and revisions without being mistaken for a solved claim.
+
+{RESEARCH_QUESTIONS.map((researchQuestion) => (
+
+  <article key={researchQuestion.id} id={researchQuestion.id.toLowerCase()}>
+    <h2>{researchQuestion.id}</h2>
+    <p>{researchQuestion.question}</p>
+    <p><strong>Status:</strong> {researchQuestion.status}. A useful answer must state its asset class, operating envelope, evidence sources, uncertainty, and conditions under which it fails.</p>
+  </article>
+))}
+
+## Maturity model
+
+| Level | Name                 | Capability                                               | Evidence threshold                                                              |
+| ----- | -------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 0     | Connected Asset      | Machine → Data                                           | Data access is known; no inference claim is made.                               |
+| 1     | Observable Asset     | Machine → Data → Monitoring                              | Signals and quality limits are visible and traceable.                           |
+| 2     | Digital Twin         | Machine ↔ Digital Representation                         | The representation is verified and validated for a stated use.                  |
+| 3     | Twin Lab             | Twin → Simulation → Experiments                          | Experiments are isolated, reproducible, and limitation-aware.                   |
+| 4     | Machine Intelligence | Twin + Experiment Fabric + AI Scientist + Fleet Learning | Recommendations survive independent validation and explicit engineering review. |
+
+Maturity is not a software purchase. P-101 does not advance because a model was trained; it advances only when evidence supports a defined engineering decision across relevant regimes. A higher level also inherits every lower-level obligation: data quality, traceability, simulation validity, uncertainty, and human authority.
+
+> {RESEARCH_DISCLAIMER}

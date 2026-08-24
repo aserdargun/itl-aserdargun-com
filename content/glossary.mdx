@@ -1,0 +1,24 @@
+import { CONTENT_META, getContentEntry } from "@/lib/content/registry";
+import { GLOSSARY_TERMS } from "@/lib/data/glossary";
+
+export const contentMeta = CONTENT_META.glossary;
+export const contentValidation = getContentEntry("glossary").validation;
+
+# Glossary
+
+The glossary fixes a shared vocabulary for the publication. Definitions are deliberately narrower than marketing usage: each term must be useful when specifying an experiment, reviewing evidence, or assigning authority.
+
+{[...GLOSSARY_TERMS].sort((left, right) => left.term.localeCompare(right.term)).map((item) => (
+
+  <section key={item.id} id={item.id}>
+    <h2>{item.term}</h2>
+    <p>{item.definition}</p>
+    <p>
+      Related: {item.relatedHrefs.map((href, index) => (
+        <span key={href}>{index > 0 ? ", " : ""}<a href={href}>{href.slice(1)}</a></span>
+      ))}
+    </p>
+  </section>
+))}
+
+The distinctions matter. **Verification** asks whether an implementation conforms to its design; **validation** asks whether the result is fit for the intended engineering decision. A **Champion Model** is selected only under stated evidence and constraints, while a **Challenger Model** remains comparable under the same conditions. Neither title grants operational authority.

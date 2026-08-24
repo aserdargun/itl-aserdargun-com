@@ -1,0 +1,32 @@
+import {
+  CONTENT_META,
+  RESEARCH_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+import { TECHNOLOGIES } from "@/lib/data/technologies";
+
+export const contentMeta = CONTENT_META.technology;
+export const contentValidation = getContentEntry("technology").validation;
+
+# Technology Atlas
+
+> Possible implementation ecosystem — not a prescribed stack.
+
+Architecture comes before product selection. Industrial connectivity, twin semantics, simulation, data systems, learning libraries, experiment tracking, local AI, infrastructure, and observability solve different problems and carry different operational burdens. A tool belongs only when it supports an explicit requirement and can preserve local operation, isolation, reproducibility, evidence, and maintainability.
+
+{TECHNOLOGIES.map((technology) => (
+
+  <section key={technology.id} id={technology.id}>
+    <h2>{technology.name}</h2>
+    <p>{technology.description}</p>
+    <ul>
+      {technology.items.map((item) => <li key={item.id}>{item.name}</li>)}
+    </ul>
+  </section>
+))}
+
+For the fictional P-101 teaching asset, an OPC UA connector could provide controlled read-oriented access while an FMU represents selected pump behavior, Parquet preserves a versioned dataset, and MLflow records experiments. That is one possible composition, not a requirement and not evidence that any candidate is fit for production. Selection must consider failure modes, offline operation, attack surface, license and lifecycle risk, engineering competence, and the ability to reproduce a result after the original tool session has ended.
+
+Local LLM runtimes and tool-using agents may support the [AI Scientist](/ai-scientist), but language generation is not a substitute for a solver, a historian query, a validation protocol, or engineering judgment. Kubernetes is not required merely because the architecture may one day scale. The least complex implementation that preserves the safety and evidence contracts is preferred.
+
+> {RESEARCH_DISCLAIMER}

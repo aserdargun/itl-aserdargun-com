@@ -1,0 +1,52 @@
+import {
+  CONTENT_META,
+  SYNTHETIC_FIXTURE_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META["experiment-fabric"];
+export const contentValidation =
+  getContentEntry("experiment-fabric").validation;
+
+# Experiment Fabric
+
+The Experiment Fabric treats an experiment as a first-class, reproducible object rather than a notebook cell or a chart. Its contract connects the engineering question to the exact evidence returned:
+
+```text
+Experiment
+├── Asset                ├── Feature Set
+├── Problem              ├── Algorithm
+├── Dataset              ├── Hyperparameters
+├── Operating Regime     ├── Validation Strategy
+├── Prediction Horizon   ├── Metrics
+├── Target               ├── Computational Cost
+└── Constraints          └── Robustness, Explainability, Uncertainty, Result
+```
+
+## P-101 example
+
+| Field                    | Configuration                                                  |
+| ------------------------ | -------------------------------------------------------------- |
+| Asset                    | Boiler Feed Water Pump P-101                                   |
+| Objective                | Detect bearing degradation                                     |
+| Prediction horizon       | 7 days                                                         |
+| Candidate models         | Isolation Forest, XGBoost, Autoencoder, Physics Residual Model |
+| Candidate feature groups | temperature, vibration, process, physics-derived, temporal     |
+| Validation               | Walk-forward validation                                        |
+| Operational constraint   | Maximum one false alert per month                              |
+
+The search target is **the best solution for a particular machine, operating regime, failure mode, and operational constraint**—not the algorithm with the highest accuracy. A detector with a high aggregate detection rate may be unusable if false alerts overload maintenance, if lead time disappears in a high-flow regime, or if its required sensors are unreliable.
+
+## Validation discipline
+
+Time split, walk-forward, and leave-one-regime-out validation answer different questions. The split must respect temporal ordering and prevent future information from leaking into training. Metrics should be reported by operating regime and with uncertainty, not reduced to a single flattering average. Failed candidates remain part of the experiment history because they constrain later hypotheses and prevent expensive repetition.
+
+## Evidence Package
+
+Every result binds the model, dataset, feature set, operating regimes, validation method, performance, false-alarm rate, lead time, robustness, uncertainty, explainability, limitations, data provenance, experiment ID, twin version, and code version. It is a model card for an engineering decision, not a deployment certificate.
+
+> If an industrial AI result cannot be reproduced, it should not be trusted.
+
+The [conceptual demonstrator](/experiment-fabric/demo) compares deterministic fixtures so the interface and evidence contract can be inspected. It does not train models or claim measured performance.
+
+> {SYNTHETIC_FIXTURE_DISCLAIMER}

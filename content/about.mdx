@@ -1,0 +1,33 @@
+import {
+  CONTENT_META,
+  RESEARCH_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META.about;
+export const contentValidation = getContentEntry("about").validation;
+
+# About Industrial Twin Lab
+
+**Status: Research / Experimental**
+
+Industrial Twin Lab is a living technical manifesto, research publication, architecture atlas, and interactive concept demonstrator for industrial machine intelligence. It begins with a strict proposition: an AI system should perform its first experiment in a validated digital environment, not on an operational machine. The publication is authored and maintained as part of the public `aserdargun/itl-aserdargun-com` research repository.
+
+It is not a commercial SaaS workflow, a control system, a safety system, a production-data service, or a claim that the P-101 fixture describes a real plant. Phase 1 has no operational-technology connection, backend API, account system, model-training runtime, or automated deployment authority. P-101 and all displayed experiment values are fictional, deterministic teaching fixtures.
+
+## Roadmap
+
+1. **Phase 1 — Manifesto + Architecture Atlas:** establish the thesis, safety boundary, typed knowledge layer, P-101 fixture, and conceptual demonstrator.
+2. **Phase 2 — Interactive Twin Capsule:** edit and inspect bounded asset representations.
+3. **Phase 3 — Synthetic Experiment Workbench:** configure controlled, explicitly synthetic investigations.
+4. **Phase 4 — Real Dataset Import:** introduce governed, traceable dataset ingestion.
+5. **Phase 5 — Python Experiment Runtime:** execute reproducible analytical workloads outside OT control.
+6. **Phase 6 — MLflow / Experiment Registry:** preserve experiment and model lineage.
+7. **Phase 7 — FMU / Modelica Simulation:** connect validated simulation artifacts through explicit interfaces.
+8. **Phase 8 — Local LLM AI Scientist:** orchestrate tools and evidence locally without control authority.
+9. **Phase 9 — Industrial Connectors:** add controlled industrial data access under a separate security design.
+10. **Phase 10 — Fleet Intelligence:** test portability and organizational learning across assets.
+
+The roadmap documents extension points; it is not hidden partial implementation or a promise that every phase is appropriate for every plant. Any control-facing capability requires its own hazard analysis, security boundary, validation case, approval process, and accountable human authority.
+
+> {RESEARCH_DISCLAIMER}

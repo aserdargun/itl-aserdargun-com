@@ -1,0 +1,30 @@
+import {
+  CONTENT_META,
+  SYNTHETIC_FIXTURE_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META["algorithm-arena"];
+export const contentValidation = getContentEntry("algorithm-arena").validation;
+
+# Algorithm Arena
+
+The Algorithm Arena compares candidates against the same dataset, feature definition, operating regimes, validation strategy, and operational constraint. No family is best in the abstract; suitability depends on the failure mechanism, evidence available, computational budget, need for explanation, and cost of error.
+
+| Family         | Candidates                                                        | Useful questions                                                                     |
+| -------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Statistical    | PCA, SPC, Regression                                              | Is a transparent baseline sufficient, stable, and easy to maintain?                  |
+| Classical ML   | Random Forest, XGBoost, LightGBM, Isolation Forest, One-Class SVM | Do engineered features separate the target under unseen regimes?                     |
+| Deep Learning  | Autoencoder, LSTM, TCN, Transformer                               | Does representation capacity earn its data, compute, and explanation cost?           |
+| Physics Hybrid | Residual Model, Gray-box Model, Physics-Informed Model            | Can physical structure improve extrapolation and failure interpretation?             |
+| Optimization   | Bayesian Optimization, MPC, Reinforcement Learning                | Is the problem genuinely optimization, and is any action authority safely separated? |
+
+For P-101 bearing degradation, Isolation Forest, XGBoost, Autoencoder, and Physics Residual candidates can be evaluated using time split, walk-forward, or leave-one-regime-out validation. The comparison reports detection rate, false alarms, lead time, inference cost, sensor count, robustness, and explainability. A higher detection rate does not win automatically: the operational constraint of at most one false alert per month may disqualify it.
+
+## Champion and challenger
+
+A Champion Model is the currently selected candidate under a stated Evidence Package. Challenger Models remain comparable under identical conditions and may replace it only through the same validation gate. The titles are versioned and conditional. Drift in P-101 instrumentation, envelope, maintenance state, or twin fidelity can invalidate the comparison and trigger a new experiment.
+
+Fair competition also includes a no-model or simple-rule baseline. Hyperparameter search is nested inside validation, not allowed to tune against the held-out evidence. Report distributions and regime-specific failures; do not hide them behind a leaderboard rank. Physics plausibility and uncertainty remain review criteria even when a statistical metric improves.
+
+> {SYNTHETIC_FIXTURE_DISCLAIMER} Arena scores describe deterministic teaching fixtures, not benchmark claims or production evidence.

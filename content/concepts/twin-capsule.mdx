@@ -1,0 +1,41 @@
+import {
+  CONTENT_META,
+  SYNTHETIC_FIXTURE_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+import { P101_TWIN } from "@/lib/data/p101";
+
+export const contentMeta = CONTENT_META["twin-capsule"];
+export const contentValidation = getContentEntry("twin-capsule").validation;
+
+# Twin Capsule
+
+A Twin Registry identifies and locates digital machine representations across an asset hierarchy:
+
+```text
+Enterprise → Fleet → Plant → System → Machine → Component
+```
+
+Each machine can own a **Twin Capsule**: a bounded, versioned record of identity, engineering metadata, sensor map, operating envelope, physics model, failure library, historical data, maintenance history, feature catalogue, experiment history, model registry, safety constraints, uncertainty, provenance, and documentation. The capsule is not the twin runtime itself. It is the traceable contract that tells a runtime, experiment, and reviewer exactly which representation was used.
+
+## P-101 anatomy
+
+P-101 is a fictional centrifugal boiler feed water pump driven by an electric motor. Its capsule is `{P101_TWIN.version}` and its asset hierarchy is `{P101_TWIN.asset.hierarchy.join(" → ")}`. The fixture defines eleven signals and six failure modes; those same identifiers are reused throughout this publication.
+
+| Record               | P-101 example                                                                                      | Why it matters                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Identity             | P-101, centrifugal pump, electric-motor drive                                                      | Prevents results from drifting to an ambiguous asset.   |
+| Engineering metadata | 240 m³/h design flow; 112 bar design head                                                          | Anchors interpretation in units and design intent.      |
+| Sensor map           | pressure, flow, power, speed, bearing temperature, vibration, ambient temperature                  | Connects features to physical locations and quantities. |
+| Operating envelope   | bounded flow, pressure, and ambient ranges                                                         | Defines where evidence may be applicable.               |
+| Failure library      | bearing and impeller degradation, cavitation, suction restriction, seal leakage, motor degradation | States the mechanisms under investigation.              |
+| Safety constraints   | read-only fixture; no setpoint authority; human review                                             | Keeps the representation outside control authority.     |
+| Provenance           | `{P101_TWIN.provenance.assetVersion}` and `{P101_TWIN.version}`                                    | Makes later experiments reproducible.                   |
+
+## Fidelity is use-dependent
+
+A Twin Capsule should not imply a perfect replica. A model adequate for testing a pressure-ratio feature may be inadequate for bearing-frequency diagnosis. Every capsule therefore declares its operating envelope, assumptions, uncertainty, and validation status. Changes to signal calibration, physics equations, failure mechanisms, or safety constraints require a new version; silently mutating a twin would invalidate prior Evidence Packages.
+
+The registry makes assets discoverable, while the capsule makes their context reviewable. Later phases may allow capsule editing or API-backed storage, but the stable contract remains: an experiment references a specific asset and twin version rather than whichever data happens to be current.
+
+> {SYNTHETIC_FIXTURE_DISCLAIMER} P-101 values are fictional engineering teaching fixtures, not plant measurements or validated industrial evidence.

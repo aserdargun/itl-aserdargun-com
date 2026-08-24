@@ -1,0 +1,36 @@
+import { CONTENT_META, getContentEntry } from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META.architecture;
+export const contentValidation = getContentEntry("architecture").validation;
+
+# Industrial AI Safety Architecture
+
+Industrial Twin Lab separates observation, experimentation, validation, and operational authority. Information may move from a physical asset into a controlled digital environment; an experimental result does not travel back as a control command. The full reasoning path is longer than a dashboard pipeline:
+
+```text
+Physical Asset → Digital Twin → Isolated Experiment Lab → AI Scientist
+→ Evidence → Human Decision → Validated Deployment
+```
+
+## Zoned boundary
+
+| Zone            | Representative elements                                                              | Permitted role                                              |
+| --------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| OT Control      | PLC, DCS, SCADA                                                                      | Deterministic plant control under existing authority.       |
+| Data Access     | Gateway, Historian, OPC UA, MQTT                                                     | Controlled, read-oriented acquisition and quality context.  |
+| Twin            | Twin Runtime, Simulation Runtime                                                     | Represent behavior within a declared fidelity and envelope. |
+| AI Experiment   | Local Models, Feature Engineering, Model Training, Experiment Tracking, AI Scientist | Generate and test hypotheses without control authority.     |
+| Validation Gate | Engineering Review, Approval, Signed Model                                           | Decide whether evidence is fit for a stated inference use.  |
+| Inference       | Approved Local Model                                                                 | Run only the reviewed version within its approved boundary. |
+
+The separation is both logical and architectural. Access credentials, networks, software lifecycles, data paths, and approval records should make it difficult to confuse a research experiment with a production control change. Cloud resources may extend the lab, but must not become an undeclared dependency for critical local data, knowledge, experiments, or inference.
+
+> Training an AI model and granting an AI system authority over machinery are completely different activities.
+
+For the fictional P-101 teaching asset, suction pressure, discharge pressure, flow, power, temperature, speed, and vibration can be copied into a bounded Twin Capsule. The twin may replay history or simulate a hypothesis about bearing degradation. The AI Scientist may request experiments and compare Evidence Packages. None of these actions changes a setpoint, starts a pump, bypasses an interlock, or certifies safety. An identified engineer decides whether further testing, maintenance inspection, or a separately validated inference deployment is justified.
+
+## Evidence crosses the gate, not authority
+
+A candidate crosses the Validation Gate only with a reproducible record: asset and twin versions, dataset and feature versions, experiment configuration, validation strategy, performance by operating regime, uncertainty, limitations, explainability, and provenance. Approval is scoped. Evidence for detecting P-101 bearing degradation under a known envelope does not authorize control, another failure mode, another machine, or an unseen regime.
+
+See the [Twin Capsule](/twin-capsule), [Experiment Fabric](/experiment-fabric), and [AI Scientist](/ai-scientist) for the records on each side of this boundary.

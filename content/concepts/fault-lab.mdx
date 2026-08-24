@@ -1,0 +1,32 @@
+import {
+  CONTENT_META,
+  SYNTHETIC_EVIDENCE_WARNING,
+  SYNTHETIC_FIXTURE_DISCLAIMER,
+  getContentEntry,
+} from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META["fault-lab"];
+export const contentValidation = getContentEntry("fault-lab").validation;
+
+# Synthetic Fault Laboratory
+
+Rare failures are difficult to study from operating history alone. The Fault Lab introduces controlled modifications into a twin or its inputs so detection behavior can be examined without damaging P-101 or disrupting production.
+
+```text
+Normal Twin → Fault Injection → Synthetic Operating Scenario
+→ AI Model → Detection Capability
+```
+
+Candidate scenarios include bearing friction increased by 5%, 10%, or 20%; impeller degradation; suction restriction; cavitation; seal leakage; motor-efficiency degradation; sensor bias; sensor drift; sensor dropout; and communication loss. Each scenario requires a mechanism, magnitude, affected signals, operating regime, duration, seed or deterministic configuration, twin version, and expected limitations.
+
+## Simulation validity comes first
+
+> {SYNTHETIC_EVIDENCE_WARNING}
+
+A model can learn an artifact of the simulator, a convenient injection shape, or a boundary condition that never occurs in service. Detection on a synthetic P-101 bearing-friction ramp shows sensitivity to that scenario—not proven sensitivity to real bearing degradation. Evidence must be labeled by origin and triangulated with physical reasoning, historical observations, maintenance findings, or separately validated tests.
+
+Useful fault studies include negative controls and sensitivity analysis. The lab should vary load, flow, ambient temperature, sensor noise, missingness, and model parameters to ask whether a candidate detects the mechanism or merely the scenario template. Simulation uncertainty propagates into every resulting confidence statement.
+
+Fault injection never occurs in the physical control system in Phase 1. The lab is isolated, read-oriented, and conceptual. Human engineering review decides whether a synthetic finding merits inspection, data collection, a safer test, or no action.
+
+> {SYNTHETIC_FIXTURE_DISCLAIMER}

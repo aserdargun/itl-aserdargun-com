@@ -1,0 +1,38 @@
+import {
+  CONTENT_META,
+  MANIFESTO_PRINCIPLES,
+  getContentEntry,
+} from "@/lib/content/registry";
+
+export const contentMeta = CONTENT_META.manifesto;
+export const contentValidation = getContentEntry("manifesto").validation;
+
+# Industrial Twin Lab Manifesto
+
+> Build machine intelligence in the twin before trusting it in the machine.
+
+Industrial Twin Lab is an engineering research environment for learning about a machine before an algorithm is trusted near it. Its central rule is: **Never let AI perform its first experiment on the physical machine.** It is not a digital-twin dashboard, predictive-maintenance package, AutoML platform, IoT monitor, LLM wrapper, or asset-management application. The object of the work is **evidence-backed machine knowledge**, not merely a model.
+
+```text
+Machine → Observation → Hypothesis → Experiment → Simulation → Evidence → Knowledge → Decision
+```
+
+{MANIFESTO_PRINCIPLES.map((principle) => (
+
+  <section key={principle.number} id={`principle-${String(principle.number).padStart(2, "0")}`}>
+    <h2>{`Principle ${String(principle.number).padStart(2, "0")} — ${principle.title}`}</h2>
+    <p>{principle.statement}</p>
+    {principle.evidence ? (
+      <ul>
+        {principle.evidence.map((item) => <li key={item}>{item}</li>)}
+      </ul>
+    ) : null}
+    {principle.note ? <p>{principle.note}</p> : null}
+  </section>
+))}
+
+These principles are gates, not slogans. A P-101 bearing-degradation candidate that performs well on one synthetic split has not yet established portability, stability, physical plausibility, or safe deployment behavior. Its Evidence Package must preserve the hypothesis, data and twin versions, feature pipeline, validation regime, uncertainty, limitations, and provenance. A human engineer retains authority to reject, repeat, constrain, or stop the work.
+
+The sequence ends in a decision rather than an automatic actuation. Training a model, recommending an investigation, approving an inference model, and changing a physical setpoint are four different authorities. Industrial Twin Lab addresses the first two and provides evidence for review; it grants no system authority over machinery.
+
+Continue with the [safety architecture](/architecture), the [Experiment Fabric](/experiment-fabric), or the [open research questions](/research).
