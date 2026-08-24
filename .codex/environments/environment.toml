@@ -1,0 +1,20 @@
+version = 1
+name = "Industrial Twin Lab"
+
+[setup]
+script = "npm ci"
+
+[[actions]]
+name = "Run"
+icon = "run"
+command = "npm run dev:codex"
+
+[[actions]]
+name = "Validate"
+icon = "tool"
+command = "npm run validate:codex"
+
+[[actions]]
+name = "Stop"
+icon = "tool"
+command = "npm run stop:codex"
