@@ -46,22 +46,54 @@ or decorative gradients.
   --color-paper-raised: #f2eee5;
   --color-paper-technical: #d7d2c6;
   --color-ink: #171813;
-  --color-ink-muted: #6d6b63;
+  --color-ink-muted: #5b5953;
   --color-rule: #b9b4a9;
   --color-rule-strong: #817e76;
   --color-rule-dark: #3a3b37;
   --color-text-on-dark: #eeeae0;
   --color-text-on-dark-muted: #a9aaa4;
   --color-signal: #df5b2f;
+  --color-signal-ink: #9b3b1a;
+  --color-focus-on-light: #9b3b1a;
+  --color-focus-on-dark: #df5b2f;
+  --color-focus: var(--color-focus-on-light);
+}
+
+.surface-dark {
+  --color-focus: var(--color-focus-on-dark);
 }
 ```
 
-- `--color-signal` is reserved for active navigation, clause numbers, critical
-  annotations, safety boundaries, focus rings, and selected control states.
+- `--color-signal` is the bright brand accent. On dark surfaces it may be used for
+  focus geometry, active underlines, and large marks. On light surfaces it is
+  decorative only and cannot carry meaning by itself: `#df5b2f` is only `2.92:1`
+  on `--color-paper`.
+- `--color-signal-ink` is required for small orange text, clause numbers, critical
+  annotations, selected-control borders, safety boundaries, and other meaningful
+  orange marks on light surfaces.
+- Focus uses the surface-aware `--color-focus`: `--color-focus-on-light` on every
+  paper surface and `--color-focus-on-dark` on both shell surfaces.
 - Paper sections alternate only when hierarchy needs it; they are not cards.
 - Dark bands use `--color-shell-deep`, never a gradient.
 - Body copy uses `--color-ink` or `--color-ink-muted`; muted text must still meet
   WCAG 2.2 AA contrast at its rendered size.
+
+Contrast values below use WCAG sRGB relative luminance and are minimums across the
+listed allowed surfaces:
+
+| Token pair | Contrast | Allowed use |
+| --- | ---: | --- |
+| `#5b5953` on `#e9e4d8` | `5.52:1` | Muted normal text on primary paper |
+| `#5b5953` on `#f2eee5` | `6.05:1` | Muted normal text on raised paper |
+| `#5b5953` on `#d7d2c6` | `4.64:1` | Muted normal text on technical paper |
+| `#9b3b1a` on `#e9e4d8` | `5.46:1` | Signal normal text and focus on primary paper |
+| `#9b3b1a` on `#f2eee5` | `5.98:1` | Signal normal text and focus on raised paper |
+| `#9b3b1a` on `#d7d2c6` | `4.59:1` | Signal normal text and focus on technical paper |
+| `#df5b2f` on `#292a27` | `3.90:1` | Non-text focus/active geometry on shell |
+| `#df5b2f` on `#11120f` | `5.08:1` | Focus/active geometry on deep shell |
+
+Do not substitute the original `#6d6b63` muted text or bright `#df5b2f` light-
+surface text for these accessible tokens.
 
 ## 4. Typography
 
@@ -226,15 +258,17 @@ independent marketing copy.
 
 ## 11. Diagram connectors and safety notation
 
-- Primary progression: `1px solid var(--color-ink)` with a simple `6px` triangular
-  arrowhead. Use only for a known one-way relationship.
-- Observation/reference: `1px dashed var(--color-ink-muted)` with a `4px 5px` dash
-  pattern and no arrowhead unless direction is known.
-- Safety boundary: `2px solid var(--color-signal)`, normally a vertical rule.
-- Blocked control path: ink line ending at a `12px` perpendicular signal-orange
-  stop bar. Never render it as a forward arrow.
-- Human authority: signal-orange gate/cross-bar and a human-review label. It is
-  visually stronger than adjacent connectors.
+- **Controlled data / evidence flow:** `1px solid var(--color-ink)` with a simple
+  `6px` triangular arrowhead. Use only for a known one-way relationship.
+- **Isolated zone boundary:** a closed `1px dashed var(--color-ink-muted)` rectangle
+  with a `4px 5px` dash pattern. Dashed styling is never a connector, flow line, or
+  arrow.
+- **Human authority / no direct control:** an ink line ending at a `12px`
+  perpendicular `--color-signal-ink` stop bar on paper; the human gate uses the
+  same signal-ink cross-bar and a visible human-review label. On a dark legend,
+  the stop bar may use `--color-signal`.
+- Other safety boundaries use `2px solid var(--color-signal-ink)` on light
+  surfaces. They remain paired with a text label and never rely on color alone.
 - Connectors turn at right angles. They do not glow, animate continuously, weave
   behind labels, or cross unrelated zones.
 - The architecture zone order is exactly `OT Control` → `Data Access` → `Twin` →
@@ -252,7 +286,8 @@ Package document, human decision, and approved-inference endpoint.
 
 - Base grid: `24 × 24`; complex diagram symbols may use `48 × 48` or `64 × 64`.
 - Stroke: `1.25px`, `currentColor`, square line caps and joins where practical.
-- Fill: none by default. Signal orange may fill only an active mark or gate.
+- Fill: none by default. Signal ink may fill only an active mark or gate on paper;
+  bright signal may fill the equivalent mark on a dark surface.
 - Icons always accompany text in navigation, controls, safety states, and complex
   diagrams. They never substitute for an accessible name.
 - Do not use emoji, clip art, AI-brain symbols, decorative factories, or a mixed
@@ -260,18 +295,26 @@ Package document, human decision, and approved-inference endpoint.
 
 ## 13. Interaction states
 
-- Text links: ink text with a `1px` underline offset by `0.35em`; orange only for
-  active/critical links. Hover thickens or shifts the underline without moving text.
+- Text links: ink text with a `1px` underline offset by `0.35em`. Active/critical
+  link text uses `--color-signal-ink` on paper. On dark surfaces, keep link text
+  light and use bright signal only for the underline. Hover thickens or shifts the
+  underline without moving text.
 - Buttons/controls: square corners, minimum `44px` height, `1px` ink border. Primary
-  actions use signal orange with ink or light text that passes AA contrast.
-- Focus visible: `2px solid var(--color-signal)` with `2px` offset. Never suppress
-  the browser focus indicator without replacing it.
-- Selected controls: signal-orange border or underline plus a text/state cue; color
-  is not the only signal.
+  actions use `--color-signal-ink` with light text on paper and a contrast-checked
+  surface-specific treatment on dark sections.
+- Focus visible: `2px solid var(--color-focus)` with `2px` offset. Light and dark
+  surfaces set `--color-focus` as defined in the palette. Never suppress the
+  browser focus indicator without replacing it.
+- Selected controls: `--color-signal-ink` border/underline on paper, bright signal
+  geometry on dark surfaces, plus a text/state cue; color is not the only signal.
 - Disabled controls: `0.55` opacity, `not-allowed` cursor, and programmatic disabled
   state. Disabled appearance must not be used for read-only evidence.
 - Experiment updates announce through a polite live region and do not move focus.
   Result dimensions stay stable between valid configurations.
+- Shipping experiment results are exact deterministic textual values sourced from
+  typed fixtures. Each value includes its engineering unit where applicable and an
+  assistive-text equivalent. Do not infer a value, scale, rank, or magnitude from
+  the non-quantitative composition marks in `experiment-demo-concept.png`.
 - The exact disclosure `Conceptual demonstration — synthetic fixture results.`
   remains visible beside every generated result and Evidence Package.
 
