@@ -13,5 +13,6 @@ describe("Playwright target selection", () => {
 
     expect(config.use?.baseURL).toBe("https://itl.aserdargun.com");
     expect(config.webServer).toBeUndefined();
+    expect(config.workers).toBe(1);
   });
 });

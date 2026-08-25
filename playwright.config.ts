@@ -4,6 +4,7 @@ const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL;
 
 export default defineConfig({
   testDir: "./tests/e2e",
+  workers: externalBaseURL ? 1 : undefined,
   projects: [
     {
       name: "chromium",

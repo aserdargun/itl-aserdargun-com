@@ -61,6 +61,14 @@ npm run validate:codex
 
 This package script checks formatting, lint, TypeScript, content relationships, unit tests, the static production build, and browser tests.
 
+To run the same browser suite against the published site without starting the local static server:
+
+```bash
+PLAYWRIGHT_BASE_URL=https://itl.aserdargun.com npm run test:e2e
+```
+
+External targets use one Playwright worker so the verification suite does not burst-load the production edge.
+
 ### Stop
 
 ```bash
@@ -73,7 +81,7 @@ To inspect the already-built static export locally, run `npm run start:static`; 
 
 ## Azure target
 
-The intended static-hosting target is Azure Static Web Apps at `https://itl.aserdargun.com`. The prepared `out/` directory is the deployable artifact. `npm run build` verifies that the exported 404 documents match and copies `staticwebapp.config.json` to the output root. The configuration keeps publication directories slash-normalized while serving file assets without a trailing slash, and defines exact publication routes, a true 404 response, security headers, and cache and MIME policies. Azure resources, deployment, custom-domain binding, DNS, TLS, and production verification are outside this local Task 13 change.
+The production site is published through Azure Static Web Apps at `https://itl.aserdargun.com`; its Azure-generated hostname is `https://purple-river-0fe496203.7.azurestaticapps.net`. The prepared `out/` directory is the deployable artifact. `npm run build` verifies that the exported 404 documents match and copies `staticwebapp.config.json` to the output root. The configuration keeps publication directories slash-normalized while serving file assets without a trailing slash, and defines exact publication routes, a true 404 response, security headers, and cache and MIME policies.
 
 ## Research and industrial-control disclaimer
 
