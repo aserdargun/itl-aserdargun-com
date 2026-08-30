@@ -101,15 +101,11 @@ for (const viewport of VIEWPORTS) {
 
         if (route === "/") {
           const stageGeometry = await page
-            .locator(".operating-thesis__stage")
+            .locator(".twin-system-hero li")
             .first()
             .evaluate((stage) => {
-              const title = stage
-                .querySelector("strong")!
-                .getBoundingClientRect();
-              const role = stage
-                .querySelector(":scope > span:last-child")!
-                .getBoundingClientRect();
+              const title = stage.querySelector("h3")!.getBoundingClientRect();
+              const role = stage.querySelector("p")!.getBoundingClientRect();
               return { titleBottom: title.bottom, roleTop: role.top };
             });
           expect(stageGeometry.titleBottom).toBeLessThanOrEqual(

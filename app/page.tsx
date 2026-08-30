@@ -1,6 +1,7 @@
 import { EvidencePackage } from "@/components/diagrams/evidence-package";
 import { TwinCapsuleDiagram } from "@/components/diagrams/twin-capsule-diagram";
 import { HomeHero } from "@/components/publication/home-hero";
+import { FieldUpdate2026 } from "@/components/publication/field-update-2026";
 import { ManifestoPrinciples } from "@/components/publication/manifesto-principles";
 import { PublicationLink } from "@/components/publication/publication-link";
 import { SectionHeading } from "@/components/publication/section-heading";
@@ -40,6 +41,8 @@ export default function HomePage() {
           <li>Evidence before deployment</li>
         </ul>
       </section>
+
+      <FieldUpdate2026 />
 
       <section className="home-principles">
         <SectionHeading label="Selected principles / 12 total">

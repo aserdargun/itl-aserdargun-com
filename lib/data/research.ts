@@ -68,6 +68,36 @@ export const RESEARCH_QUESTIONS: readonly ResearchQuestion[] = [
       "What evidence should be required before an industrial AI model is allowed into production?",
     status: "conceptual",
   },
+  {
+    id: "RQ-011",
+    question:
+      "How can multi-agent orchestration remain subordinate to a shared safety hierarchy and named human authority?",
+    status: "conceptual",
+  },
+  {
+    id: "RQ-012",
+    question:
+      "What operational context must be captured to replay and audit an industrial agent recommendation?",
+    status: "conceptual",
+  },
+  {
+    id: "RQ-013",
+    question:
+      "Can SSP 2.0 and FMI 3.0 preserve enough simulation architecture and provenance for cross-tool replication?",
+    status: "conceptual",
+  },
+  {
+    id: "RQ-014",
+    question:
+      "What machine-readable data and metadata contract is required for a connected product to support trustworthy twin evidence?",
+    status: "conceptual",
+  },
+  {
+    id: "RQ-015",
+    question:
+      "What technical evidence should support risk management, human oversight, and traceability for high-risk industrial AI?",
+    status: "conceptual",
+  },
 ];
 
 const maturityLevel = (

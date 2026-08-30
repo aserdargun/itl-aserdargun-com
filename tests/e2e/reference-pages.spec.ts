@@ -39,6 +39,26 @@ const RESEARCH_QUESTIONS = [
     "RQ-010",
     "What evidence should be required before an industrial AI model is allowed into production?",
   ],
+  [
+    "RQ-011",
+    "How can multi-agent orchestration remain subordinate to a shared safety hierarchy and named human authority?",
+  ],
+  [
+    "RQ-012",
+    "What operational context must be captured to replay and audit an industrial agent recommendation?",
+  ],
+  [
+    "RQ-013",
+    "Can SSP 2.0 and FMI 3.0 preserve enough simulation architecture and provenance for cross-tool replication?",
+  ],
+  [
+    "RQ-014",
+    "What machine-readable data and metadata contract is required for a connected product to support trustworthy twin evidence?",
+  ],
+  [
+    "RQ-015",
+    "What technical evidence should support risk management, human oversight, and traceability for high-risk industrial AI?",
+  ],
 ] as const;
 
 const MATURITY_LEVELS = [
@@ -88,6 +108,7 @@ const TECHNOLOGY_CATALOGUE = [
     "Modelica",
     "OpenModelica",
     "FMI",
+    "SSP 2.0",
     "FMU",
     "Python scientific computing",
   ],

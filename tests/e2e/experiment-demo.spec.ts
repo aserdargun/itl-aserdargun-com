@@ -123,6 +123,15 @@ test("the conceptual experiment recomputes a complete synthetic evidence ledger"
   await expect(
     page.getByText("Synthetic fixture", { exact: true }).first(),
   ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 2, name: "P-101 decision replay" }),
+  ).toBeVisible();
+  await expectExactLedger(page.locator(".experiment-result__audit-rail"), [
+    ["Context snapshot", "P-101 + operating envelope"],
+    ["Constraint check", "No control path"],
+    ["Evidence", "Deterministic fixture"],
+    ["Authority", "Human review required"],
+  ]);
 
   const controls = [
     ["Machine", "P-101"],

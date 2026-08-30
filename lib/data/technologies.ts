@@ -32,6 +32,7 @@ export const TECHNOLOGIES: readonly Technology[] = [
       item("modelica", "Modelica"),
       item("openmodelica", "OpenModelica"),
       item("fmi", "FMI"),
+      item("ssp-2", "SSP 2.0"),
       item("fmu", "FMU"),
       item("python-scientific-computing", "Python scientific computing"),
     ],

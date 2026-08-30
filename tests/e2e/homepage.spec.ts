@@ -29,12 +29,11 @@ const expectDomOrder = async (locators: readonly Locator[]) => {
   }
 };
 
-const OPERATING_STAGES = [
-  "Physical asset — Reality",
-  "Digital twin — Representation",
-  "Isolated experiment lab — Inquiry",
-  "AI scientist — Reasoning",
-  "Evidence package — Decision",
+const TWIN_SYSTEM_LAYERS = [
+  "DataSynchronized evidence",
+  "ContextAsset + operating limits",
+  "Decision & process orchestrationValidated recommendation",
+  "ActuationHuman-authorized executionPhase 1 stops here",
 ] as const;
 
 const KNOWLEDGE_SEQUENCE = [
@@ -68,7 +67,7 @@ test("homepage establishes the operating thesis in the approved reading order", 
     { exact: true },
   );
   const thesisFigure = hero.getByRole("figure", {
-    name: "The operating thesis",
+    name: "Twin system research boundary",
   });
 
   await expect(title).toBeVisible();
@@ -101,8 +100,24 @@ test("homepage establishes the operating thesis in the approved reading order", 
   expect(mastheadLabels).toEqual(EXPECTED_MASTHEAD_LABELS);
 
   await expect(thesisFigure.getByRole("listitem")).toContainText(
-    OPERATING_STAGES,
+    TWIN_SYSTEM_LAYERS,
   );
+  await expect(thesisFigure).toContainText("Digital thread / traceability");
+  const fieldUpdate = page.getByRole("region", {
+    name: "The twin is no longer only a model.",
+  });
+  await expect(fieldUpdate).toBeVisible();
+  await expect(
+    fieldUpdate.getByRole("list", { name: "Digital Twin System layers" }),
+  ).toBeVisible();
+  await expect(
+    fieldUpdate.getByRole("link", { name: "Read the architecture" }),
+  ).toHaveAttribute("href", "/architecture/");
+  await expect(
+    fieldUpdate.getByRole("link", {
+      name: "DTC Digital Twin System Framework (opens in a new tab)",
+    }),
+  ).toHaveAttribute("target", "_blank");
   await expect(
     page.getByText(
       "Never let AI perform its first experiment on the physical machine.",
@@ -231,7 +246,7 @@ test("homepage has no document-level horizontal overflow at 390px", async ({
     name: "Industrial Twin Lab",
   });
   const thesisFigure = page.getByRole("figure", {
-    name: "The operating thesis",
+    name: "Twin system research boundary",
   });
   const readingOrder = await title.evaluate(
     (heading, figure) =>

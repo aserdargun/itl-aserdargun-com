@@ -33,6 +33,24 @@ test("architecture separates experimentation from operational authority", async 
     }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  const twinSystemBoundary = page.getByRole("figure", {
+    name: "Digital Twin System / ITL research boundary",
+  });
+  await expect(twinSystemBoundary).toBeVisible();
+  await expect(
+    twinSystemBoundary.getByRole("heading", { level: 3 }),
+  ).toHaveText([
+    "Data",
+    "Context",
+    "Decision & process orchestration",
+    "Actuation",
+  ]);
+  await expect(twinSystemBoundary).toContainText(
+    "ITL Phase 1 has no control path",
+  );
+  await expect(twinSystemBoundary).toContainText(
+    "Human authority / Phase 1 out of scope",
+  );
   const boundary = page.getByRole("figure", {
     name: "Industrial Twin Lab safety boundary",
   });

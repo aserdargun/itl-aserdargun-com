@@ -125,7 +125,7 @@ describe("publication module validation", () => {
           'research: rendered publication is missing research question "RQ-001"',
         ),
         expect.stringContaining(
-          'research: rendered publication is missing research question "RQ-010"',
+          'research: rendered publication is missing research question "RQ-015"',
         ),
         expect.stringContaining(
           "manifesto: rendered publication must contain manifesto principle 01 exactly once; found 0",

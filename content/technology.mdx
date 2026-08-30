@@ -19,6 +19,19 @@ Named technologies are candidates, not endorsements or fixed architecture decisi
 
 For the fictional P-101 teaching asset, an OPC UA connector could provide controlled read-oriented access while an FMU represents selected pump behavior, Parquet preserves a versioned dataset, and MLflow records experiments. That is one possible composition, not a requirement and not evidence that any candidate is fit for production. Selection must consider failure modes, offline operation, attack surface, license and lifecycle risk, engineering competence, and the ability to reproduce a result after the original tool session has ended.
 
-Local LLM runtimes and tool-using agents may support the [AI Scientist](/ai-scientist), but language generation is not a substitute for a solver, a historian query, a validation protocol, or engineering judgment. Kubernetes is not required merely because the architecture may one day scale. The least complex implementation that preserves the safety and evidence contracts is preferred.
+<a
+  href="https://modelica.org/news/2025-01-08-ssp-20-released/"
+  rel="noopener noreferrer"
+  target="_blank"
+>
+  SSP 2.0
+</a>
+is now a relevant candidate for packaging composite simulation architectures
+across FMI 3.0 and Modelica components. Its inclusion is a research prompt, not
+an endorsement: a package is useful here only if it preserves versions,
+parameters, interfaces, execution assumptions, and enough provenance to repeat
+the evidence across tools.
+
+Local LLM runtimes and tool-using agents may support the [AI Scientist](/ai-scientist), but language generation is not a substitute for a solver, a historian query, a validation protocol, or engineering judgment. Any multi-agent composition remains subordinate to a shared constraint hierarchy, deterministic validation, a complete audit trail, and named human authority. Kubernetes is not required merely because the architecture may one day scale. The least complex implementation that preserves the safety and evidence contracts is preferred.
 
 > {RESEARCH_DISCLAIMER}

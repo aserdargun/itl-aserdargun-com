@@ -190,7 +190,7 @@ describe("publication catalogues", () => {
     ]);
   });
 
-  it("exposes the ten canonical research questions in sequence", () => {
+  it("exposes the fifteen canonical research questions in sequence", () => {
     expect(RESEARCH_QUESTIONS.map((question) => question.id)).toEqual([
       "RQ-001",
       "RQ-002",
@@ -202,9 +202,14 @@ describe("publication catalogues", () => {
       "RQ-008",
       "RQ-009",
       "RQ-010",
+      "RQ-011",
+      "RQ-012",
+      "RQ-013",
+      "RQ-014",
+      "RQ-015",
     ]);
     expect(RESEARCH_QUESTIONS.at(-1)?.question).toBe(
-      "What evidence should be required before an industrial AI model is allowed into production?",
+      "What technical evidence should support risk management, human oversight, and traceability for high-risk industrial AI?",
     );
   });
 

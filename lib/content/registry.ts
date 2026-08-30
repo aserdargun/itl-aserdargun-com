@@ -205,7 +205,7 @@ export const CONTENT_META = {
   research: metadata(
     "research",
     "Open Research Questions",
-    "Ten unresolved questions and a maturity model for disciplined Industrial Twin Lab research.",
+    "Fifteen unresolved questions and a maturity model for disciplined Industrial Twin Lab research.",
     10,
     ["/manifesto", "/technology", "/about"],
   ),
@@ -431,9 +431,9 @@ export const validateContentEntries = (
         errors.push(`${entry.id}: researchQuestionIds must be an array.`);
       }
       for (const id of actualIds) {
-        if (!/^RQ-00[1-9]$/.test(id) && id !== "RQ-010") {
+        if (!/^RQ-0(?:0[1-9]|1[0-5])$/.test(id)) {
           errors.push(
-            `${entry.id}: invalid research id "${id}"; expected RQ-001 through RQ-010.`,
+            `${entry.id}: invalid research id "${id}"; expected RQ-001 through RQ-015.`,
           );
         }
       }

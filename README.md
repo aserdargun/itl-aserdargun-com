@@ -27,10 +27,10 @@ The complete twelve-clause manifesto is published at `/manifesto/`.
 
 ## Status and boundaries
 
-Publication status: **Research / Experimental**. The source repository is the public `aserdargun/itl-aserdargun-com` repository. Phase 1 is a static publication and concept demonstrator; this Task 13 revision does not publish or deploy it.
+Publication status: **Research / Experimental**. The source repository is the public `aserdargun/itl-aserdargun-com` repository. Phase 1 is a static publication and concept demonstrator. The August 2026 editorial refresh updates the research map and interface without changing the runtime or control-authority boundary; this local revision does not publish or deploy it.
 
 - Implemented: the publication route tree, MDX articles, typed fictional P-101 fixtures, code-native diagrams, deterministic synthetic experiment demonstrator, metadata, crawl files, and static-hosting contract.
-- Conceptual: Twin Capsule workflows, evidence-led model evaluation, fault simulation, AI Scientist orchestration, and cross-asset learning.
+- Conceptual: Twin Capsule workflows, evidence-led model evaluation, fault simulation, governed AI Scientist orchestration, cross-asset learning, and reproducible simulation-system packaging.
 - Planned: separately designed services for dataset import, experiment execution, registries, simulation, industrial connectors, and fleet learning.
 
 Future runtime services must stay separate from the static publication. Any control-facing capability requires an independent safety design, explicit authorization, plant-specific validation, and human engineering governance.

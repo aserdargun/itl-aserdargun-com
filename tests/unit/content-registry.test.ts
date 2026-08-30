@@ -128,7 +128,7 @@ describe("content registry", () => {
             ...entry,
             validation: {
               ...entry.validation,
-              researchQuestionIds: ["RQ-001", "RQ-011"],
+              researchQuestionIds: ["RQ-001", "RQ-016"],
             },
           }
         : entry.id === "glossary"
@@ -147,7 +147,7 @@ describe("content registry", () => {
         expect.stringContaining(
           "manifesto: principle numbers must be 01 through 12",
         ),
-        expect.stringContaining('research: invalid research id "RQ-011"'),
+        expect.stringContaining('research: invalid research id "RQ-016"'),
         expect.stringContaining(
           `research: missing research id "${RESEARCH_QUESTIONS[1].id}"`,
         ),

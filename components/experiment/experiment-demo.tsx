@@ -174,7 +174,13 @@ export function ExperimentDemo() {
         <header className="experiment-result__header">
           <div>
             <p>Evidence Package / Synthetic fixture</p>
-            <h2 data-testid="experiment-id">{result.experimentId}</h2>
+            <h2>P-101 decision replay</h2>
+            <p
+              className="experiment-result__record-id"
+              data-testid="experiment-id"
+            >
+              {result.experimentId}
+            </p>
           </div>
           <p className="experiment-result__status">
             <span>Status</span>
@@ -192,6 +198,25 @@ export function ExperimentDemo() {
           {announcement}
         </p>
 
+        <dl className="experiment-result__audit-rail">
+          <div>
+            <dt>Context snapshot</dt>
+            <dd>P-101 + operating envelope</dd>
+          </div>
+          <div>
+            <dt>Constraint check</dt>
+            <dd>No control path</dd>
+          </div>
+          <div>
+            <dt>Evidence</dt>
+            <dd>Deterministic fixture</dd>
+          </div>
+          <div>
+            <dt>Authority</dt>
+            <dd>Human review required</dd>
+          </div>
+        </dl>
+
         <MetricComparison metrics={result.metrics} />
 
         <dl className="experiment-result__summary">
@@ -206,10 +231,6 @@ export function ExperimentDemo() {
           <div>
             <dt>Simulator version</dt>
             <dd>{result.provenance.simulatorVersion}</dd>
-          </div>
-          <div>
-            <dt>Authority</dt>
-            <dd>Human review required</dd>
           </div>
         </dl>
 

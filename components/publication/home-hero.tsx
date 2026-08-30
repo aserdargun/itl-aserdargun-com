@@ -1,10 +1,4 @@
-const OPERATING_STAGES = [
-  { title: "Physical asset", role: "Reality" },
-  { title: "Digital twin", role: "Representation" },
-  { title: "Isolated experiment lab", role: "Inquiry" },
-  { title: "AI scientist", role: "Reasoning" },
-  { title: "Evidence package", role: "Decision" },
-] as const;
+import { TWIN_SYSTEM_LAYERS } from "@/lib/data/field-update";
 
 export function HomeHero() {
   return (
@@ -22,25 +16,33 @@ export function HomeHero() {
         </p>
       </div>
 
-      <figure aria-label="The operating thesis" className="operating-thesis">
-        <div className="operating-thesis__heading">
-          <h2>The operating thesis</h2>
-          <p>Figure 01</p>
+      <figure
+        aria-label="Twin system research boundary"
+        className="twin-system-hero"
+      >
+        <div className="twin-system-hero__heading">
+          <h2>Twin system / research boundary</h2>
+          <p>
+            Field update / <time dateTime="2026-08-25">25 Aug 2026</time>
+          </p>
         </div>
         <ol>
-          {OPERATING_STAGES.map((stage, index) => (
-            <li key={stage.title}>
-              <span aria-hidden="true" className="operating-thesis__number">
+          {TWIN_SYSTEM_LAYERS.map((layer, index) => (
+            <li data-phase-one={layer.phaseOneStatus} key={layer.id}>
+              <span aria-hidden="true" className="twin-system-hero__number">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="operating-thesis__stage">
-                <strong>{stage.title}</strong>
-                <span aria-hidden="true"> — </span>
-                <span>{stage.role}</span>
-              </span>
+              <h3>{layer.title}</h3>
+              <p>{layer.summary}</p>
+              {layer.phaseOneStatus === "outside" ? (
+                <span className="twin-system-hero__stop">
+                  Phase 1 stops here
+                </span>
+              ) : null}
             </li>
           ))}
         </ol>
+        <figcaption>Digital thread / traceability</figcaption>
       </figure>
     </header>
   );
