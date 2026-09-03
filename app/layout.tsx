@@ -15,10 +15,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://itl.aserdargun.com"),
-  title: {
-    default: "Industrial Twin Lab",
-    template: "%s | Industrial Twin Lab",
-  },
+  title: { default: "ITL - Industrial Twin", template: "%s · Industrial Twin" },
   description: SITE_DESCRIPTION,
   icons: {
     icon: "/favicon.svg",
