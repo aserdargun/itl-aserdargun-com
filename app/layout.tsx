@@ -23,14 +23,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Industrial Twin Lab",
-    title: "Industrial Twin Lab",
+    siteName: "ITL - Industrial Twin",
+    title: "ITL - Industrial Twin",
     description: SITE_DESCRIPTION,
     images: [SOCIAL_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Industrial Twin Lab",
+    title: "ITL - Industrial Twin",
     description: SITE_DESCRIPTION,
     images: [SOCIAL_IMAGE.url],
   },

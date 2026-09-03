@@ -8,7 +8,7 @@ export default function NotFound() {
       </p>
       <h1>Publication not found</h1>
       <p>
-        The requested Industrial Twin Lab publication is not part of the current
+        The requested ITL publication is not part of the current
         research atlas. Continue from a known reference point.
       </p>
       <nav aria-label="Not found navigation">

@@ -15,7 +15,7 @@ import { publicationMetadata } from "@/lib/metadata";
 
 export const metadata = publicationMetadata({
   pathname: "/",
-  title: "Industrial Twin Lab",
+  title: "ITL - Industrial Twin",
   description:
     "Build machine intelligence in the twin before trusting it in the machine.",
 });
