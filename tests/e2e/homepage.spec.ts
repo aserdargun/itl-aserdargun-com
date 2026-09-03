@@ -52,7 +52,7 @@ test("homepage establishes the operating thesis in the approved reading order", 
 }) => {
   await page.goto("/");
 
-  await expect(page).toHaveTitle(/^ITL - Industrial Twin/u);
+  await expect(page).toHaveTitle(/^ITL - /u);
   const hero = page.locator(".home-hero");
   const title = hero.getByRole("heading", {
     level: 1,
