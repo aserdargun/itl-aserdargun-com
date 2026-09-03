@@ -92,9 +92,9 @@ describe("publication metadata", () => {
   it("ships an SVG favicon and an exact 1200 by 630 PNG social image", () => {
     const favicon = readFileSync("public/favicon.svg", "utf8");
     expect(favicon).toContain("<svg");
-    expect(favicon).toContain("#292a27");
-    expect(favicon).toContain("#e9e4d8");
-    expect(favicon).toContain("#df5b2f");
+    // aserdargun family brand: dark + lime
+    expect(favicon).toContain("#121310");
+    expect(favicon).toContain("#c8ff36");
     expect(favicon).not.toMatch(/data:image|<image/i);
 
     const png = readFileSync("public/opengraph.png");
