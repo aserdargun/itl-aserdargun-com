@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import {
+  FIELD_UPDATE_REVIEW,
   FIELD_UPDATE_SOURCES,
   TWIN_SYSTEM_LAYERS,
 } from "@/lib/data/field-update";
@@ -12,7 +13,12 @@ export function FieldUpdate2026() {
       className="field-update surface-dark"
     >
       <header className="field-update__intro">
-        <p>Field update / 2026</p>
+        <p>
+          Field update /{" "}
+          <time dateTime={FIELD_UPDATE_REVIEW.dateTime}>
+            {FIELD_UPDATE_REVIEW.dateLabel}
+          </time>
+        </p>
         <h2 id="field-update-2026-title">
           The twin is no longer only a model.
         </h2>
@@ -42,7 +48,7 @@ export function FieldUpdate2026() {
         </p>
         <nav aria-label="2026 field update links">
           <Link href="/architecture">Read the architecture</Link>
-          <Link href="/research">Review the 2026 research frontier</Link>
+          <Link href="/research">Review the current research frontier</Link>
         </nav>
       </div>
 
@@ -58,7 +64,7 @@ export function FieldUpdate2026() {
                 target="_blank"
               >
                 <span>{source.title}</span>
-                <time>{source.dateLabel}</time>
+                <time dateTime={source.dateTime}>{source.dateLabel}</time>
               </a>
             </li>
           ))}

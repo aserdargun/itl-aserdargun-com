@@ -25,7 +25,7 @@ const RESEARCH_QUESTIONS = [
   ],
   [
     "RQ-007",
-    "How should Digital Twin uncertainty propagate into AI recommendations?",
+    "How should digital-twin uncertainty propagate into AI recommendations?",
   ],
   [
     "RQ-008",
@@ -95,19 +95,19 @@ const TECHNOLOGY_CATALOGUE = [
     "OPC UA",
     "MQTT",
     "Modbus",
-    "historian connectors",
+    "Historian connectors",
   ],
   [
     "Twin Semantics",
     "Asset Administration Shell",
     "Eclipse BaSyx",
-    "domain ontologies",
+    "Domain ontologies",
   ],
   [
     "Simulation",
-    "Modelica",
+    "Modelica 3.7",
     "OpenModelica",
-    "FMI",
+    "FMI 3.0",
     "SSP 2.0",
     "FMU",
     "Python scientific computing",
@@ -115,7 +115,7 @@ const TECHNOLOGY_CATALOGUE = [
   ["Data", "Parquet", "DuckDB", "Polars", "TimescaleDB", "InfluxDB", "MinIO"],
   ["Machine Learning", "scikit-learn", "XGBoost", "LightGBM", "PyTorch"],
   ["Experimentation", "MLflow", "Optuna"],
-  ["Local AI", "local LLM runtimes", "RAG", "tool-using agents"],
+  ["Local AI", "Local LLM runtimes", "RAG", "Tool-using agents"],
   ["Infrastructure", "Docker", "Kubernetes", "k3s"],
   ["Observability", "Prometheus", "Grafana"],
 ] as const;

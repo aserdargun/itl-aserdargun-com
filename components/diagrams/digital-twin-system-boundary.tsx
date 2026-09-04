@@ -36,8 +36,8 @@ export function DigitalTwinSystemBoundary() {
         not implemented or authorized.
       </p>
       <figcaption>
-        The August 2026 four-layer Digital Twin System framing is used here as
-        comparison context. Industrial Twin Lab deliberately ends its static
+        The 25 August 2026 four-layer Digital Twin System framing is used here
+        as comparison context. Industrial Twin Lab deliberately ends its static
         research demonstrator before actuation.
       </figcaption>
     </figure>

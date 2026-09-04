@@ -47,7 +47,7 @@ export const RESEARCH_QUESTIONS: readonly ResearchQuestion[] = [
   {
     id: "RQ-007",
     question:
-      "How should Digital Twin uncertainty propagate into AI recommendations?",
+      "How should digital-twin uncertainty propagate into AI recommendations?",
     status: "conceptual",
   },
   {

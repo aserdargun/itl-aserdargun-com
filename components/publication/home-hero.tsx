@@ -1,4 +1,7 @@
-import { TWIN_SYSTEM_LAYERS } from "@/lib/data/field-update";
+import {
+  FIELD_UPDATE_REVIEW,
+  TWIN_SYSTEM_LAYERS,
+} from "@/lib/data/field-update";
 
 export function HomeHero() {
   return (
@@ -23,7 +26,10 @@ export function HomeHero() {
         <div className="twin-system-hero__heading">
           <h2>Twin system / research boundary</h2>
           <p>
-            Field update / <time dateTime="2026-08-25">25 Aug 2026</time>
+            Field update /{" "}
+            <time dateTime={FIELD_UPDATE_REVIEW.dateTime}>
+              {FIELD_UPDATE_REVIEW.dateLabel}
+            </time>
           </p>
         </div>
         <ol>

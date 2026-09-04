@@ -7,8 +7,8 @@ const EXPECTED_METRICS = [
   ["Lead Time", "5 days"],
   ["Inference Cost", "18 ms"],
   ["Sensor Count", "11 sensors"],
-  ["Robustness", "80 /100"],
-  ["Explainability", "78 /100"],
+  ["Robustness", "80/100"],
+  ["Explainability", "78/100"],
 ] as const;
 
 const DEFAULT_EXPERIMENT_RECORD = [

@@ -26,8 +26,8 @@ const DEFAULT_METRICS = [
   ["Lead Time", "5 days"],
   ["Inference Cost", "18 ms"],
   ["Sensor Count", "11 sensors"],
-  ["Robustness", "80 /100"],
-  ["Explainability", "78 /100"],
+  ["Robustness", "80/100"],
+  ["Explainability", "78/100"],
 ] as const;
 
 const EXPECTED_MACHINE_OPTIONS = [{ value: "P-101", label: "P-101" }];

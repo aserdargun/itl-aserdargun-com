@@ -143,7 +143,9 @@ const metric = (
   label,
   value,
   unit,
-  displayValue: `${value.toFixed(precision)} ${unit}`,
+  displayValue: unit.startsWith("/")
+    ? `${value.toFixed(precision)}${unit}`
+    : `${value.toFixed(precision)} ${unit}`,
 });
 
 const createMetrics = (

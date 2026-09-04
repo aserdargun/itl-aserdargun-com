@@ -32,7 +32,7 @@ const expectDomOrder = async (locators: readonly Locator[]) => {
 const TWIN_SYSTEM_LAYERS = [
   "DataSynchronized evidence",
   "ContextAsset + operating limits",
-  "Decision & process orchestrationValidated recommendation",
+  "Decision and process orchestrationValidated recommendation",
   "ActuationHuman-authorized executionPhase 1 stops here",
 ] as const;
 
@@ -103,6 +103,9 @@ test("homepage establishes the operating thesis in the approved reading order", 
     TWIN_SYSTEM_LAYERS,
   );
   await expect(thesisFigure).toContainText("Digital thread / traceability");
+  await expect(
+    thesisFigure.getByText("4 Sep 2026", { exact: true }),
+  ).toHaveAttribute("datetime", "2026-09-04");
   const fieldUpdate = page.getByRole("region", {
     name: "The twin is no longer only a model.",
   });
@@ -118,6 +121,19 @@ test("homepage establishes the operating thesis in the approved reading order", 
       name: "DTC Digital Twin System Framework (opens in a new tab)",
     }),
   ).toHaveAttribute("target", "_blank");
+  await expect(
+    fieldUpdate.getByRole("link", {
+      name: "Modelica Specification 3.7 (opens in a new tab)",
+    }),
+  ).toHaveAttribute(
+    "href",
+    "https://modelica.org/news/release-modelica-specification-3.7/",
+  );
+  await expect(
+    fieldUpdate.getByRole("link", {
+      name: "EU AI Act — 2026 amendment (opens in a new tab)",
+    }),
+  ).toHaveAttribute("href", "https://eur-lex.europa.eu/eli/reg/2026/1744/oj");
   await expect(
     page.getByText(
       "Never let AI perform its first experiment on the physical machine.",

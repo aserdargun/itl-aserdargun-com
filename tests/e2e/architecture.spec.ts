@@ -42,7 +42,7 @@ test("architecture separates experimentation from operational authority", async 
   ).toHaveText([
     "Data",
     "Context",
-    "Decision & process orchestration",
+    "Decision and process orchestration",
     "Actuation",
   ]);
   await expect(twinSystemBoundary).toContainText(

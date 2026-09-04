@@ -11,7 +11,7 @@ export const TECHNOLOGIES: readonly Technology[] = [
       item("opc-ua", "OPC UA"),
       item("mqtt", "MQTT"),
       item("modbus", "Modbus"),
-      item("historian-connectors", "historian connectors"),
+      item("historian-connectors", "Historian connectors"),
     ],
   },
   {
@@ -21,7 +21,7 @@ export const TECHNOLOGIES: readonly Technology[] = [
     items: [
       item("asset-administration-shell", "Asset Administration Shell"),
       item("eclipse-basyx", "Eclipse BaSyx"),
-      item("domain-ontologies", "domain ontologies"),
+      item("domain-ontologies", "Domain ontologies"),
     ],
   },
   {
@@ -29,9 +29,9 @@ export const TECHNOLOGIES: readonly Technology[] = [
     name: "Simulation",
     description: "Candidate simulation and scientific-computing tools.",
     items: [
-      item("modelica", "Modelica"),
+      item("modelica", "Modelica 3.7"),
       item("openmodelica", "OpenModelica"),
-      item("fmi", "FMI"),
+      item("fmi", "FMI 3.0"),
       item("ssp-2", "SSP 2.0"),
       item("fmu", "FMU"),
       item("python-scientific-computing", "Python scientific computing"),
@@ -72,9 +72,9 @@ export const TECHNOLOGIES: readonly Technology[] = [
     name: "Local AI",
     description: "Candidate locally operated AI capabilities.",
     items: [
-      item("local-llm-runtimes", "local LLM runtimes"),
+      item("local-llm-runtimes", "Local LLM runtimes"),
       item("rag", "RAG"),
-      item("tool-using-agents", "tool-using agents"),
+      item("tool-using-agents", "Tool-using agents"),
     ],
   },
   {
