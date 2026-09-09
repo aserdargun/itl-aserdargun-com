@@ -2444,6 +2444,29 @@ svg {
   color: var(--color-ink-muted);
 }
 
+.pdt-companion {
+  margin-block: 1.5rem 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid currentColor;
+  border-left-width: 3px;
+}
+
+.pdt-companion > p {
+  max-width: 75ch;
+  line-height: 1.7;
+  margin-block: 0 1rem;
+}
+
+.pdt-companion__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pdt-companion h3 {
+  margin-block: 0 1rem;
+}
+
 .home-demonstration__plates {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

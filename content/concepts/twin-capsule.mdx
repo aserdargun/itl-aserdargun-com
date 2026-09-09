@@ -34,6 +34,22 @@ P-101 is a fictional centrifugal boiler feed water pump driven by an electric mo
 
 ## Fidelity is use-dependent
 
+### Explore the machine in PDT
+
+<a href="https://pdt.aserdargun.com" rel="noopener noreferrer" target="_blank">
+  PDT — P-101 Interactive Digital Twin
+  <span className="sr-only"> (opens in a new tab)</span>
+</a>
+is a companion teaching application for exploring a centrifugal pump in 3D.
+Assembly, Cutaway, Exploded, and Sensors views connect component anatomy with
+sensor locations and illustrative fault conditions. Use PDT to build spatial
+understanding, then return to this capsule to examine identity, provenance, and
+the experiment contract.
+
+PDT uses simplified educational geometry and synthetic signals. Its sensor set and model are separate from ITL’s eleven-signal fixture; a shared P-101 teaching name does not establish identical model versions or validated data exchange. The applications do not synchronize telemetry or experiment state.
+
+### Declare the model’s purpose
+
 A Twin Capsule should not imply a perfect replica. A model adequate for testing a pressure-ratio feature may be inadequate for bearing-frequency diagnosis. Every capsule therefore declares its operating envelope, assumptions, uncertainty, and validation status. Changes to signal calibration, physics equations, failure mechanisms, or safety constraints require a new version; silently mutating a twin would invalidate prior Evidence Packages.
 
 The registry makes assets discoverable, while the capsule makes their context reviewable. Later phases may allow capsule editing or API-backed storage, but the stable contract remains: an experiment references a specific asset and twin version rather than whichever data happens to be current.

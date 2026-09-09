@@ -63,6 +63,27 @@ export default function HomePage() {
           </p>
         </header>
 
+        <aside className="pdt-companion" aria-labelledby="pdt-companion-title">
+          <p className="pdt-companion__label">Companion application / PDT</p>
+          <h3 id="pdt-companion-title">Explore P-101 in 3D</h3>
+          <p>
+            P-101 Interactive Digital Twin brings the pump teaching story into
+            an interactive 3D exhibit. Switch between Assembly, Cutaway,
+            Exploded, and Sensors views to inspect components, sensor locations,
+            and illustrative fault conditions.
+          </p>
+          <p>
+            Start with the machine in PDT, then explore the versioned asset
+            record and experiment evidence here in Industrial Twin Lab. PDT uses
+            simplified teaching geometry and synthetic signals; the two apps are
+            separate demonstrations with no shared telemetry or experiment
+            state.
+          </p>
+          <PublicationLink href="https://pdt.aserdargun.com" target="_blank">
+            Open PDT — P-101 Interactive Digital Twin
+          </PublicationLink>
+        </aside>
+
         <div className="home-demonstration__plates">
           <TwinCapsuleDiagram
             caption="A versioned fictional machine record with eleven named signals, six failure modes, explicit safety constraints, and source-aware provenance."
