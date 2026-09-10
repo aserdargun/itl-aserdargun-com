@@ -59,13 +59,17 @@ The project-local development server binds only to `127.0.0.1:4173`.
 npm run validate:codex
 ```
 
-This package script checks formatting, lint, TypeScript, content relationships, unit tests, the static production build, and browser tests.
+This package script checks formatting, lint, generated Next.js route types, TypeScript, content relationships, unit tests, the static production build, and browser tests. Type generation runs before TypeScript so validation also works without prior build artifacts.
+
+The concept demonstrator supports local JSON export and replay. Every export includes the complete evidence package, untested hypothesis, assumptions, fixed fixture seed, snapshot tick, and explicit semantic versions. Imports are bounded to 100 KB and must exactly match the supported canonical fixture; missing evidence, changed metrics, unsupported versions, and unknown selections are rejected. The check verifies consistency, not authorship or plant validity. All metrics are authored teaching values; there is no model execution, random sampling, or statistical validation.
 
 To run the same browser suite against the published site without starting the local static server:
 
 ```bash
 PLAYWRIGHT_BASE_URL=https://itl.aserdargun.com npm run test:e2e
 ```
+
+If port 4173 belongs to another project, run `PLAYWRIGHT_PORT=4183 npm run validate:codex` with an unused port. The browser suite starts and stops its own loopback-only server and never reuses an existing listener. Set `PLAYWRIGHT_OUTPUT_DIR` to store browser artifacts outside the checkout.
 
 External targets use one Playwright worker so the verification suite does not burst-load the production edge.
 

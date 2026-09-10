@@ -9,7 +9,7 @@
     "stop:codex": "node scripts/stop-dev.mjs 4173",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "content:validate": "node --import=tsx scripts/validate-content.ts",
     "test:unit": "vitest run",
     "test:metadata-export": "node --test tests/integration/exported-metadata.test.mjs",

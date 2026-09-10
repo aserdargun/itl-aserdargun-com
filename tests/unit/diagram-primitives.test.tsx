@@ -362,8 +362,8 @@ describe("P-101 evidence primitives", () => {
     ).toBeInTheDocument();
     expect(within(figure).getByText("Twin Residual")).toBeInTheDocument();
     expect(within(figure).getAllByText("240 m³/h")).toHaveLength(2);
-    expect(within(figure).getByText("114 bar")).toBeInTheDocument();
-    expect(within(figure).getAllByText("TWIN-P101-0.1.0")).toHaveLength(2);
+    expect(within(figure).getByText("13.6 bar")).toBeInTheDocument();
+    expect(within(figure).getAllByText("TWIN-P101-0.2.0")).toHaveLength(2);
     expect(
       within(figure).getAllByText(P101_TWIN.provenance.statement),
     ).toHaveLength(2);
@@ -507,7 +507,7 @@ describe("P-101 evidence primitives", () => {
     });
     expect(within(figure).getByText("86 %")).toBeInTheDocument();
     expect(within(figure).getByText("0.9 alerts/month")).toBeInTheDocument();
-    expect(within(figure).getAllByText("DATASET-P101-SYN-0.1.0")).toHaveLength(
+    expect(within(figure).getAllByText("DATASET-P101-SYN-0.2.0")).toHaveLength(
       2,
     );
     expect(
@@ -520,8 +520,8 @@ describe("P-101 evidence primitives", () => {
         "Deterministic synthetic fixture for conceptual comparison.",
       ),
     ).toBeInTheDocument();
-    expect(within(figure).getByText("ASSET-P101-0.1.0")).toBeInTheDocument();
-    expect(within(figure).getByText("FEATURES-P101-0.1.0")).toBeInTheDocument();
+    expect(within(figure).getByText("ASSET-P101-0.2.0")).toBeInTheDocument();
+    expect(within(figure).getByText("FEATURES-P101-0.2.0")).toBeInTheDocument();
     expect(within(figure).getByText("bearing-degradation")).toBeInTheDocument();
     expect(
       within(figure).getByText(

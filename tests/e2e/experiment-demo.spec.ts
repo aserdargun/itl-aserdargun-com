@@ -1,5 +1,6 @@
 import { expect, test, type Locator } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { readFile } from "node:fs/promises";
 
 const EXPECTED_METRICS = [
   ["Detection Rate", "86 %"],
@@ -11,19 +12,71 @@ const EXPECTED_METRICS = [
   ["Explainability", "78/100"],
 ] as const;
 
+test("exports, restores and rejects altered replay evidence without losing the active fixture", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/experiment-fabric/demo/");
+  await page.getByLabel("Algorithm").selectOption("physics-residual");
+  await page.getByLabel("Feature set").selectOption("physics");
+  const savedId = await page.getByTestId("experiment-id").textContent();
+  const downloaded = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export replay JSON" }).click();
+  const download = await downloaded;
+  const path = await download.path();
+  expect(path).not.toBeNull();
+  const text = await readFile(path!, "utf8");
+  const replay = JSON.parse(text);
+  expect(replay.result.evidence.hypothesis.status).toBe("not-tested");
+  expect(replay.result.provenance.tick).toBe(0);
+
+  await page.getByRole("button", { name: "Reset to default" }).click();
+  await expect(page.getByLabel("Algorithm")).toHaveValue("xgboost");
+  const upload = page.getByLabel("Import replay JSON", { exact: true });
+  await upload.setInputFiles({
+    name: "replay.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(text),
+  });
+  await expect(page.getByRole("status")).toContainText(
+    "Replay verified and restored",
+  );
+  await expect(page.getByTestId("experiment-id")).toHaveText(savedId!);
+  await expect(page.getByLabel("Algorithm")).toHaveValue("physics-residual");
+  await expect(page.getByLabel("Feature set")).toHaveValue("physics");
+
+  replay.result.evidence.metrics[0].value = 100;
+  await upload.setInputFiles({
+    name: "altered.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(replay)),
+  });
+  await expect(page.getByRole("status")).toContainText("does not match");
+  await expect(page.getByTestId("experiment-id")).toHaveText(savedId!);
+  await upload.setInputFiles({
+    name: "broken.json",
+    mimeType: "application/json",
+    buffer: Buffer.from("{"),
+  });
+  await expect(page.getByRole("status")).toContainText("Invalid replay JSON");
+  await expect(page.getByTestId("experiment-id")).toHaveText(savedId!);
+  expect(errors).toEqual([]);
+});
+
 const DEFAULT_EXPERIMENT_RECORD = [
   ["Model", "MODEL-XGB-0.1.0"],
   ["Model status", "experimental"],
-  ["Dataset", "DATASET-P101-SYN-0.1.0"],
+  ["Dataset", "DATASET-P101-SYN-0.2.0"],
   ["Feature set", "combined"],
   ["Validation", "walk-forward"],
-  ["Twin version", "TWIN-P101-0.1.0"],
-  ["Asset version", "ASSET-P101-0.1.0"],
-  ["Dataset version", "DATASET-P101-SYN-0.1.0"],
-  ["Simulator version", "SIM-P101-0.1.0"],
-  ["Feature pipeline", "FEATURES-P101-0.1.0"],
+  ["Twin version", "TWIN-P101-0.2.0"],
+  ["Asset version", "ASSET-P101-0.2.0"],
+  ["Dataset version", "DATASET-P101-SYN-0.2.0"],
+  ["Simulator version", "SIM-P101-0.2.0"],
+  ["Feature pipeline", "FEATURES-P101-0.2.0"],
   ["Provenance model", "MODEL-XGB-0.1.0"],
-  ["Code version", "ITL-PHASE-1-0.1.0"],
+  ["Code version", "ITL-PHASE-1-0.2.0"],
   ["Configured asset", "P-101"],
   ["Problem", "bearing-degradation"],
   ["Configured feature set", "combined"],
@@ -194,12 +247,12 @@ test("the conceptual experiment recomputes a complete synthetic evidence ledger"
   ).toBeVisible();
 
   for (const text of [
-    "ASSET-P101-0.1.0",
-    "TWIN-P101-0.1.0",
-    "DATASET-P101-SYN-0.1.0",
-    "SIM-P101-0.1.0",
-    "FEATURES-P101-0.1.0",
-    "ITL-PHASE-1-0.1.0",
+    "ASSET-P101-0.2.0",
+    "TWIN-P101-0.2.0",
+    "DATASET-P101-SYN-0.2.0",
+    "SIM-P101-0.2.0",
+    "FEATURES-P101-0.2.0",
+    "ITL-PHASE-1-0.2.0",
     "Industrial Twin Lab synthetic fixture agent",
     "Industrial Twin Lab deterministic experiment fixture lookup",
     "Human engineer retains decision authority.",
@@ -228,7 +281,7 @@ test("invalid programmatic input fails closed and the mobile document does not o
 
   await expect(page.getByLabel("Algorithm")).toHaveValue("xgboost");
   await expect(page.getByRole("status")).toHaveText(
-    "Invalid Algorithm selection restored to XGBoost.",
+    "Invalid Algorithm selection rejected. The current fixture was kept.",
   );
   await expect(page.getByTestId("experiment-id")).toHaveText(
     "EXP-P101-BD-COMBINED-XGBOOST-WALKFORWARD",

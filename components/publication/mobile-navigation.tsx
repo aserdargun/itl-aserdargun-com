@@ -16,6 +16,7 @@ export function MobileNavigation() {
   const currentPathname = normalizeNavigationPathname(pathname);
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const disclosureRef = useRef<HTMLDivElement>(null);
 
   const closeNavigation = useCallback(() => {
     setIsOpen(false);
@@ -28,13 +29,33 @@ export function MobileNavigation() {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeNavigation();
     };
+    const handleOutsidePointer = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !disclosureRef.current?.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
 
     document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
+    document.addEventListener("pointerdown", handleOutsidePointer);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener("pointerdown", handleOutsidePointer);
+    };
   }, [closeNavigation, isOpen]);
 
   return (
-    <div className="section-disclosure">
+    <div
+      ref={disclosureRef}
+      className="section-disclosure"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+          setIsOpen(false);
+        }
+      }}
+    >
       <button
         ref={triggerRef}
         aria-controls={NAVIGATION_ID}

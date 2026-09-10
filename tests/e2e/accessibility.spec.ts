@@ -19,40 +19,19 @@ const PUBLIC_ROUTES = [
   "/experiment-fabric/demo/",
 ] as const;
 
-const AXE_ROUTES = [
-  "/",
-  "/architecture/",
-  "/experiment-fabric/demo/",
-  "/glossary/",
-] as const;
-
-for (const route of AXE_ROUTES) {
-  test(`${route} has no serious or critical axe violations`, async ({
+for (const route of PUBLIC_ROUTES) {
+  test(`${route} has no axe violations or browser runtime errors`, async ({
     page,
-  }, testInfo) => {
+  }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
     await page.goto(route);
     const result = await new AxeBuilder({ page }).analyze();
-    const blocking = result.violations.filter(
-      ({ impact }) => impact === "serious" || impact === "critical",
-    );
-    const moderate = result.violations.filter(
-      ({ impact }) => impact === "moderate",
-    );
-    if (moderate.length > 0) {
-      console.log(
-        `Moderate axe findings for ${route}:`,
-        moderate.map(({ id, nodes }) => ({ id, nodes: nodes.length })),
-      );
-    }
-
-    await testInfo.attach(
-      `axe-moderate-${route.replaceAll("/", "-") || "index"}`,
-      {
-        body: JSON.stringify(moderate, null, 2),
-        contentType: "application/json",
-      },
-    );
-    expect(blocking).toEqual([]);
+    expect(result.violations).toEqual([]);
+    expect(errors).toEqual([]);
   });
 }
 

@@ -43,7 +43,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <MobileNavigation />
+        <MobileNavigation key={currentPathname} />
       </div>
     </header>
   );

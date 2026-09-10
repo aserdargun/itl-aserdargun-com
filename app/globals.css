@@ -284,6 +284,9 @@ svg {
   top: calc(100% + 1px);
   right: 0;
   width: min(420px, calc(100vw - 48px));
+  max-height: calc(100dvh - 80px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: var(--border-hairline) solid var(--color-rule-dark);
   background: var(--color-shell-deep);
   color: var(--color-text-on-dark);
@@ -3596,4 +3599,78 @@ svg {
   .digital-twin-system-boundary__stop {
     grid-column: 2;
   }
+}
+
+.experiment-controls {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.experiment-replay {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-rule-strong);
+}
+
+.experiment-replay h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.experiment-replay p,
+.experiment-metrics__note {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: 0.8125rem;
+}
+
+.experiment-replay :is(button, input) {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-rule-strong);
+  background: var(--color-paper-raised);
+  font-size: 0.8125rem;
+}
+
+.experiment-replay button,
+.experiment-replay input::file-selector-button {
+  cursor: pointer;
+}
+
+.experiment-replay button:hover {
+  border-color: var(--color-signal-ink);
+  color: var(--color-signal-ink);
+}
+
+.experiment-replay :disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.experiment-replay label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.experiment-result__announcement {
+  margin: var(--space-3) 0;
+  color: var(--color-signal-ink);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.experiment-result__announcement:empty {
+  margin: 0;
+}
+
+.experiment-metrics__note {
+  margin-top: var(--space-3);
 }

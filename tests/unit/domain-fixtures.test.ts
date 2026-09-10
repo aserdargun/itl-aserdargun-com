@@ -7,6 +7,29 @@ import { RESEARCH_QUESTIONS } from "@/lib/data/research";
 import { TECHNOLOGIES } from "@/lib/data/technologies";
 
 describe("P-101 fixtures", () => {
+  it("keeps nominal hydraulic power below electrical input and head in metres", () => {
+    const signal = (id: string) =>
+      P101_TWIN.sensors.find((sensor) => sensor.id === id)!.nominalValue.value;
+    const pressureRisePa =
+      (signal("discharge-pressure") - signal("suction-pressure")) * 100_000;
+    const hydraulicPowerKw = (pressureRisePa * (signal("flow") / 3600)) / 1000;
+    const efficiency = hydraulicPowerKw / signal("motor-power");
+    expect(efficiency).toBeGreaterThan(0);
+    expect(efficiency).toBeLessThan(1);
+    const head = P101_TWIN.asset.engineeringMetadata.designHead;
+    const density = P101_TWIN.asset.engineeringMetadata.fluidDensity;
+    if (typeof head === "string" || typeof density === "string")
+      throw new Error("Missing engineering quantities");
+    expect(head.unit).toBe("m");
+    expect(density.unit).toBe("kg/m³");
+    expect(
+      Math.abs(pressureRisePa / (density.value * 9.81) - head.value),
+    ).toBeLessThan(1);
+    expect(signal("discharge-pressure")).toBeLessThan(
+      P101_TWIN.operatingEnvelope.dischargePressureMaximum.value,
+    );
+  });
+
   it("keeps one asset, eleven signals, and six declared failure modes", () => {
     expect(P101_TWIN.asset.id).toBe("P-101");
     expect(P101_TWIN.sensors).toHaveLength(11);
@@ -37,7 +60,7 @@ describe("P-101 fixtures", () => {
         "motor-degradation",
       ],
     );
-    expect(P101_TWIN.version).toBe("TWIN-P101-0.1.0");
+    expect(P101_TWIN.version).toBe("TWIN-P101-0.2.0");
     expect(P101_TWIN.provenance.synthetic).toBe(true);
   });
 
@@ -57,7 +80,7 @@ describe("P-101 fixtures", () => {
       flowMinimum: { value: 180, unit: "m³/h" },
       flowMaximum: { value: 280, unit: "m³/h" },
       suctionPressureMinimum: { value: 2.2, unit: "bar" },
-      dischargePressureMaximum: { value: 125, unit: "bar" },
+      dischargePressureMaximum: { value: 15, unit: "bar" },
       ambientTemperatureMinimum: { value: 5, unit: "°C" },
       ambientTemperatureMaximum: { value: 45, unit: "°C" },
     });

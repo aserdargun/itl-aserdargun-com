@@ -25,12 +25,14 @@ P-101 is a fictional centrifugal boiler feed water pump driven by an electric mo
 | Record               | P-101 example                                                                                      | Why it matters                                          |
 | -------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | Identity             | P-101, centrifugal pump, electric-motor drive                                                      | Prevents results from drifting to an ambiguous asset.   |
-| Engineering metadata | 240 m³/h design flow; 112 bar design head                                                          | Anchors interpretation in units and design intent.      |
+| Engineering metadata | 240 m³/h design flow; 112 m design head                                                            | Anchors interpretation in units and design intent.      |
 | Sensor map           | pressure, flow, power, speed, bearing temperature, vibration, ambient temperature                  | Connects features to physical locations and quantities. |
 | Operating envelope   | bounded flow, pressure, and ambient ranges                                                         | Defines where evidence may be applicable.               |
 | Failure library      | bearing and impeller degradation, cavitation, suction restriction, seal leakage, motor degradation | States the mechanisms under investigation.              |
 | Safety constraints   | read-only fixture; no setpoint authority; human review                                             | Keeps the representation outside control authority.     |
 | Provenance           | `{P101_TWIN.provenance.assetVersion}` and `{P101_TWIN.version}`                                    | Makes later experiments reproducible.                   |
+
+At the illustrative nominal flow of 240 m³/h, suction pressure of 2.6 bar and discharge pressure of 13.6 bar imply about 73.3 kW of hydraulic power. With 101 kW of electrical input, the implied wire-to-water efficiency is about 73%. The 112 m design head uses a reference water density of 1,000 kg/m³, equal inlet/outlet elevation and velocity heads, and rounded values. These assumptions make the teaching record internally consistent; they do not validate a boiler-feed application or define a pump curve. The energy accounting follows the <a href="https://www1.eere.energy.gov/manufacturing/tech_assistance/pdfs/pump.pdf" rel="noopener noreferrer" target="_blank">U.S. Department of Energy pumping sourcebook<span className="sr-only"> (opens in a new tab)</span></a>.
 
 ## Fidelity is use-dependent
 

@@ -75,29 +75,34 @@ const EXPECTED_FEATURE_LINEAGE = [
   {
     id: "vibration-rms",
     name: "Vibration RMS",
-    description: "RMS vibration from bearing-housing measurements.",
+    description:
+      "RMS vibration for each bearing-housing channel. The fixture supplies scalar RMS levels, not waveform samples.",
     featureGroup: "vibration",
     sourceSignals: "axial-vibration, radial-vibration",
     unit: "mm/s RMS",
-    transformation: "root mean square of axial and radial vibration samples",
+    transformation:
+      "per-channel square root of the mean squared waveform velocity; requires waveform samples absent from this fixture",
     window:
       "Declared vibration analysis window; duration not specified in Phase 1.",
   },
   {
     id: "vibration-kurtosis",
     name: "Vibration Kurtosis",
-    description: "Distribution-tail indicator for vibration change.",
+    description:
+      "Per-channel waveform distribution-tail indicator; cannot be inferred from the two scalar RMS levels.",
     featureGroup: "vibration",
     sourceSignals: "axial-vibration, radial-vibration",
     unit: "dimensionless",
-    transformation: "kurtosis of axial and radial vibration samples",
+    transformation:
+      "per-channel fourth central moment divided by variance squared; requires a nonconstant waveform absent from this fixture",
     window:
       "Declared vibration analysis window; duration not specified in Phase 1.",
   },
   {
     id: "twin-residual",
     name: "Twin Residual",
-    description: "Measured value minus digital-twin prediction.",
+    description:
+      "Measured value minus digital-twin prediction; unavailable until an independently validated prediction model exists.",
     featureGroup: "physics",
     sourceSignals: "motor-power, flow, speed",
     unit: "kW",
@@ -108,7 +113,8 @@ const EXPECTED_FEATURE_LINEAGE = [
   {
     id: "rolling-mean-30m",
     name: "Rolling Mean 30m",
-    description: "Thirty-minute rolling temperature mean.",
+    description:
+      "Thirty-minute rolling temperature mean; requires a timestamped history absent from this single snapshot.",
     featureGroup: "temporal",
     sourceSignals: "bearing-de-temperature",
     unit: "°C",

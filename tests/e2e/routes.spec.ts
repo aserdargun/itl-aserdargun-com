@@ -26,12 +26,28 @@ const canonicalPath = (pathname: string) =>
 
 for (const route of PUBLIC_ROUTES) {
   test(`${route} is a complete public publication`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (message.type() === "error") errors.push(message.text());
+    });
     const response = await page.goto(route);
 
     expect(response?.status()).toBe(200);
     await expect(page.locator("main")).toBeVisible();
     await expect(page.locator("main h1")).toHaveCount(1);
     await expect(page.locator("main")).not.toContainText(PLACEHOLDER_OR_ERROR);
+    await expect(page).toHaveTitle(/ITL|Industrial Twin/);
+    // Exercise a hydrated control as well as checking the static document.
+    await page.getByRole("button", { name: "All sections 13" }).click();
+    await expect(
+      page.getByRole("navigation", { name: "All sections", exact: true }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("button", { name: "All sections 13" }),
+    ).toBeFocused();
+    expect(errors, route).toEqual([]);
   });
 }
 

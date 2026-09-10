@@ -10,14 +10,30 @@ import type {
   MetricResult,
   ValidationStrategy,
 } from "@/lib/domain/types";
+import { P101_TWIN } from "@/lib/data/p101";
 
-export const DEFAULT_DEMO_CONFIG: ExperimentDemoConfig = {
+const deepFreeze = <T>(value: T): T => {
+  if (value !== null && typeof value === "object") {
+    Object.values(value).forEach(deepFreeze);
+    Object.freeze(value);
+  }
+  return value;
+};
+
+export const DEMO_VERSIONS = deepFreeze({
+  behaviorVersion: "BEHAVIOR-P101-0.2.0",
+  experimentVersion: "EXPERIMENT-P101-0.2.0",
+  worldVersion: "WORLD-P101-0.2.0",
+  metricVersion: "METRICS-P101-0.1.0",
+});
+
+export const DEFAULT_DEMO_CONFIG: ExperimentDemoConfig = deepFreeze({
   assetId: "P-101",
   problem: "bearing-degradation",
   featureSet: "combined",
   algorithm: "xgboost",
   validation: "walk-forward",
-};
+});
 
 export const DEMO_MACHINE_OPTIONS = [
   { value: "P-101", label: "P-101" },
@@ -118,13 +134,13 @@ const keyFor = ({
 
 const dataset: Dataset = {
   id: "DATASET-P101-SYN",
-  version: "DATASET-P101-SYN-0.1.0",
+  version: "DATASET-P101-SYN-0.2.0",
   assetId: "P-101",
   description: "Synthetic P-101 bearing-degradation fixture dataset.",
   provenance: {
-    assetVersion: "ASSET-P101-0.1.0",
-    twinVersion: "TWIN-P101-0.1.0",
-    datasetVersion: "DATASET-P101-SYN-0.1.0",
+    assetVersion: P101_TWIN.provenance.assetVersion,
+    twinVersion: P101_TWIN.version,
+    datasetVersion: "DATASET-P101-SYN-0.2.0",
     source: "Industrial Twin Lab synthetic experiment fixture",
     statement:
       "This dataset is a deterministic synthetic fixture for conceptual comparison only; it is not plant data.",
@@ -213,13 +229,16 @@ const createFixture = (config: ExperimentDemoConfig): ExperimentResult => {
   ].join("-");
   const metrics = createMetrics(config);
   const provenance: ExperimentProvenance = {
-    assetVersion: "ASSET-P101-0.1.0",
-    twinVersion: "TWIN-P101-0.1.0",
-    datasetVersion: "DATASET-P101-SYN-0.1.0",
-    simulatorVersion: "SIM-P101-0.1.0",
-    featurePipelineVersion: "FEATURES-P101-0.1.0",
+    ...DEMO_VERSIONS,
+    tick: 0,
+    tickUnit: "fixture snapshot",
+    assetVersion: P101_TWIN.provenance.assetVersion,
+    twinVersion: P101_TWIN.version,
+    datasetVersion: dataset.version,
+    simulatorVersion: "SIM-P101-0.2.0",
+    featurePipelineVersion: "FEATURES-P101-0.2.0",
     modelVersion: MODEL_VERSIONS[config.algorithm],
-    codeVersion: "ITL-PHASE-1-0.1.0",
+    codeVersion: "ITL-PHASE-1-0.2.0",
     experimentConfiguration: config,
     randomSeed: 101,
     timestampLabel: "Synthetic fixture",
@@ -231,6 +250,19 @@ const createFixture = (config: ExperimentDemoConfig): ExperimentResult => {
   };
   const evidence: EvidencePackage = {
     experimentId,
+    hypothesis: {
+      id: "HYP-P101-BEARING-01",
+      statement:
+        "Bearing-related features may reveal degradation before failure under held-out operating regimes.",
+      status: "not-tested",
+    },
+    assumptions: [
+      "All seven metrics are authored teaching values, not measurements, fitted models, or benchmark results.",
+      "Feature and algorithm adjustments prescribe the displayed scores; they cannot establish a winning model or feature set.",
+      "Validation selections label illustrative scenarios; no dataset is split and no statistical validation is executed.",
+      "The fixed seed 101 identifies this fixture family; no random sampling occurs. Tick 0 is a single snapshot, not elapsed plant time.",
+      "Sensor counts and inference milliseconds are illustrative resource assumptions, not an executed feature pipeline or hardware timing.",
+    ],
     model: {
       id: `MODEL-${config.algorithm.toUpperCase()}`,
       algorithm: config.algorithm,
@@ -303,19 +335,24 @@ const createExperimentLookup = (): Readonly<
   return lookup;
 };
 
-export const EXPERIMENT_FIXTURES = createExperimentLookup();
+export const EXPERIMENT_FIXTURES = deepFreeze(createExperimentLookup());
 
 const includes = <T extends string>(
   values: readonly T[],
   value: unknown,
 ): value is T => typeof value === "string" && values.includes(value as T);
 
-const isExperimentDemoConfig = (
+export const isExperimentDemoConfig = (
   value: unknown,
 ): value is ExperimentDemoConfig => {
   if (typeof value !== "object" || value === null) return false;
   const config = value as Record<string, unknown>;
   return (
+    !Array.isArray(value) &&
+    Object.keys(config).length === 5 &&
+    ["assetId", "problem", "featureSet", "algorithm", "validation"].every(
+      (key) => Object.hasOwn(config, key),
+    ) &&
     config.assetId === "P-101" &&
     config.problem === "bearing-degradation" &&
     includes(FEATURE_SETS, config.featureSet) &&
@@ -324,9 +361,11 @@ const isExperimentDemoConfig = (
   );
 };
 
-const normalizeConfig = (config: ExperimentDemoConfig): ExperimentDemoConfig =>
-  isExperimentDemoConfig(config) ? config : DEFAULT_DEMO_CONFIG;
-
-export const buildExperimentResult = (
-  config: ExperimentDemoConfig,
-): ExperimentResult => EXPERIMENT_FIXTURES[keyFor(normalizeConfig(config))];
+export const buildExperimentResult = (config: unknown): ExperimentResult => {
+  if (!isExperimentDemoConfig(config)) {
+    throw new Error(
+      "Unsupported experiment configuration. No result was generated.",
+    );
+  }
+  return EXPERIMENT_FIXTURES[keyFor(config)];
+};

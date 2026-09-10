@@ -34,6 +34,12 @@ const MODEL_VERSIONS: Readonly<Record<AlgorithmName, string>> = {
   "physics-residual": "MODEL-PR-0.1.0",
 };
 const EXACT_PROVENANCE_KEYS = [
+  "behaviorVersion",
+  "experimentVersion",
+  "worldVersion",
+  "metricVersion",
+  "tick",
+  "tickUnit",
   "assetVersion",
   "authorAgent",
   "codeVersion",
@@ -84,10 +90,10 @@ describe("experiment demo", () => {
           expect(result.evidence.operatingRegimes.length).toBeGreaterThan(0);
           expect(result.evidence.limitations.length).toBeGreaterThan(0);
           expect(result.provenance).toMatchObject({
-            datasetVersion: "DATASET-P101-SYN-0.1.0",
-            featurePipelineVersion: "FEATURES-P101-0.1.0",
-            twinVersion: "TWIN-P101-0.1.0",
-            codeVersion: "ITL-PHASE-1-0.1.0",
+            datasetVersion: "DATASET-P101-SYN-0.2.0",
+            featurePipelineVersion: "FEATURES-P101-0.2.0",
+            twinVersion: "TWIN-P101-0.2.0",
+            codeVersion: "ITL-PHASE-1-0.2.0",
             randomSeed: 101,
             timestampLabel: "Synthetic fixture",
             synthetic: true,
@@ -97,7 +103,7 @@ describe("experiment demo", () => {
     }
   });
 
-  it("falls back to the only valid default before constructing a result", () => {
+  it("rejects unsupported configurations without substituting evidence", () => {
     const invalidConfig = {
       assetId: "P-999",
       problem: "unknown",
@@ -106,8 +112,8 @@ describe("experiment demo", () => {
       validation: "unobserved",
     } as unknown as ExperimentDemoConfig;
 
-    expect(buildExperimentResult(invalidConfig)).toEqual(
-      buildExperimentResult(DEFAULT_DEMO_CONFIG),
+    expect(() => buildExperimentResult(invalidConfig)).toThrow(
+      "Unsupported experiment configuration",
     );
   });
 
@@ -126,13 +132,19 @@ describe("experiment demo", () => {
           };
           const result = buildExperimentResult(config);
           const expectedProvenance = {
-            assetVersion: "ASSET-P101-0.1.0",
-            twinVersion: "TWIN-P101-0.1.0",
-            datasetVersion: "DATASET-P101-SYN-0.1.0",
-            simulatorVersion: "SIM-P101-0.1.0",
-            featurePipelineVersion: "FEATURES-P101-0.1.0",
+            behaviorVersion: "BEHAVIOR-P101-0.2.0",
+            experimentVersion: "EXPERIMENT-P101-0.2.0",
+            worldVersion: "WORLD-P101-0.2.0",
+            metricVersion: "METRICS-P101-0.1.0",
+            tick: 0,
+            tickUnit: "fixture snapshot",
+            assetVersion: "ASSET-P101-0.2.0",
+            twinVersion: "TWIN-P101-0.2.0",
+            datasetVersion: "DATASET-P101-SYN-0.2.0",
+            simulatorVersion: "SIM-P101-0.2.0",
+            featurePipelineVersion: "FEATURES-P101-0.2.0",
             modelVersion: MODEL_VERSIONS[algorithm],
-            codeVersion: "ITL-PHASE-1-0.1.0",
+            codeVersion: "ITL-PHASE-1-0.2.0",
             experimentConfiguration: config,
             randomSeed: 101,
             timestampLabel: "Synthetic fixture",
@@ -151,9 +163,9 @@ describe("experiment demo", () => {
             expect(Object.keys(provenance)).toHaveLength(
               EXACT_PROVENANCE_KEYS.length,
             );
-            expect(Object.keys(provenance).sort()).toEqual([
-              ...EXACT_PROVENANCE_KEYS,
-            ]);
+            expect(Object.keys(provenance).sort()).toEqual(
+              [...EXACT_PROVENANCE_KEYS].sort(),
+            );
             expect(provenance).toEqual(expectedProvenance);
           }
           configurationCount += 1;

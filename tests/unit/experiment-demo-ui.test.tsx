@@ -146,7 +146,7 @@ describe("ExperimentDemo", () => {
     ["Algorithm", "xgboost"],
     ["Validation", "walk-forward"],
   ] as const)(
-    "restores a programmatically invalid %s selection without throwing",
+    "rejects a programmatically invalid %s selection without throwing",
     (label, defaultValue) => {
       render(<ExperimentDemo />);
       const select = screen.getByLabelText<HTMLSelectElement>(label);
@@ -160,7 +160,7 @@ describe("ExperimentDemo", () => {
         "EXP-P101-BD-COMBINED-XGBOOST-WALKFORWARD",
       );
       expect(screen.getByRole("status")).toHaveTextContent(
-        new RegExp(`^Invalid ${label} selection restored to `),
+        new RegExp(`^Invalid ${label} selection rejected. `),
       );
     },
   );
@@ -177,13 +177,13 @@ describe("ExperimentDemo", () => {
       screen.getAllByText("Synthetic fixture", { exact: true }).length,
     ).toBeGreaterThanOrEqual(1);
     for (const value of [
-      "ASSET-P101-0.1.0",
-      "TWIN-P101-0.1.0",
-      "DATASET-P101-SYN-0.1.0",
-      "SIM-P101-0.1.0",
-      "FEATURES-P101-0.1.0",
+      "ASSET-P101-0.2.0",
+      "TWIN-P101-0.2.0",
+      "DATASET-P101-SYN-0.2.0",
+      "SIM-P101-0.2.0",
+      "FEATURES-P101-0.2.0",
       "MODEL-XGB-0.1.0",
-      "ITL-PHASE-1-0.1.0",
+      "ITL-PHASE-1-0.2.0",
       "Industrial Twin Lab synthetic fixture agent",
       "Industrial Twin Lab deterministic experiment fixture lookup",
     ]) {

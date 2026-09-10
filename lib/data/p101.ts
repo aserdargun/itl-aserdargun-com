@@ -19,7 +19,7 @@ const P101_FEATURE_VALIDATION_STATUS = "Not validated in Phase 1" as const;
 
 export const P101_TWIN: TwinCapsule = {
   id: "TWIN-P101",
-  version: "TWIN-P101-0.1.0",
+  version: "TWIN-P101-0.2.0",
   asset: {
     id: "P-101",
     name: "Boiler Feed Water Pump P-101",
@@ -39,7 +39,10 @@ export const P101_TWIN: TwinCapsule = {
       service: "Boiler feed water",
       configuration: "Single-stage centrifugal pump with electric-motor drive",
       designFlow: { value: 240, unit: "m³/h" },
-      designHead: { value: 112, unit: "bar" },
+      designHead: { value: 112, unit: "m" },
+      fluidDensity: { value: 1000, unit: "kg/m³" },
+      hydraulicAssumptions:
+        "Incompressible water at the stated reference density; equal inlet/outlet elevations and velocity heads. Pressures use the same absolute reference. Nominal values are rounded, not a validated pump curve.",
     },
   },
   sensors: [
@@ -57,7 +60,7 @@ export const P101_TWIN: TwinCapsule = {
       quantity: "Pressure",
       unit: "bar",
       location: "Pump discharge",
-      nominalValue: { value: 114, unit: "bar" },
+      nominalValue: { value: 13.6, unit: "bar" },
     },
     {
       id: "flow",
@@ -208,9 +211,11 @@ export const P101_TWIN: TwinCapsule = {
       name: "Vibration RMS",
       featureSet: "vibration",
       sourceSignalIds: ["axial-vibration", "radial-vibration"],
-      description: "RMS vibration from bearing-housing measurements.",
+      description:
+        "RMS vibration for each bearing-housing channel. The fixture supplies scalar RMS levels, not waveform samples.",
       unit: "mm/s RMS",
-      transformation: "root mean square of axial and radial vibration samples",
+      transformation:
+        "per-channel square root of the mean squared waveform velocity; requires waveform samples absent from this fixture",
       window:
         "Declared vibration analysis window; duration not specified in Phase 1.",
       applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
@@ -223,9 +228,11 @@ export const P101_TWIN: TwinCapsule = {
       name: "Vibration Kurtosis",
       featureSet: "vibration",
       sourceSignalIds: ["axial-vibration", "radial-vibration"],
-      description: "Distribution-tail indicator for vibration change.",
+      description:
+        "Per-channel waveform distribution-tail indicator; cannot be inferred from the two scalar RMS levels.",
       unit: "dimensionless",
-      transformation: "kurtosis of axial and radial vibration samples",
+      transformation:
+        "per-channel fourth central moment divided by variance squared; requires a nonconstant waveform absent from this fixture",
       window:
         "Declared vibration analysis window; duration not specified in Phase 1.",
       applicableRegime: P101_FEATURE_APPLICABLE_REGIME,
@@ -238,7 +245,8 @@ export const P101_TWIN: TwinCapsule = {
       name: "Twin Residual",
       featureSet: "physics",
       sourceSignalIds: ["motor-power", "flow", "speed"],
-      description: "Measured value minus digital-twin prediction.",
+      description:
+        "Measured value minus digital-twin prediction; unavailable until an independently validated prediction model exists.",
       unit: "kW",
       transformation:
         "motor power − digital-twin motor-power prediction conditioned on flow and speed",
@@ -253,7 +261,8 @@ export const P101_TWIN: TwinCapsule = {
       name: "Rolling Mean 30m",
       featureSet: "temporal",
       sourceSignalIds: ["bearing-de-temperature"],
-      description: "Thirty-minute rolling temperature mean.",
+      description:
+        "Thirty-minute rolling temperature mean; requires a timestamped history absent from this single snapshot.",
       unit: "°C",
       transformation:
         "mean of bearing DE temperature over the trailing 30 minutes",
@@ -316,7 +325,7 @@ export const P101_TWIN: TwinCapsule = {
     flowMinimum: { value: 180, unit: "m³/h" },
     flowMaximum: { value: 280, unit: "m³/h" },
     suctionPressureMinimum: { value: 2.2, unit: "bar" },
-    dischargePressureMaximum: { value: 125, unit: "bar" },
+    dischargePressureMaximum: { value: 15, unit: "bar" },
     ambientTemperatureMinimum: { value: 5, unit: "°C" },
     ambientTemperatureMaximum: { value: 45, unit: "°C" },
   },
@@ -337,8 +346,8 @@ export const P101_TWIN: TwinCapsule = {
       "Uncertainty is unquantified because P-101 has no plant measurements or validated industrial evidence.",
   },
   provenance: {
-    assetVersion: "ASSET-P101-0.1.0",
-    twinVersion: "TWIN-P101-0.1.0",
+    assetVersion: "ASSET-P101-0.2.0",
+    twinVersion: "TWIN-P101-0.2.0",
     source: "Industrial Twin Lab fictional engineering fixture",
     statement: P101_PROVENANCE_STATEMENT,
     synthetic: true,

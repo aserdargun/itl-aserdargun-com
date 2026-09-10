@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { EvidencePackage } from "@/components/diagrams/evidence-package";
 import { MetricComparison } from "@/components/experiment/metric-comparison";
@@ -17,6 +17,11 @@ import {
   DEMO_PROBLEM_OPTIONS,
   DEMO_VALIDATION_OPTIONS,
 } from "@/lib/experiments/demo";
+import {
+  exportReplay,
+  importReplay,
+  MAX_REPLAY_BYTES,
+} from "@/lib/experiments/replay";
 
 type SelectOption = Readonly<{ value: string; label: string }>;
 
@@ -52,12 +57,52 @@ const optionLabel = (options: readonly SelectOption[], value: string) =>
   options.find((option) => option.value === value)?.label ?? value;
 
 export function ExperimentDemo() {
-  const [config, setConfig] =
-    useState<ExperimentDemoConfig>(DEFAULT_DEMO_CONFIG);
   const [result, setResult] = useState<ExperimentResult>(() =>
     buildExperimentResult(DEFAULT_DEMO_CONFIG),
   );
+  const config = result.provenance.experimentConfiguration;
   const [announcement, setAnnouncement] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const downloadReplay = () => {
+    const url = URL.createObjectURL(
+      new Blob([exportReplay(result)], { type: "application/json" }),
+    );
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${result.experimentId}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setAnnouncement("Replay exported with the complete evidence package.");
+  };
+
+  const restoreReplay = async (file: File) => {
+    setIsImporting(true);
+    setAnnouncement("Checking replay evidence…");
+    try {
+      if (file.size > MAX_REPLAY_BYTES) {
+        throw new Error(
+          "Replay files must be 100 KB or smaller. The current fixture was kept.",
+        );
+      }
+      const restored = importReplay(await file.text());
+      setResult(restored);
+      setAnnouncement(
+        "Replay verified and restored. This confirms fixture consistency, not plant validity.",
+      );
+    } catch (error) {
+      setAnnouncement(
+        error instanceof Error
+          ? error.message
+          : "Replay could not be read. The current fixture was kept.",
+      );
+    } finally {
+      setIsImporting(false);
+    }
+  };
 
   const updateDimension = (
     field: keyof ExperimentDemoConfig,
@@ -66,20 +111,20 @@ export function ExperimentDemo() {
     options: readonly SelectOption[],
   ) => {
     const option = options.find((candidate) => candidate.value === value);
-    const canonicalValue = option?.value ?? DEFAULT_DEMO_CONFIG[field];
+    if (!option) {
+      setAnnouncement(
+        `Invalid ${fieldLabel} selection rejected. The current fixture was kept.`,
+      );
+      return;
+    }
     const nextConfig = {
       ...config,
-      [field]: canonicalValue,
+      [field]: option.value,
     } as ExperimentDemoConfig;
     const nextResult = buildExperimentResult(nextConfig);
 
-    setConfig(nextConfig);
     setResult(nextResult);
-    setAnnouncement(
-      option
-        ? `Evidence updated: ${nextResult.experimentId}.`
-        : `Invalid ${fieldLabel} selection restored to ${optionLabel(options, String(DEFAULT_DEMO_CONFIG[field]))}.`,
-    );
+    setAnnouncement(`Evidence updated: ${nextResult.experimentId}.`);
   };
 
   const validationLabel = optionLabel(
@@ -99,71 +144,120 @@ export function ExperimentDemo() {
           <p>Deterministic local fixture</p>
         </div>
         <form onSubmit={(event) => event.preventDefault()}>
-          <DemoSelect
-            id="experiment-machine"
-            label="Machine"
-            onChange={(value) =>
-              updateDimension("assetId", "Machine", value, DEMO_MACHINE_OPTIONS)
-            }
-            options={DEMO_MACHINE_OPTIONS}
-            value={config.assetId}
-          />
-          <DemoSelect
-            id="experiment-problem"
-            label="Problem"
-            onChange={(value) =>
-              updateDimension("problem", "Problem", value, DEMO_PROBLEM_OPTIONS)
-            }
-            options={DEMO_PROBLEM_OPTIONS}
-            value={config.problem}
-          />
-          <DemoSelect
-            id="experiment-feature-set"
-            label="Feature set"
-            onChange={(value) =>
-              updateDimension(
-                "featureSet",
-                "Feature set",
-                value,
-                DEMO_FEATURE_SET_OPTIONS,
-              )
-            }
-            options={DEMO_FEATURE_SET_OPTIONS}
-            value={config.featureSet}
-          />
-          <DemoSelect
-            id="experiment-algorithm"
-            label="Algorithm"
-            onChange={(value) =>
-              updateDimension(
-                "algorithm",
-                "Algorithm",
-                value,
-                DEMO_ALGORITHM_OPTIONS,
-              )
-            }
-            options={DEMO_ALGORITHM_OPTIONS}
-            value={config.algorithm}
-          />
-          <DemoSelect
-            id="experiment-validation"
-            label="Validation"
-            onChange={(value) =>
-              updateDimension(
-                "validation",
-                "Validation",
-                value,
-                DEMO_VALIDATION_OPTIONS,
-              )
-            }
-            options={DEMO_VALIDATION_OPTIONS}
-            value={config.validation}
-          />
+          <fieldset disabled={isImporting} className="experiment-controls">
+            <legend className="sr-only">Fixture selections</legend>
+            <DemoSelect
+              id="experiment-machine"
+              label="Machine"
+              onChange={(value) =>
+                updateDimension(
+                  "assetId",
+                  "Machine",
+                  value,
+                  DEMO_MACHINE_OPTIONS,
+                )
+              }
+              options={DEMO_MACHINE_OPTIONS}
+              value={config.assetId}
+            />
+            <DemoSelect
+              id="experiment-problem"
+              label="Problem"
+              onChange={(value) =>
+                updateDimension(
+                  "problem",
+                  "Problem",
+                  value,
+                  DEMO_PROBLEM_OPTIONS,
+                )
+              }
+              options={DEMO_PROBLEM_OPTIONS}
+              value={config.problem}
+            />
+            <DemoSelect
+              id="experiment-feature-set"
+              label="Feature set"
+              onChange={(value) =>
+                updateDimension(
+                  "featureSet",
+                  "Feature set",
+                  value,
+                  DEMO_FEATURE_SET_OPTIONS,
+                )
+              }
+              options={DEMO_FEATURE_SET_OPTIONS}
+              value={config.featureSet}
+            />
+            <DemoSelect
+              id="experiment-algorithm"
+              label="Algorithm"
+              onChange={(value) =>
+                updateDimension(
+                  "algorithm",
+                  "Algorithm",
+                  value,
+                  DEMO_ALGORITHM_OPTIONS,
+                )
+              }
+              options={DEMO_ALGORITHM_OPTIONS}
+              value={config.algorithm}
+            />
+            <DemoSelect
+              id="experiment-validation"
+              label="Validation"
+              onChange={(value) =>
+                updateDimension(
+                  "validation",
+                  "Validation",
+                  value,
+                  DEMO_VALIDATION_OPTIONS,
+                )
+              }
+              options={DEMO_VALIDATION_OPTIONS}
+              value={config.validation}
+            />
+          </fieldset>
         </form>
         <p className="experiment-demo__rail-note">
           Selection updates the local evidence fixture immediately. No model is
           trained or executed.
         </p>
+        <div className="experiment-replay">
+          <h2>Save and replay evidence</h2>
+          <p id="replay-help">
+            Export this record, then import it to restore the same selections
+            and evidence. JSON only, up to 100 KB. Files are checked locally
+            against the supported fixture; they are never uploaded.
+          </p>
+          <button type="button" disabled={isImporting} onClick={downloadReplay}>
+            Export replay JSON
+          </button>
+          <label htmlFor="experiment-replay-file">Import replay JSON</label>
+          <input
+            ref={fileRef}
+            id="experiment-replay-file"
+            type="file"
+            accept=".json,application/json"
+            aria-describedby="replay-help"
+            disabled={isImporting}
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              event.currentTarget.value = "";
+              if (file) void restoreReplay(file);
+            }}
+          />
+          <button
+            type="button"
+            disabled={isImporting}
+            onClick={() => {
+              setResult(buildExperimentResult(DEFAULT_DEMO_CONFIG));
+              if (fileRef.current) fileRef.current.value = "";
+              setAnnouncement("Default fixture restored.");
+            }}
+          >
+            Reset to default
+          </button>
+        </div>
       </div>
 
       <div
@@ -192,7 +286,7 @@ export function ExperimentDemo() {
         <p
           aria-atomic="true"
           aria-live="polite"
-          className="sr-only"
+          className="experiment-result__announcement"
           role="status"
         >
           {announcement}
@@ -218,6 +312,11 @@ export function ExperimentDemo() {
         </dl>
 
         <MetricComparison metrics={result.metrics} />
+        <p className="experiment-metrics__note">
+          Authored teaching values, including the millisecond timings. These
+          scores do not measure model performance or establish a preferred
+          algorithm.
+        </p>
 
         <dl className="experiment-result__summary">
           <div>

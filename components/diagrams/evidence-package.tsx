@@ -26,6 +26,44 @@ export function EvidencePackage({
         </p>
       ) : null}
 
+      <section aria-label="Hypothesis and assumptions">
+        <h3>Hypothesis — not tested</h3>
+        <p>{evidencePackage.hypothesis.statement}</p>
+        <ul className="diagram-ledger-list">
+          {evidencePackage.assumptions.map((assumption) => (
+            <li key={assumption}>{assumption}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-label="Replay identity">
+        <h3>Replay identity</h3>
+        <dl className="technical-ledger">
+          <div>
+            <dt>Behavior version</dt>
+            <dd>{provenance.behaviorVersion}</dd>
+          </div>
+          <div>
+            <dt>Experiment version</dt>
+            <dd>{provenance.experimentVersion}</dd>
+          </div>
+          <div>
+            <dt>World version</dt>
+            <dd>{provenance.worldVersion}</dd>
+          </div>
+          <div>
+            <dt>Metric version</dt>
+            <dd>{provenance.metricVersion}</dd>
+          </div>
+          <div>
+            <dt>Snapshot tick</dt>
+            <dd>
+              {provenance.tick} / {provenance.tickUnit}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
       <section aria-label="Experiment record">
         <h3>Experiment record</h3>
         <dl className="technical-ledger">
@@ -224,6 +262,36 @@ export function EvidencePackage({
         Human engineer retains decision authority. This package does not
         authorize control, maintenance action, or safety certification.
       </p>
+      <section aria-label="Separate authorities">
+        <h3>Four separate authorities</h3>
+        <dl className="technical-ledger">
+          <div>
+            <dt>Train a model</dt>
+            <dd>
+              Not performed. A future training run requires its own
+              authorization.
+            </dd>
+          </div>
+          <div>
+            <dt>Recommend an action</dt>
+            <dd>No operational recommendation is issued by this fixture.</dd>
+          </div>
+          <div>
+            <dt>Approve an inference model</dt>
+            <dd>
+              Requires separate engineering review for a named model version and
+              use.
+            </dd>
+          </div>
+          <div>
+            <dt>Change a physical setpoint</dt>
+            <dd>
+              Outside Phase 1. An inference approval never grants this
+              authority.
+            </dd>
+          </div>
+        </dl>
+      </section>
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
   );

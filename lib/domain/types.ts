@@ -158,6 +158,12 @@ export interface MetricResult {
 
 export interface EvidencePackage {
   readonly experimentId: string;
+  readonly hypothesis: Readonly<{
+    id: string;
+    statement: string;
+    status: "not-tested";
+  }>;
+  readonly assumptions: readonly string[];
   readonly model: ModelCandidate;
   readonly dataset: Dataset;
   readonly featureSet: FeatureSet;
@@ -180,6 +186,12 @@ export interface ExperimentDemoConfig {
 }
 
 export interface ExperimentProvenance extends Provenance {
+  readonly behaviorVersion: string;
+  readonly experimentVersion: string;
+  readonly worldVersion: string;
+  readonly metricVersion: string;
+  readonly tick: number;
+  readonly tickUnit: "fixture snapshot";
   readonly assetVersion: string;
   readonly twinVersion: string;
   readonly datasetVersion: string;

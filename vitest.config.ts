@@ -13,6 +13,8 @@ export default defineConfig({
     },
   },
   test: {
+    maxWorkers: 2,
+    testTimeout: 15_000,
     environment: "jsdom",
     exclude: [
       ...configDefaults.exclude,

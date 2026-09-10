@@ -13,7 +13,7 @@ export function SiteFooter() {
         <div className="site-footer__statement">
           <p className="site-footer__status">Research / Experimental</p>
           <p className="site-footer__title">Industrial Twin Lab / ITL</p>
-          <ResearchDisclaimer />
+          <ResearchDisclaimer label="Publication-wide research disclaimer" />
           <PublicationLink href={REPOSITORY_URL} target="_blank">
             GitHub repository
           </PublicationLink>

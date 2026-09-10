@@ -62,6 +62,39 @@ describe("SiteHeader", () => {
 });
 
 describe("MobileNavigation", () => {
+  it("dismisses outside pointers without stealing focus from the page", () => {
+    render(
+      <>
+        <MobileNavigation />
+        <button type="button">Page action</button>
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "All sections 13" });
+    const pageAction = screen.getByRole("button", { name: "Page action" });
+    fireEvent.click(trigger);
+    fireEvent.pointerDown(pageAction);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).not.toHaveFocus();
+  });
+
+  it("keeps internal keyboard navigation open and closes when focus leaves", () => {
+    render(
+      <>
+        <MobileNavigation />
+        <button type="button">Page action</button>
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "All sections 13" });
+    fireEvent.click(trigger);
+    const firstLink = screen.getByRole("link", { name: "Manifesto" });
+    fireEvent.blur(trigger, { relatedTarget: firstLink });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    fireEvent.blur(firstLink, {
+      relatedTarget: screen.getByRole("button", { name: "Page action" }),
+    });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
   it("closes on Escape and returns focus to its trigger", () => {
     render(<MobileNavigation />);
     const trigger = screen.getByRole("button", { name: "All sections 13" });
