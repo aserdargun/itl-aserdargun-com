@@ -487,6 +487,13 @@ svg {
   color: var(--color-signal);
 }
 
+.site-footer__portfolio {
+  display: grid;
+  justify-items: start;
+  margin-top: var(--space-4);
+}
+
+.site-footer__portfolio .publication-link,
 .site-footer__statement > .publication-link {
   min-height: var(--control-height);
   display: inline-flex;
@@ -2466,6 +2473,7 @@ svg {
   letter-spacing: 0.08em;
 }
 
+.pdt-companion h2,
 .pdt-companion h3 {
   margin-block: 0 1rem;
 }

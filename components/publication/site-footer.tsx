@@ -14,6 +14,24 @@ export function SiteFooter() {
           <p className="site-footer__status">Research / Experimental</p>
           <p className="site-footer__title">Industrial Twin Lab / ITL</p>
           <ResearchDisclaimer label="Publication-wide research disclaimer" />
+          <p>
+            Part of the aserdargun.com AI Learning System. Publication in
+            English.
+          </p>
+          <nav
+            aria-label="Portfolio navigation"
+            className="site-footer__portfolio"
+          >
+            <PublicationLink href="https://aserdargun.com/" target="_blank">
+              AI Learning System / aserdargun.com
+            </PublicationLink>
+            <PublicationLink
+              href="https://aserdargun.com/applications/"
+              target="_blank"
+            >
+              Explore the application catalogue
+            </PublicationLink>
+          </nav>
           <PublicationLink href={REPOSITORY_URL} target="_blank">
             GitHub repository
           </PublicationLink>

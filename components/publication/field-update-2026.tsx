@@ -23,8 +23,8 @@ export function FieldUpdate2026() {
           The twin is no longer only a model.
         </h2>
         <p>
-          Current practice is converging on a governed system of data, context,
-          orchestration, and actuation—joined by a traceable digital thread.
+          The Digital Twin Consortium framework connects data, context,
+          orchestration, and actuation through a traceable digital thread.
         </p>
       </header>
 
@@ -43,7 +43,8 @@ export function FieldUpdate2026() {
 
       <div className="field-update__boundary">
         <p>
-          Industrial Twin Lab studies the first three layers.{" "}
+          Industrial Twin Lab studies the first three layers as concepts; live
+          data acquisition and agent execution are future work.{" "}
           <strong>Actuation remains outside the Phase 1 boundary.</strong>
         </p>
         <nav aria-label="2026 field update links">

@@ -10,7 +10,7 @@ export const contentMeta = CONTENT_META["fault-lab"];
 
 # Synthetic Fault Laboratory
 
-Rare failures are difficult to study from operating history alone. The Fault Lab introduces controlled modifications into a twin or its inputs so detection behavior can be examined without damaging P-101 or disrupting production.
+Rare failures are difficult to study from operating history alone. The proposed Fault Lab would introduce controlled modifications into a twin or its inputs so detection behavior can be examined without damaging P-101 or disrupting production.
 
 ```text
 Normal Twin → Fault Injection → Synthetic Operating Scenario
@@ -18,6 +18,8 @@ Normal Twin → Fault Injection → Synthetic Operating Scenario
 ```
 
 Candidate scenarios are limited to the canonical P-101 failure modes—{P101_TWIN.failureModes.map((failure) => failure.name).join(", ")}—plus {SENSOR_AND_COMMUNICATION_FAULTS.map((fault) => fault.name).join(", ")}. Bearing-degradation injection may test explicitly declared friction increases of 5%, 10%, or 20%; these are assumptions, not observed events. Each scenario requires a mechanism, magnitude, affected signals, operating regime, duration, seed or deterministic configuration, twin version, and expected limitations.
+
+This page defines a fault-study method. It does not inject faults, execute a simulator, or evaluate a detector; the ITL demonstrator displays authored fixture metrics.
 
 ## Simulation validity comes first
 

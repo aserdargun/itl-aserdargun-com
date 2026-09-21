@@ -1,3 +1,4 @@
+import { DtrCompanion } from "@/components/publication/dtr-companion";
 import { EvidencePackage } from "@/components/diagrams/evidence-package";
 import { TwinCapsuleDiagram } from "@/components/diagrams/twin-capsule-diagram";
 import { HomeHero } from "@/components/publication/home-hero";
@@ -83,6 +84,8 @@ export default function HomePage() {
             Open PDT — P-101 Interactive Digital Twin
           </PublicationLink>
         </aside>
+
+        <DtrCompanion />
 
         <div className="home-demonstration__plates">
           <TwinCapsuleDiagram

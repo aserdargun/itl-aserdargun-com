@@ -35,6 +35,16 @@ Publication status: **Research / Experimental**. The source repository is the pu
 
 Future runtime services must stay separate from the static publication. Any control-facing capability requires an independent safety design, explicit authorization, plant-specific validation, and human engineering governance.
 
+## Portfolio and companion applications
+
+The 21 September 2026 content review connects ITL to the [aserdargun.com AI Learning System](https://aserdargun.com/) and distinguishes its companion applications:
+
+- ITL: English research publication and authored deterministic experiment fixtures; no real model execution.
+- [PDT](https://pdt.aserdargun.com/): separate pump-anatomy teaching exhibit with simplified geometry and synthetic signals.
+- [DTR](https://dtr.aserdargun.com/): separate bilingual numerical simulation with independent process/observation/twin layers, candidate review, simulated approval/application, and prediction–outcome comparison; no runtime AI or field connection.
+
+These links describe learning relationships. Models, state, and exports remain application-specific; DTR exports cannot be imported as ITL replays. The bilingual portfolio metadata must list ITL's actual application language as English only.
+
 ## Local lifecycle
 
 Prerequisites: a current Node.js runtime compatible with Next.js 16 and npm.

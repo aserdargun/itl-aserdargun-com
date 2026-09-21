@@ -63,7 +63,7 @@ test("homepage establishes the operating thesis in the approved reading order", 
     { exact: true },
   );
   const deck = hero.getByText(
-    "An isolated experimentation environment for digital twins, industrial AI, simulation, and evidence-driven machine intelligence.",
+    "A public research publication and deterministic concept demonstrator for digital twins, industrial AI, simulation, and engineering evidence.",
     { exact: true },
   );
   const thesisFigure = hero.getByRole("figure", {

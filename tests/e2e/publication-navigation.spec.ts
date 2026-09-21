@@ -49,6 +49,8 @@ test("leaving the menu by keyboard or pointer dismisses it without redirecting f
 test("every publication's external link announces its new browsing context", async ({
   page,
 }) => {
+  // This audit visits all 15 publications and checks every external link.
+  test.setTimeout(60_000);
   const routes = [
     "/",
     "/manifesto/",

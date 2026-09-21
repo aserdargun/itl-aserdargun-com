@@ -1,3 +1,4 @@
+import { DtrCompanion } from "@/components/publication/dtr-companion";
 import { ExperimentDemo } from "@/components/experiment/experiment-demo";
 import { PublicationLink } from "@/components/publication/publication-link";
 import { CONTENT_META } from "@/lib/content/registry";
@@ -36,6 +37,8 @@ export default function ExperimentFabricDemoPage() {
           Explore P-101 in PDT
         </PublicationLink>
       </aside>
+      <DtrCompanion headingLevel="h2" />
+
       <ExperimentDemo />
     </article>
   );

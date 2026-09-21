@@ -14,8 +14,9 @@ export function HomeHero() {
           machine.
         </p>
         <p className="home-hero__deck">
-          An isolated experimentation environment for digital twins, industrial
-          AI, simulation, and evidence-driven machine intelligence.
+          A public research publication and deterministic concept demonstrator
+          for digital twins, industrial AI, simulation, and engineering
+          evidence.
         </p>
       </div>
 

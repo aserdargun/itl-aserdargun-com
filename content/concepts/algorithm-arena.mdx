@@ -41,6 +41,8 @@ The Algorithm Arena compares candidates against the same dataset, feature defini
 
 For P-101 bearing degradation, Isolation Forest, XGBoost, Autoencoder, and Physics Residual candidates can be evaluated using time split, walk-forward, or leave-one-regime-out validation. The comparison reports detection rate, false alarms, lead time, inference cost, sensor count, robustness, and explainability. A higher detection rate does not win automatically: the operational constraint of at most one false alert per month may disqualify it.
 
+Phase 1 compares authored fixture values. Candidate names describe the intended comparison contract; no listed algorithm is trained or executed here.
+
 ## Champion and challenger
 
 A Champion Model is the currently selected candidate under a stated Evidence Package. Challenger Models remain comparable under identical conditions and may replace it only through the same validation gate. The titles are versioned and conditional. Drift in P-101 instrumentation, envelope, maintenance state, or twin fidelity can invalidate the comparison and trigger a new experiment.
