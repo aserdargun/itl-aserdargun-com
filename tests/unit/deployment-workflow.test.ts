@@ -7,7 +7,7 @@ const releaseEvidencePath = "docs/validation/production-release.md";
 
 const checkoutSha = "3d3c42e5aac5ba805825da76410c181273ba90b1";
 const setupNodeSha = "820762786026740c76f36085b0efc47a31fe5020";
-const staticWebAppsDeploySha = "1a947af9992250f3bc2e68ad0754c0b0c11566c9";
+const staticWebAppsDeploySha = "4d27395796ac319302594769cfe812bd207490b1";
 const deploymentSecretExpression =
   "${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_SWA_ITL_ASERDARGUN_COM }}";
 
