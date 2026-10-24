@@ -15,8 +15,8 @@ export interface FieldUpdateSource {
 }
 
 export const FIELD_UPDATE_REVIEW = {
-  dateTime: "2026-09-04",
-  dateLabel: "4 Sep 2026",
+  dateTime: "2026-10-24",
+  dateLabel: "24 Oct 2026",
 } as const;
 
 export const TWIN_SYSTEM_LAYERS: readonly TwinSystemLayer[] = [
