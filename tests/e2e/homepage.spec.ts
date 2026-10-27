@@ -104,8 +104,8 @@ test("homepage establishes the operating thesis in the approved reading order", 
   );
   await expect(thesisFigure).toContainText("Digital thread / traceability");
   await expect(
-    thesisFigure.getByText("24 Oct 2026", { exact: true }),
-  ).toHaveAttribute("datetime", "2026-10-24");
+    thesisFigure.getByText("27 Oct 2026", { exact: true }),
+  ).toHaveAttribute("datetime", "2026-10-27");
   const fieldUpdate = page.getByRole("region", {
     name: "The twin is no longer only a model.",
   });
